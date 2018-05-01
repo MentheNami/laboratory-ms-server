@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.cqtguniversity.lqms.mapper.TaskInfoMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="org.cqtguniversity.lqms.entity.TaskInfo">
+		<id column="id" property="id" />
+		<result column="gmt_created" property="gmtCreated" />
+		<result column="gmt_modified" property="gmtModified" />
+		<result column="process_id" property="processId" />
+		<result column="task_name" property="taskName" />
+		<result column="assign_user_id" property="assignUserId" />
+		<result column="type_id" property="typeId" />
+		<result column="priority" property="priority" />
+		<result column="consumed" property="consumed" />
+		<result column="desc_id" property="descId" />
+		<result column="deadline" property="deadline" />
+		<result column="created_by" property="createdBy" />
+		<result column="created_time" property="createdTime" />
+		<result column="end_by" property="endBy" />
+		<result column="end_time" property="endTime" />
+		<result column="end_reason" property="endReason" />
+		<result column="status_id" property="statusId" />
+		<result column="is_deleted" property="isDeleted" />
+	</resultMap>
+
+</mapper>

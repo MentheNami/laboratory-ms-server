@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.cqtguniversity.lqms.mapper.ConfigOptionDetailMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="org.cqtguniversity.lqms.entity.ConfigOptionDetail">
+		<id column="id" property="id" />
+		<result column="gmt_create" property="gmtCreate" />
+		<result column="gmt_modified" property="gmtModified" />
+		<result column="system" property="system" />
+		<result column="is_deleted" property="isDeleted" />
+		<result column="group_id" property="groupId" />
+		<result column="option_name" property="optionName" />
+		<result column="option_value" property="optionValue" />
+		<result column="priority" property="priority" />
+		<result column="use_count" property="useCount" />
+	</resultMap>
+
+	<update id="addUseCountById">
+		update config_option_detail
+		set gmt_modified = #{gmtModified}, use_count = use_count + 1
+		where id = #{id}
+	</update>
+
+	<update id="addUseCountByIds">
+		update config_option_detail
+		set gmt_modified = #{gmtModified}, use_count = use_count +
+		<foreach item="item" index="index" collection="optionIdsMap"
+				 open=" case id " separator=" " close=" end">
+			when #{index} then #{item}
+		</foreach>
+		where id in
+		<foreach item="item" index="index" collection="optionIdsMap"
+				 open="(" separator="," close=")">
+			#{index}
+		</foreach>
+	</update>
+
+	<update id="removeUseCountById">
+		update config_option_detail
+		set gmt_modified = #{gmtModified}, use_count = use_count - 1
+		where id = #{id}
+	</update>
+
+	<update id="removeUseCountByIds">
+		update config_option_detail
+		set gmt_modified = #{gmtModified}, use_count = use_count -
+		<foreach item="item" index="index" collection="optionIdsMap"
+				 open=" case id " separator=" " close=" end">
+			when #{index} then #{item}
+		</foreach>
+		where id in
+		<foreach item="item" index="index" collection="optionIdsMap"
+				 open="(" separator="," close=")">
+			#{index}
+		</foreach>
+	</update>
+
+</mapper>

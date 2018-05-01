@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.cqtguniversity.lqms.mapper.DeviceProgramMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="org.cqtguniversity.lqms.entity.DeviceProgram">
+		<id column="id" property="id" />
+		<result column="gmt_create" property="gmtCreate" />
+		<result column="gmt_modified" property="gmtModified" />
+		<result column="apply_user" property="applyUser" />
+		<result column="apply_no" property="applyNo" />
+		<result column="device_id" property="deviceId" />
+		<result column="program_type" property="programType" />
+		<result column="description" property="description" />
+		<result column="execution_date" property="executionDate" />
+		<result column="approval_user" property="approvalUser" />
+		<result column="approval_opinion" property="approvalOpinion" />
+		<result column="approval_description" property="approvalDescription" />
+		<result column="approval_time" property="approvalTime" />
+		<result column="is_deleted" property="isDeleted" />
+	</resultMap>
+
+</mapper>

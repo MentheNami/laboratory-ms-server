@@ -46,8 +46,7 @@ public class MyStringUtil {
             return null;
         }
         if(str.contains(",")){
-            String[] ss = str.split(",");
-            return ss;
+            return str.split(",");
         } else {
             return new String[]{str};
         }
