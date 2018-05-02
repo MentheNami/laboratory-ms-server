@@ -41,7 +41,7 @@ public class Laboratory extends Model<Laboratory> {
     /**
      * 所属楼层
      */
-	private Integer floor;
+	private Long floor;
     /**
      * 实验室名称
      */
@@ -87,11 +87,11 @@ public class Laboratory extends Model<Laboratory> {
 		this.gmtModified = gmtModified;
 	}
 
-	public Integer getFloor() {
+	public Long getFloor() {
 		return floor;
 	}
 
-	public void setFloor(Integer floor) {
+	public void setFloor(Long floor) {
 		this.floor = floor;
 	}
 

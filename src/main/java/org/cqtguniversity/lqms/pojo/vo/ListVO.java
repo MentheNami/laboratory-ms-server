@@ -13,7 +13,7 @@ import java.util.List;
 public class ListVO<T> extends BaseVO {
 
     // 状态
-    private boolean status;
+    private boolean status = true;
     // 总条数
     private long total;
     // 页面大小 默认页面大小：10

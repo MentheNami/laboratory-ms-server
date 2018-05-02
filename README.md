@@ -9,3 +9,7 @@
 * 编程语言及框架等： Java、SpringMVC、SpringBoot、Git、Maven、Swagger、MyBatis&MyBatisPlus
 
 * 开发任务：原型设计-王铖权
+
+
+开发要点：
+pojo-> vo(view object) dto(data transfer object) 

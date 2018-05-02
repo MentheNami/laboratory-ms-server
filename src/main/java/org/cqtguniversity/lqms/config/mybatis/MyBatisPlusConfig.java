@@ -2,6 +2,9 @@ package org.cqtguniversity.lqms.config.mybatis;
 
 import com.baomidou.mybatisplus.MybatisConfiguration;
 import com.baomidou.mybatisplus.MybatisXMLLanguageDriver;
+import com.baomidou.mybatisplus.entity.GlobalConfiguration;
+import com.baomidou.mybatisplus.enums.DBType;
+import com.baomidou.mybatisplus.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean;
 import org.apache.ibatis.mapping.DatabaseIdProvider;
 import org.apache.ibatis.plugin.Interceptor;
@@ -21,7 +24,8 @@ import javax.sql.DataSource;
  * @author Tangshengyu
  * @create 2018- 03- 05- 17:17
  */
-
+//
+@Configuration
 public class MyBatisPlusConfig {
 
     @Autowired
@@ -39,6 +43,22 @@ public class MyBatisPlusConfig {
     @Autowired(required = false)
     private DatabaseIdProvider databaseIdProvider;
 
+    /**
+     * mybatis-plus分页插件
+     */
+    @Bean
+    public PaginationInterceptor paginationInterceptor() {
+        PaginationInterceptor page = new PaginationInterceptor();
+        page.setDialectType("mysql");
+        return page;
+    }
+
+    /**
+     * 这里全部使用mybatis-autoconfigure 已经自动加载的资源。不手动指定
+     * 配置文件和mybatis-boot的配置文件同步
+     *
+     * @return
+     */
     @Bean
     public MybatisSqlSessionFactoryBean mybatisSqlSessionFactoryBean() {
         MybatisSqlSessionFactoryBean mybatisPlus = new MybatisSqlSessionFactoryBean();
@@ -51,6 +71,12 @@ public class MyBatisPlusConfig {
         if (!ObjectUtils.isEmpty(this.interceptors)) {
             mybatisPlus.setPlugins(this.interceptors);
         }
+        // MP 全局配置，更多内容进入类看注释
+        GlobalConfiguration globalConfig = new GlobalConfiguration();
+        globalConfig.setDbType(DBType.MYSQL.name());
+        // ID 策略 AUTO->`0`("数据库ID自增") INPUT->`1`(用户输入ID") ID_WORKER->`2`("全局唯一ID") UUID->`3`("全局唯一ID")
+        globalConfig.setIdType(0);
+        mybatisPlus.setGlobalConfig(globalConfig);
         MybatisConfiguration mc = new MybatisConfiguration();
         mc.setDefaultScriptingLanguage(MybatisXMLLanguageDriver.class);
         mybatisPlus.setConfiguration(mc);

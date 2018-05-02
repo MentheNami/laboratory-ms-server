@@ -59,7 +59,7 @@ public class ConfigOptionGroupController {
     }
 
     @ApiOperation(value = "获取所有配置组")
-    @GetMapping(value = "getConfigGroupList")
+    @GetMapping(value = "/getConfigGroupList")
     public BaseVO getConfigGroupList(SearchConfigGroupDTO searchConfigGroupDTO) {
         return configOptionGroupService.getConfigGroupList(searchConfigGroupDTO);
     }
