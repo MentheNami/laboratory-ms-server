@@ -21,10 +21,6 @@ public class SaveComplaintDTO extends BaseDTO{
      */
     private String complainantName;
     /**
-     * 投诉编号
-     */
-    private String complaintNo;
-    /**
      * 联系人
      */
     private String contactName;
@@ -67,14 +63,6 @@ public class SaveComplaintDTO extends BaseDTO{
 
     public void setComplainantName(String complainantName) {
         this.complainantName = complainantName;
-    }
-
-    public String getComplaintNo() {
-        return complaintNo;
-    }
-
-    public void setComplaintNo(String complaintNo) {
-        this.complaintNo = complaintNo;
     }
 
     public String getContactName() {
@@ -138,7 +126,6 @@ public class SaveComplaintDTO extends BaseDTO{
         return super .toString()+"SaveComplaintDTO{" +
                 "id=" + id +
                 ", complainantName='" + complainantName + '\'' +
-                ", complaintNo='" + complaintNo + '\'' +
                 ", contactName='" + contactName + '\'' +
                 ", contactPhone=" + contactPhone +
                 ", contactEmail='" + contactEmail + '\'' +

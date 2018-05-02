@@ -49,7 +49,7 @@ public class ComplaintVO extends BaseVO{
     /**
      * 投诉状态
      */
-    private Long complainantStatus;
+    private String complainantStatus;
 
     public Long getId() {
         return id;
@@ -123,11 +123,11 @@ public class ComplaintVO extends BaseVO{
         this.complaintDetail = complaintDetail;
     }
 
-    public Long getComplainantStatus() {
+    public String getComplainantStatus() {
         return complainantStatus;
     }
 
-    public void setComplainantStatus(Long complainantStatus) {
+    public void setComplainantStatus(String complainantStatus) {
         this.complainantStatus = complainantStatus;
     }
 

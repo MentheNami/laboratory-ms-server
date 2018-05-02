@@ -81,7 +81,7 @@ public class Complaint extends Model<Complaint> {
      * 投诉状态
      */
 	@TableField("complainant_status")
-	private Long complainantStatus;
+	private Integer complainantStatus;
     /**
      * 逻辑删除
      */
@@ -177,11 +177,11 @@ public class Complaint extends Model<Complaint> {
 		this.complaintDetail = complaintDetail;
 	}
 
-	public Long getComplainantStatus() {
+	public Integer getComplainantStatus() {
 		return complainantStatus;
 	}
 
-	public void setComplainantStatus(Long complainantStatus) {
+	public void setComplainantStatus(Integer complainantStatus) {
 		this.complainantStatus = complainantStatus;
 	}
 
