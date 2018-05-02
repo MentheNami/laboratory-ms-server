@@ -15,8 +15,8 @@ import java.io.Serializable;
  * 投诉表
  * </p>
  *
- * @author TangShengYu
- * @since 2018-05-01
+ * @author Wang26211
+ * @since 2018-05-02
  */
 @TableName("complaint")
 public class Complaint extends Model<Complaint> {
@@ -200,7 +200,7 @@ public class Complaint extends Model<Complaint> {
 
 	@Override
 	public String toString() {
-		return "Complaint{" +
+		return  "Complaint{" +
 			"id=" + id +
 			", gmtCreate=" + gmtCreate +
 			", gmtModified=" + gmtModified +

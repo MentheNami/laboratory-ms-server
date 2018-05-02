@@ -43,6 +43,7 @@ public class SearchLaboratoryDTO extends SearchDTO {
         this.laboratoryName = laboratoryName;
     }
 
+    // 源于阿里巴巴Java开发规范，P7  12.
     @Override
     public String toString() {
         return super.toString() + "SearchLaboratoryDTO{" +
