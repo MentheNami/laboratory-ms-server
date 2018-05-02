@@ -15,7 +15,7 @@ import java.io.Serializable;
  * 长文本表
  * </p>
  *
- * @author TangShengYu
+ * @author Wang26211
  * @since 2018-04-30
  */
 @TableName("common_content")
