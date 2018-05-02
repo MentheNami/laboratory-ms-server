@@ -24,7 +24,6 @@ import javax.sql.DataSource;
  * @author Tangshengyu
  * @create 2018- 03- 05- 17:17
  */
-//
 @Configuration
 public class MyBatisPlusConfig {
 

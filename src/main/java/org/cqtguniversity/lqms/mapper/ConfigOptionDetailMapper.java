@@ -3,6 +3,7 @@ package org.cqtguniversity.lqms.mapper;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.cqtguniversity.lqms.entity.ConfigOptionDetail;
+import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.Map;
@@ -15,6 +16,7 @@ import java.util.Map;
  * @author TangShengYu
  * @since 2018-04-30
  */
+@Repository
 public interface ConfigOptionDetailMapper extends BaseMapper<ConfigOptionDetail> {
 
     void addUseCountById(@Param("id") Long id, @Param("gmtModified") Date gmtModified);

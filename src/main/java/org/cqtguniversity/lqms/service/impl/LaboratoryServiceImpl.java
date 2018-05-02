@@ -13,8 +13,10 @@ import org.cqtguniversity.lqms.pojo.vo.laboratory.LaboratoryVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ParamErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.SuccessVO;
+import org.cqtguniversity.lqms.service.ConfigOptionDetailService;
 import org.cqtguniversity.lqms.service.LaboratoryService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import org.cqtguniversity.lqms.util.ConfigOptionConstruct;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,8 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -37,9 +41,29 @@ public class LaboratoryServiceImpl extends ServiceImpl<LaboratoryMapper, Laborat
 
     private final LaboratoryMapper laboratoryMapper;
 
+    private final ConfigOptionDetailService configOptionDetailService;
+
     @Autowired
-    public LaboratoryServiceImpl(LaboratoryMapper laboratoryMapper) {
+    public LaboratoryServiceImpl(LaboratoryMapper laboratoryMapper, ConfigOptionDetailService configOptionDetailService) {
         this.laboratoryMapper = laboratoryMapper;
+        this.configOptionDetailService =configOptionDetailService;
+    }
+
+    /**
+     * 将实验室实体翻译成为对应的VO
+     * @param laboratory
+     * @return
+     */
+    private LaboratoryVO transferLaboratoryVO(Laboratory laboratory) {
+        // 创建实验室VO
+        LaboratoryVO laboratoryVO = new LaboratoryVO();
+        // 封装属性
+        laboratoryVO.setId(laboratory.getId());
+        laboratoryVO.setCapacity(laboratory.getCapacity());
+        laboratoryVO.setLaboratoryName(laboratory.getLaboratoryName());
+        laboratoryVO.setIsAutonomy(laboratory.getIsAutonomy() == 0 ? "否" : "是");
+        laboratoryVO.setFloor(ConfigOptionConstruct.getOptionById(laboratory.getFloor()).getKey());
+        return laboratoryVO;
     }
 
     @Override
@@ -61,17 +85,23 @@ public class LaboratoryServiceImpl extends ServiceImpl<LaboratoryMapper, Laborat
         laboratory.setIsDeleted(0);
         // 插入数据
         laboratoryMapper.insert(laboratory);
+        // 增加一次配置选项的使用
+        configOptionDetailService.addUseCount(saveLaboratoryDTO.getFloor());
+        // 更新内存中的选项配置
+        ConfigOptionConstruct.updateOption();
         return SuccessVO.getInstance();
     }
 
     @Override
-    public BaseVO removeById(Long id) {
+    public BaseVO removeByIds(Long[] ids) {
         // 合理性判断
-        if (null == id) {
+        if (null == ids || 0 == ids.length) {
             return ParamErrorVO.getInstance();
         }
+        // TODO: 2018/5/2 请先完成设备模块
+
         // 因为是逻辑删除，所以需要查询是否存在
-        Laboratory laboratory = laboratoryMapper.selectById(id);
+        Laboratory laboratory = laboratoryMapper.selectById(1);
         if (laboratory == null || 1 == laboratory.getIsDeleted()) {
             return new ErrorVO("实验室不存在");
         }
@@ -90,9 +120,19 @@ public class LaboratoryServiceImpl extends ServiceImpl<LaboratoryMapper, Laborat
             // 返回一个参数错误VO的实例
             return ParamErrorVO.getInstance();
         }
-        // 合理性通过
-        Laboratory laboratory = new Laboratory();
-        // 复制实验室基本信息
+        // 查询该实验室是否存在
+        Laboratory laboratory = laboratoryMapper.selectById(saveLaboratoryDTO.getId());
+        if (null == laboratory || 1 == laboratory.getIsDeleted()) {
+            return new ErrorVO("该实验室不存在");
+        }
+        // 合理性通过，判断楼层是否改变
+        if (!Objects.equals(saveLaboratoryDTO.getFloor(), laboratory.getFloor())) {
+            // 移除所属楼层配置选项的使用
+            configOptionDetailService.removeUseCount(laboratory.getFloor());
+            // 增加所属楼层配置选项的使用
+            configOptionDetailService.addUseCount(saveLaboratoryDTO.getFloor());
+        }
+        // 复制基本信息
         BeanUtils.copyProperties(saveLaboratoryDTO, laboratory);
         laboratory.setGmtModified(Calendar.getInstance().getTime());
         laboratoryMapper.updateById(laboratory);
@@ -106,10 +146,13 @@ public class LaboratoryServiceImpl extends ServiceImpl<LaboratoryMapper, Laborat
             return ParamErrorVO.getInstance();
         }
         Laboratory laboratory = laboratoryMapper.selectById(id);
+        // 判断实验室是否存在
         if (null == laboratory || 1 == laboratory.getIsDeleted()) {
             return new ErrorVO("实验室不存在");
         }
+        // 合理性通过
         LaboratoryVO laboratoryVO = new LaboratoryVO();
+        // 基本信息复制
         BeanUtils.copyProperties(laboratory, laboratoryVO, "gmtCreate", "gmt_modified", "isDeleted");
         return new DetailResultVO(laboratoryVO);
     }
@@ -134,9 +177,12 @@ public class LaboratoryServiceImpl extends ServiceImpl<LaboratoryMapper, Laborat
             Page page = new Page(searchLaboratoryDTO.getPage(), searchLaboratoryDTO.getRows());
             List<Laboratory> laboratoryList = laboratoryMapper.selectPage(page, entityWrapper);
             if (null != laboratoryList && 0 != laboratoryList.size()) {
-                return new ListVO<>(laboratoryList);
+                // Java8 Stream流   将集合过滤操作封装为语法糖
+                List<LaboratoryVO> laboratoryVOList = laboratoryList.stream().map(this::transferLaboratoryVO).collect(Collectors.toList());
+                return new ListVO<>(laboratoryVOList);
             }
         }
         return new ListVO<>(new ArrayList<>());
     }
+
 }

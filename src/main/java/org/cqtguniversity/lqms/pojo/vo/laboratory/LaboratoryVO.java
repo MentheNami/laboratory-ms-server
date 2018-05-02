@@ -16,7 +16,7 @@ public class LaboratoryVO extends BaseVO {
     /**
      * 所属楼层
      */
-    private Long floor;
+    private String floor;
     /**
      * 实验室名称
      */
@@ -28,7 +28,7 @@ public class LaboratoryVO extends BaseVO {
     /**
      * 是否自主预定
      */
-    private Integer isAutonomy;
+    private String isAutonomy;
 
     public Long getId() {
         return id;
@@ -38,11 +38,11 @@ public class LaboratoryVO extends BaseVO {
         this.id = id;
     }
 
-    public Long getFloor() {
+    public String getFloor() {
         return floor;
     }
 
-    public void setFloor(Long floor) {
+    public void setFloor(String floor) {
         this.floor = floor;
     }
 
@@ -62,11 +62,11 @@ public class LaboratoryVO extends BaseVO {
         this.capacity = capacity;
     }
 
-    public Integer getIsAutonomy() {
+    public String getIsAutonomy() {
         return isAutonomy;
     }
 
-    public void setIsAutonomy(Integer isAutonomy) {
+    public void setIsAutonomy(String isAutonomy) {
         this.isAutonomy = isAutonomy;
     }
 

@@ -19,8 +19,8 @@ public interface LaboratoryService extends IService<Laboratory> {
     // 新增实验室
     BaseVO addLaboratory(SaveLaboratoryDTO saveLaboratoryDTO);
 
-    // 删除实验室通过ID
-    BaseVO removeById(Long id);
+    // 删除实验室通过IDS
+    BaseVO removeByIds(Long[] ids);
 
     // 修改实验室
     BaseVO updateLaboratory(SaveLaboratoryDTO saveLaboratoryDTO);

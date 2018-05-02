@@ -2,6 +2,7 @@ package org.cqtguniversity.lqms.mapper;
 
 import org.cqtguniversity.lqms.entity.Module;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.springframework.stereotype.Repository;
 
 /**
  * <p>
@@ -11,6 +12,7 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @author TangShengYu
  * @since 2018-05-01
  */
+@Repository
 public interface ModuleMapper extends BaseMapper<Module> {
 
 }

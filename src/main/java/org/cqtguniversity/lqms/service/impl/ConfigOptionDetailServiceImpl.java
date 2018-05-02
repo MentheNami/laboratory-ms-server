@@ -237,6 +237,7 @@ public class ConfigOptionDetailServiceImpl extends ServiceImpl<ConfigOptionDetai
 
     @Override
     public void addUseCount(Long id) {
+        // 断言传入的Id必须不为空
         Assert.notNull(id, "Config Option id must is not null");
         configOptionDetailMapper.addUseCountById(id, Calendar.getInstance().getTime());
         // 更新配置选项
