@@ -96,6 +96,17 @@ public class ConfigOptionConstruct {
         return OPTION_MAP.get(id);
     }
 
+    public static Long getOptionIdByValue(String value) {
+        for (Map.Entry<Long, KeyAndValueVO> entry: OPTION_MAP.entrySet()
+        ){
+            if (value.equals(entry.getValue().getValue())) {
+                return entry.getKey();
+            }
+        }
+        System.out.println("通过Value获取配置选项错误，存在错误的Value");
+        return null;
+    }
+
     public static ConfigOptionDetailVO getOptionVOById(Long id) {
         return OPTION_VO_MAP.get(id);
     }

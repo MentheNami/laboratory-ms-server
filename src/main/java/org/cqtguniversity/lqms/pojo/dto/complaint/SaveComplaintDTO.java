@@ -47,7 +47,7 @@ public class SaveComplaintDTO extends BaseDTO{
     /**
      * 投诉状态
      */
-    private Long complainantStatus;
+    private Integer complainantStatus;
 
     public Long getId() {
         return id;
@@ -113,11 +113,11 @@ public class SaveComplaintDTO extends BaseDTO{
         this.complaintDetail = complaintDetail;
     }
 
-    public Long getComplainantStatus() {
+    public Integer getComplainantStatus() {
         return complainantStatus;
     }
 
-    public void setComplainantStatus(Long complainantStatus) {
+    public void setComplainantStatus(Integer complainantStatus) {
         this.complainantStatus = complainantStatus;
     }
     // 源于阿里巴巴Java开发规范，P7  12.

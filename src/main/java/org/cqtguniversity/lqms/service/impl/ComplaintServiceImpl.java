@@ -3,10 +3,8 @@ package org.cqtguniversity.lqms.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.sun.tools.javac.comp.Todo;
-import com.sun.xml.internal.bind.v2.TODO;
+import org.cqtguniversity.lqms.construct.NumTypeConstruct;
 import org.cqtguniversity.lqms.entity.Complaint;
-import org.cqtguniversity.lqms.entity.Laboratory;
 import org.cqtguniversity.lqms.mapper.ComplaintMapper;
 import org.cqtguniversity.lqms.pojo.dto.complaint.SaveComplaintDTO;
 import org.cqtguniversity.lqms.pojo.dto.complaint.SearchComplaintDTO;
@@ -18,17 +16,15 @@ import org.cqtguniversity.lqms.pojo.vo.result.ErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ParamErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.SuccessVO;
 import org.cqtguniversity.lqms.service.ComplaintService;
-import org.cqtguniversity.lqms.service.ConfigOptionDetailService;
+import org.cqtguniversity.lqms.service.NumberRuleService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -41,11 +37,16 @@ import java.util.stream.Collectors;
 @Service
 public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint> implements ComplaintService {
 
+    // 引用投诉服务
     private final ComplaintMapper complaintMapper;
+    // 引用编号规则服务
+    private final NumberRuleService numberRuleService;
 
+    // 构造方法注入相关服务
     @Autowired
-    public ComplaintServiceImpl(ComplaintMapper complaintMapper) {
+    public ComplaintServiceImpl(ComplaintMapper complaintMapper, NumberRuleService numberRuleService) {
         this.complaintMapper = complaintMapper;
+        this.numberRuleService = numberRuleService;
     }
 
     /**
@@ -77,8 +78,8 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
         Complaint complaint = new Complaint();
         //复制投诉基本信息
         BeanUtils.copyProperties(saveComplaintDTO, complaint, "id");
-        // TODO 2018/5/3  自动生成投诉编号
-
+        // 设置一个自动生成的投诉编号
+        complaint.setComplaintNo(numberRuleService.getNum(NumTypeConstruct.COMPLAINTNO));
         //设置创建时间
         complaint.setGmtCreate(Calendar.getInstance().getTime());
         //设置修改时间
@@ -146,6 +147,7 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
             return new ErrorVO("投诉不存在");
         }
         ComplaintVO complaintVO = new ComplaintVO();
+        //复制基本信息除了创建时间、修改时间、isDeleted
         BeanUtils.copyProperties(complaint, complaintVO, "gmtCreate", "gmt_modified", "isDeleted");
         return new DetailResultVO(complaintVO);
     }
