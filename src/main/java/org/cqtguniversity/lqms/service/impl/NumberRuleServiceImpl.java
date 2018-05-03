@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  * 编号规则 服务实现类
  * </p>
  *
- * @author TangShengYu
+ * @author Wang26211
  * @since 2018-04-30
  */
 @Service
