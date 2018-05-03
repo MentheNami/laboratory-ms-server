@@ -7,10 +7,6 @@ import org.cqtguniversity.lqms.pojo.dto.SearchDTO;
  */
 public class SearchNumberRuleDTO extends SearchDTO{
     /**
-     * 自增序号
-     */
-    private Long id;
-    /**
      * 规则类型
      */
     private Long ruleType;
@@ -22,14 +18,6 @@ public class SearchNumberRuleDTO extends SearchDTO{
      * 下一个编号
      */
     private Long nextNumber;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Long getRuleType() {
         return ruleType;
@@ -58,8 +46,7 @@ public class SearchNumberRuleDTO extends SearchDTO{
     @Override
     public String toString() {
         return super.toString()+"SearchNumberRuleDTO{" +
-                "id=" + id +
-                ", ruleType=" + ruleType +
+                "ruleType=" + ruleType +
                 ", prefixNumber='" + prefixNumber + '\'' +
                 ", nextNumber=" + nextNumber +
                 '}';

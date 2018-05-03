@@ -196,25 +196,24 @@ public class NumberRuleServiceImpl extends ServiceImpl<NumberRuleMapper, NumberR
             return ParamErrorVO.getInstance();
         }
         EntityWrapper<NumberRule> entityWrapper = new EntityWrapper<>();
-        entityWrapper.where("is_deleted=0", 0);
         //增加模糊查询
         if (!StringUtils.isEmpty(searchNumberRuleDTO.getPrefixNumber())){
             entityWrapper.like("prefix_number", searchNumberRuleDTO.getPrefixNumber());
         }
-        if (null == searchNumberRuleDTO.getNextNumber()){
+        if (null != searchNumberRuleDTO.getNextNumber()){
             entityWrapper.like("next_number", searchNumberRuleDTO.getNextNumber().toString());
         }
-        if (null == searchNumberRuleDTO.getRuleType()){
+        if (null != searchNumberRuleDTO.getRuleType()){
             entityWrapper.like("rule_type", searchNumberRuleDTO.getRuleType().toString());
         }
         // 查询总条数
         int total = numberRuleMapper.selectCount(entityWrapper);
         if (0 != total) {
             Page page = new Page(searchNumberRuleDTO.getPage(), searchNumberRuleDTO.getRows());
-            List<NumberRule> nmberRuleList = numberRuleMapper.selectPage(page, entityWrapper);
-            if (null != nmberRuleList && 0 != nmberRuleList.size()) {
+            List<NumberRule> numberRuleList = numberRuleMapper.selectPage(page, entityWrapper);
+            if (null != numberRuleList && 0 != numberRuleList.size()) {
                 // 通过Java8 Stream流操作语法糖  将投诉实体集合翻译为VO集合
-                List<NumberRuleVO> complaintVOList = nmberRuleList.stream().map(this::transferNumberRuleVO).collect(Collectors.toList());
+                List<NumberRuleVO> complaintVOList = numberRuleList.stream().map(this::transferNumberRuleVO).collect(Collectors.toList());
                 return new ListVO<>(total, page, complaintVOList);
             }
         }
