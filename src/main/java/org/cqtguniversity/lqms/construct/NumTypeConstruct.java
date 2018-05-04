@@ -10,5 +10,13 @@ public class NumTypeConstruct {
      * 投诉编号
      */
     public static final String COMPLAINTNO = "complaintNo";
+    /**
+     * 设备编号
+     */
+    public static final String DEVICENO = "deviceNo";
+    /**
+     * 文件编号
+     */
+    public static final String FILENO = "fileNo";
 
 }

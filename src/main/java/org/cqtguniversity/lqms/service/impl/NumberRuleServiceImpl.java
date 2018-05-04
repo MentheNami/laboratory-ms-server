@@ -2,8 +2,8 @@ package org.cqtguniversity.lqms.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.cqtguniversity.lqms.construct.NumStructureConstruct;
-import org.cqtguniversity.lqms.entity.Complaint;
 import org.cqtguniversity.lqms.entity.NumberRule;
 import org.cqtguniversity.lqms.mapper.NumberRuleMapper;
 import org.cqtguniversity.lqms.pojo.dto.numberrule.SaveNumberRuleDTO;
@@ -11,14 +11,12 @@ import org.cqtguniversity.lqms.pojo.dto.numberrule.SearchNumberRuleDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 import org.cqtguniversity.lqms.pojo.vo.DetailResultVO;
 import org.cqtguniversity.lqms.pojo.vo.ListVO;
-import org.cqtguniversity.lqms.pojo.vo.complaint.ComplaintVO;
 import org.cqtguniversity.lqms.pojo.vo.config.KeyAndValueVO;
 import org.cqtguniversity.lqms.pojo.vo.numberrule.NumberRuleVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ParamErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.SuccessVO;
 import org.cqtguniversity.lqms.service.NumberRuleService;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.cqtguniversity.lqms.util.ConfigOptionConstruct;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,11 +47,6 @@ public class NumberRuleServiceImpl extends ServiceImpl<NumberRuleMapper, NumberR
         this.numberRuleMapper = numberRuleMapper;
     }
 
-    private String transferRuleType(Long id) {
-        // 通过ConfigOptionConstruct获取配置选项KeyAndValue中的Value
-        return ConfigOptionConstruct.getOptionById(id).getValue();
-    }
-
     private NumberRuleVO transferNumberRuleVO(NumberRule numberRule) {
         //创建一个编号规则VO
         NumberRuleVO  numberRuleVO = new NumberRuleVO();
@@ -71,15 +64,13 @@ public class NumberRuleServiceImpl extends ServiceImpl<NumberRuleMapper, NumberR
         return numberRuleVO;
     }
 
-    @Override
-    public String getNum(String NumType) {
-        Assert.notNull(NumType, "NumType Option id must is not null");
+    private String getPrefix(String numType, String type) {
         // 查询数据库中所有编号规则
         List<NumberRule> numberRuleList = numberRuleMapper.selectList(new EntityWrapper<>());
         // 转换为一个ruleType(Long) 对应一个规则
         Map<Long, NumberRule> ruleMap = numberRuleList.stream().collect(Collectors.toMap(NumberRule::getRuleType, Function.identity()));
         // 通过编号类型查找ID
-        Long rule_id = ConfigOptionConstruct.getOptionIdByValue(NumType);
+        Long rule_id = ConfigOptionConstruct.getOptionIdByValue(numType);
         // 通过id查找编号规则对象
         NumberRule numberRule = ruleMap.get(rule_id);
         // 获取编号规则对象中的前缀编号
@@ -106,15 +97,27 @@ public class NumberRuleServiceImpl extends ServiceImpl<NumberRuleMapper, NumberR
             // 更新这个实体对应的记录
             numberRule.updateById();
         }
-        // 包含版本规则
-        if (prefix.contains(NumStructureConstruct.VERSION)) {
-            prefix = prefix.replace(NumStructureConstruct.VERSION, "" + decimalFormat.format(numberRule.getNextNumber()));
-            // 下一个编号自加2 (代表不同规则)
-            numberRule.setNextNumber(numberRule.getNextNumber() + 2);
-            // 更新这个实体对应的记录
-            numberRule.updateById();
+        // 携带的类型不为null
+        if (null != type) {
+            // 包含类型规则
+            if (prefix.contains(NumStructureConstruct.TYPE)) {
+                prefix = prefix.replace(NumStructureConstruct.TYPE, "" + type);
+            }
         }
         return prefix;
+    }
+
+    @Override
+    public String getNum(String numType) {
+        Assert.notNull(numType, "NumType Option id must is not null");
+        return getPrefix(numType, null);
+    }
+
+    @Override
+    public String getNum(String numType, String type) {
+        Assert.notNull(numType, "NumType Option id must is not null");
+        Assert.notNull(type, "NumType Option id must is not null");
+        return getPrefix(numType, type);
     }
 
     @Override

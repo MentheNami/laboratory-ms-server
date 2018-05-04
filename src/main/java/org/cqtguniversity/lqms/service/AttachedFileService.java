@@ -2,6 +2,7 @@ package org.cqtguniversity.lqms.service;
 
 import org.cqtguniversity.lqms.entity.AttachedFile;
 import com.baomidou.mybatisplus.service.IService;
+import org.cqtguniversity.lqms.pojo.dto.file.SaveAttachedFileDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,5 +16,5 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface AttachedFileService extends IService<AttachedFile> {
 
-    BaseVO uploadAttachedFile(MultipartFile multipartFile);
+    BaseVO uploadAttachedFile(MultipartFile multipartFile, SaveAttachedFileDTO saveAttachedFileDTO);
 }

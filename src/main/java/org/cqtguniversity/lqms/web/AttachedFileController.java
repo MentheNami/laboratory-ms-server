@@ -3,6 +3,8 @@ package org.cqtguniversity.lqms.web;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.cqtguniversity.lqms.entity.AttachedFile;
+import org.cqtguniversity.lqms.pojo.dto.file.SaveAttachedFileDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 import org.cqtguniversity.lqms.service.AttachedFileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +28,9 @@ public class AttachedFileController {
     private AttachedFileService attachedFileService;
 
     @ApiOperation(value = "上传文件")
-    @PostMapping(value = "/uploadFile")
-    public BaseVO uploadFile(MultipartFile multipartFile){
-        return attachedFileService.uploadAttachedFile(multipartFile);
+    @PostMapping(value = "/uploadAttachedFile")
+    public BaseVO uploadAttachedFile(MultipartFile multipartFile, SaveAttachedFileDTO saveAttachedFileDTO){
+        return attachedFileService.uploadAttachedFile(multipartFile, saveAttachedFileDTO);
     }
 	
 }

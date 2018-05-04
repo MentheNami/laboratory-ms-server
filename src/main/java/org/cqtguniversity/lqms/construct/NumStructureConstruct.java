@@ -32,10 +32,10 @@ public class NumStructureConstruct {
     /**
      * 版本
      */
-    public static final String VERSION = "{VERSION}";
+    public static final String TYPE = "{TYPE}";
 
     /**
      * 创建字符串集合，包含所有结构
      */
-    public static final List<String> PREFIX_LIST = Arrays.asList(YEAR, MONTH, DAY, NUM, VERSION);
+    public static final List<String> PREFIX_LIST = Arrays.asList(YEAR, MONTH, DAY, NUM, TYPE);
 }

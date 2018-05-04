@@ -1,12 +1,16 @@
 package org.cqtguniversity.lqms.service.impl;
 
+import org.cqtguniversity.lqms.construct.NumTypeConstruct;
 import org.cqtguniversity.lqms.entity.AttachedFile;
 import org.cqtguniversity.lqms.mapper.AttachedFileMapper;
+import org.cqtguniversity.lqms.pojo.dto.file.SaveAttachedFileDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 import org.cqtguniversity.lqms.pojo.vo.DetailResultVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ErrorVO;
 import org.cqtguniversity.lqms.service.AttachedFileService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import org.cqtguniversity.lqms.service.NumberRuleService;
+import org.cqtguniversity.lqms.util.ConfigOptionConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -30,18 +34,22 @@ public class AttachedFileServiceImpl extends ServiceImpl<AttachedFileMapper, Att
 
     private final AttachedFileMapper attachedFileMapper;
 
+    private final NumberRuleService numberRuleService;
+
     @Value("${file.uploadAndDownload.pathHead}")
     private String pathHead;
 
     @Autowired
-    public AttachedFileServiceImpl(AttachedFileMapper attachedFileMapper) {
+    public AttachedFileServiceImpl(AttachedFileMapper attachedFileMapper, NumberRuleService numberRuleService) {
         this.attachedFileMapper = attachedFileMapper;
+        this.numberRuleService = numberRuleService;
     }
 
     @Override
-    public BaseVO uploadAttachedFile(MultipartFile multipartFile) {
+    public BaseVO uploadAttachedFile(MultipartFile multipartFile, SaveAttachedFileDTO saveAttachedFileDTO) {
         // 获取上传文件的名字（包括后缀名）
         String fileName = multipartFile.getOriginalFilename();
+        assert fileName != null;
         // 截取文件名字 (第一个字符到最后一个“.”之前)
         String name = fileName.substring(0, fileName.lastIndexOf("."));
         // 截取文件类型（即）后缀名，包括“.”
@@ -76,6 +84,8 @@ public class AttachedFileServiceImpl extends ServiceImpl<AttachedFileMapper, Att
             attachedFile.setGmtCreate(calendar.getTime());
             attachedFile.setGmtModified(calendar.getTime());
             attachedFile.setFileExtension(extension);
+            attachedFile.setFileType(saveAttachedFileDTO.getFileType());
+            attachedFile.setFileNo(numberRuleService.getNum(NumTypeConstruct.FILENO, ConfigOptionConstruct.getOptionById(saveAttachedFileDTO.getFileType()).getValue()));
             attachedFileMapper.insert(attachedFile);
             return new DetailResultVO(null);
         } catch (IllegalStateException | IOException e) {

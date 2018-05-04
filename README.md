@@ -13,3 +13,8 @@
 
 开发要点：
 pojo-> vo(view object) dto(data transfer object) 
+
+
+# 目录介绍（重要）：
+
+* pojo ： SaveXXXXXXDTO: 对象添加或更新，即保存信息时使用的DTO。

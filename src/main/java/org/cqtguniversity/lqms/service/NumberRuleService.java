@@ -16,7 +16,9 @@ import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 public interface NumberRuleService extends IService<NumberRule> {
 
     // 获取一个编号规则根据类型
-    String getNum(String NumType);
+    String getNum(String numType);
+    // 获取一个携带类型的编号规则根据类
+    String getNum(String numType, String type);
     //增加编号规则
     BaseVO addNumberRule(SaveNumberRuleDTO saveNumberRuleDTO);
     // 删除实验室通过IDS
