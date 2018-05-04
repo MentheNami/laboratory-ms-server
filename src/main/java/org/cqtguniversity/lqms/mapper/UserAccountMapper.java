@@ -14,5 +14,4 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserAccountMapper extends BaseMapper<UserAccount> {
-
 }

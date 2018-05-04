@@ -48,6 +48,7 @@ public class ComplaintController {
     public BaseVO removeById(Long id) {
         return complaintService.removeById(id);
     }
+
     @ApiOperation(value = "更新投诉")
     @PostMapping(value = "/updateComplaint")
     public BaseVO updateComplaint(SaveComplaintDTO saveComplaintDTO){

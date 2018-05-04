@@ -1,20 +1,163 @@
 package org.cqtguniversity.lqms.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import io.swagger.annotations.ApiOperation;
+import jdk.tools.jlink.internal.Archive;
 import org.cqtguniversity.lqms.entity.UserAccount;
+import org.cqtguniversity.lqms.entity.UserInfo;
 import org.cqtguniversity.lqms.mapper.UserAccountMapper;
+import org.cqtguniversity.lqms.pojo.dto.useraccount.SaveUserAccountDTO;
+import org.cqtguniversity.lqms.pojo.dto.useraccount.SearchUserAccountDTO;
+import org.cqtguniversity.lqms.pojo.vo.BaseVO;
+import org.cqtguniversity.lqms.pojo.vo.DetailResultVO;
+import org.cqtguniversity.lqms.pojo.vo.ListVO;
+import org.cqtguniversity.lqms.pojo.vo.result.ErrorVO;
+import org.cqtguniversity.lqms.pojo.vo.result.ParamErrorVO;
+import org.cqtguniversity.lqms.pojo.vo.result.SuccessVO;
+import org.cqtguniversity.lqms.pojo.vo.useraccount.SimpleUserAccountVO;
+import org.cqtguniversity.lqms.pojo.vo.useraccount.UserAccountVO;
+import org.cqtguniversity.lqms.pojo.vo.userinfo.SimpleUserInfoVO;
 import org.cqtguniversity.lqms.service.UserAccountService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import org.hibernate.metamodel.internal.EntityTypeImpl;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * <p>
  * 用户账户表 服务实现类
- * </p>
- *
- * @author TangShengYu
+ * @author Wang26211
  * @since 2018-05-01
  */
 @Service
 public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserAccount> implements UserAccountService {
-	
+   //引用用户账户
+    private final UserAccountMapper userAccountMapper;
+    //注入用户账户
+    @Autowired
+    public UserAccountServiceImpl(UserAccountMapper userAccountMapper) {
+        this.userAccountMapper = userAccountMapper;
+    }
+
+    /**
+     * 将用户实体翻译成为对应的VO
+     * @param userAccount
+     * @return
+     */
+    private SimpleUserAccountVO transferSimpleUserAccountVO (UserAccount userAccount) {
+        // 创建实验室VO
+        SimpleUserAccountVO simpleUserAccountVO= new SimpleUserAccountVO();
+        // 封装属性
+        simpleUserAccountVO.setId(userAccount.getId());
+        simpleUserAccountVO.setQuestion(userAccount.getQuestion());
+        simpleUserAccountVO.setUserName(userAccount.getUserName());
+        return  simpleUserAccountVO;
+    }
+    @Override
+    public BaseVO addUserAccount(SaveUserAccountDTO saveUserAccountDTO) {
+       //合理性判断
+        if(null != saveUserAccountDTO.getId() || StringUtils.isEmpty(saveUserAccountDTO.getUserName())
+        || StringUtils.isEmpty(saveUserAccountDTO.getUserPassword())||StringUtils.isEmpty(saveUserAccountDTO.getAnswer())
+        || StringUtils.isEmpty(saveUserAccountDTO.getQuestion())){
+         return ParamErrorVO.getInstance();
+        }
+        //合理性通过
+        UserAccount userAccount = new UserAccount();
+        //复制基本信息，忽略id
+        BeanUtils.copyProperties(saveUserAccountDTO, userAccount,"id");
+        //设置生成时间
+        userAccount.setGmtCreate(Calendar.getInstance().getTime());
+        //设置修改时间
+        userAccount.setGmtModified(Calendar.getInstance().getTime());
+       //插入数据
+        userAccountMapper.insert(userAccount);
+        return SuccessVO.getInstance();
+    }
+
+    @Override
+    public BaseVO removeByIds(Long[] Ids) {
+        //合理性判断
+        if(null == Ids){
+            return ParamErrorVO.getInstance();
+        }
+        //合理性通过
+        List<Long> tempIds = Arrays.asList(Ids);
+        //通过Id删除用户账户,直接删除
+        userAccountMapper.deleteBatchIds(tempIds);
+        return SuccessVO.getInstance();
+
+    }
+
+    @Override
+    public BaseVO updateUserAccount(SaveUserAccountDTO saveUserAccountDTO) {
+       //合理性判断
+        if (null == saveUserAccountDTO.getId()|| StringUtils.isEmpty(saveUserAccountDTO.getUserName())
+                || StringUtils.isEmpty(saveUserAccountDTO.getUserPassword())
+                || StringUtils.isEmpty(saveUserAccountDTO.getQuestion())
+                || StringUtils.isEmpty(saveUserAccountDTO.getAnswer())){
+            return ParamErrorVO.getInstance();
+        }
+        //合理性通过查询用户账户是否存在
+         UserAccount userAccount = userAccountMapper.selectById(saveUserAccountDTO.getId());
+        //如果用户账户为空或者用户标记为1
+        if (null == userAccount || 1 == userAccount.getId()){
+            return new ErrorVO("用户账户不存");
+        }
+        //复制基本信息
+        BeanUtils.copyProperties(saveUserAccountDTO, userAccount,"gmtCreate","gmt_modified");
+        return SuccessVO.getInstance();
+    }
+
+    @Override
+    public BaseVO selectById(Long id) {
+        //合理性判断
+        if(null == id){
+            //返回前端逻辑错误
+            return ParamErrorVO.getInstance();
+        }
+        //判断用户账户是否存
+        UserAccount userAccount = userAccountMapper.selectById(id);
+        if(userAccount == null ){
+            return new ErrorVO("用户投诉不存在");
+        }
+        UserAccountVO userAccountVO = new UserAccountVO();
+        //复制基本信息除了创建时间、修改时间
+        BeanUtils.copyProperties(userAccount, userAccountVO, "gmtCreate", "gmt_modified");
+        return new DetailResultVO(userAccountVO);
+    }
+
+    @Override
+    public BaseVO getUserAccountList(SearchUserAccountDTO searchUserAccountDTO) {
+        //合理性判断
+        if (!searchUserAccountDTO.isLegitimate()){
+            return ParamErrorVO.getInstance();
+        }
+        EntityWrapper<UserAccount> entityWrapper = new EntityWrapper<>();
+        //增加模糊查询
+        if (!StringUtils.isEmpty(searchUserAccountDTO.getQuestion())){
+             entityWrapper.like("question",searchUserAccountDTO.getQuestion());
+        }
+        if(!StringUtils.isEmpty(searchUserAccountDTO.getUserName())){
+            entityWrapper.like("user_name",searchUserAccountDTO.getUserName());
+        }
+        int total = userAccountMapper.selectCount(entityWrapper);
+        if (0 != total){
+            Page page = new Page(searchUserAccountDTO.getPage(),searchUserAccountDTO.getRows());
+            List<UserAccount> userAccountList = userAccountMapper.selectPage(page, entityWrapper);
+            if (null != userAccountList && 0 != userAccountList.size()){
+                //通过Java8 Stream流语法糖 将用户实体集合翻译为VO集合
+                List<SimpleUserAccountVO> simpleUserInfoVOList=userAccountList.stream().map(this::transferSimpleUserAccountVO).collect(Collectors.toList());
+                return new ListVO<>(simpleUserInfoVOList);
+            }
+        }
+        return new ListVO<>(new ArrayList<>());
+    }
 }

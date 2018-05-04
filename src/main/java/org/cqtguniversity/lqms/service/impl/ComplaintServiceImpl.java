@@ -77,7 +77,7 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
         }
         //合理性通过
         Complaint complaint = new Complaint();
-        //复制投诉基本信息
+        //复制投诉基本信息，忽略id
         BeanUtils.copyProperties(saveComplaintDTO, complaint, "id");
         // 设置一个自动生成的投诉编号
         complaint.setComplaintNo(numberRuleService.getNum(NumTypeConstruct.COMPLAINTNO));
@@ -132,6 +132,7 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
         BeanUtils.copyProperties(saveComplaintDTO, complaint);
         //创建当前修改时间
         complaint.setGmtModified(Calendar.getInstance().getTime());
+        //插入数据
         complaintMapper.updateById(complaint);
         return SuccessVO.getInstance();
     }
@@ -143,6 +144,7 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
             //返回前端逻辑错误
             return ParamErrorVO.getInstance();
         }
+        //判断投诉是否存在
         Complaint complaint = complaintMapper.selectById(id);
         if (complaint == null || 1 == complaint.getIsDeleted()) {
             return new ErrorVO("投诉不存在");
@@ -181,8 +183,8 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
             List<Complaint> complaintsList = complaintMapper.selectPage(page, entityWrapper);
             if (null != complaintsList && 0 != complaintsList.size()) {
                 // 通过Java8 Stream流操作语法糖  将投诉实体集合翻译为VO集合
-                List<SimpleComplaintVO> simpleComplaintVOS = complaintsList.stream().map(this::transferSimpleComplaintVO).collect(Collectors.toList());
-                return new ListVO<>(total, page, complaintsList);
+                List<SimpleComplaintVO> simpleComplaintVOS= complaintsList.stream().map(this::transferSimpleComplaintVO).collect(Collectors.toList());
+                return new ListVO<>(total, page, simpleComplaintVOS);
             }
         }
         return new ListVO<>(0, searchComplaintDTO.getPage(), searchComplaintDTO.getRows(), new ArrayList<>());
