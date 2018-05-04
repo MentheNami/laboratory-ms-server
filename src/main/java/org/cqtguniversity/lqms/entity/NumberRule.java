@@ -11,10 +11,7 @@ import com.baomidou.mybatisplus.annotations.TableName;
 import java.io.Serializable;
 
 /**
- * <p>
  * 编号规则
- * </p>
- *
  * @author Wang26211
  * @since 2018-04-30
  */

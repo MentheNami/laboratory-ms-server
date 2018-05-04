@@ -12,6 +12,7 @@ import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 import org.cqtguniversity.lqms.pojo.vo.DetailResultVO;
 import org.cqtguniversity.lqms.pojo.vo.ListVO;
 import org.cqtguniversity.lqms.pojo.vo.complaint.ComplaintVO;
+import org.cqtguniversity.lqms.pojo.vo.complaint.SimpleComplaintVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ParamErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.SuccessVO;
@@ -55,13 +56,13 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
      * @param complaint 投诉实体
      * @return 相应VO
      */
-    private ComplaintVO transferComplaintVO(Complaint complaint) {
+    private SimpleComplaintVO transferSimpleComplaintVO(Complaint complaint) {
         // 创建实验室VO
-        ComplaintVO complaintVO = new ComplaintVO();
+        SimpleComplaintVO simpleComplaintVO = new SimpleComplaintVO();
         // 复制基本信息
-        BeanUtils.copyProperties(complaint, complaintVO, "complainantStatus");
-        complaintVO.setComplainantStatus(complaint.getComplainantStatus() == 0? "未受理" : "已受理");
-        return complaintVO;
+        BeanUtils.copyProperties(complaint, simpleComplaintVO, "complainantStatus");
+        simpleComplaintVO.setComplainantStatus(complaint.getComplainantStatus() == 0? "未受理" : "已受理");
+        return simpleComplaintVO;
     }
 
     @Override
@@ -180,8 +181,8 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
             List<Complaint> complaintsList = complaintMapper.selectPage(page, entityWrapper);
             if (null != complaintsList && 0 != complaintsList.size()) {
                 // 通过Java8 Stream流操作语法糖  将投诉实体集合翻译为VO集合
-                List<ComplaintVO> complaintVOList = complaintsList.stream().map(this::transferComplaintVO).collect(Collectors.toList());
-                return new ListVO<>(total, page, complaintVOList);
+                List<SimpleComplaintVO> simpleComplaintVOS = complaintsList.stream().map(this::transferSimpleComplaintVO).collect(Collectors.toList());
+                return new ListVO<>(total, page, complaintsList);
             }
         }
         return new ListVO<>(0, searchComplaintDTO.getPage(), searchComplaintDTO.getRows(), new ArrayList<>());

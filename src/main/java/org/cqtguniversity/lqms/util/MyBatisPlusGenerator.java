@@ -33,7 +33,7 @@ public class MyBatisPlusGenerator {
         gc.setEnableCache(false);// XML 二级缓存
         gc.setBaseResultMap(true);// XML ResultMap
         gc.setBaseColumnList(false);// XML columList
-        gc.setAuthor("TangShengYu");
+        gc.setAuthor("Wang26211");
 
         // 自定义文件命名，注意 %s 会自动填充表实体属性！
         gc.setServiceName("%sService");
@@ -63,7 +63,7 @@ public class MyBatisPlusGenerator {
         strategy.setTablePrefix(new String[]{""});// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
         //strategy.setInclude(new String[]{"attached_group", "common_content", "complain", "complaint_accept", "config_option_detail", "config_option_group", "department", "device", "device_program", "education_record", "file", "laboratory", "number_rule", "role", "task_info", "user_info", "work_record"}); // 需要生成的表
-        strategy.setInclude(new String[]{"user_info", "user_node", "user_account", "role_module", "module"}); // 需要生成的表
+        strategy.setInclude(new String[]{"attached_file"}); // 需要生成的表
         mpg.setStrategy(strategy);
 
         // 包配置

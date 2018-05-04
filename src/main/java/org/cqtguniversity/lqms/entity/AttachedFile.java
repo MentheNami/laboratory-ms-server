@@ -15,11 +15,11 @@ import java.io.Serializable;
  * 文件表
  * </p>
  *
- * @author TangShengYu
- * @since 2018-04-30
+ * @author Wang26211
+ * @since 2018-05-04
  */
-@TableName("file")
-public class File extends Model<File> {
+@TableName("attached_file")
+public class AttachedFile extends Model<AttachedFile> {
 
     private static final long serialVersionUID = 1L;
 
@@ -38,9 +38,9 @@ public class File extends Model<File> {
      */
 	@TableField("gmt_modified")
 	private Date gmtModified;
-	/**
-	 * 文件编号
-	 */
+    /**
+     * 文件编号
+     */
 	@TableField("file_no")
 	private String fileNo;
     /**
@@ -149,7 +149,7 @@ public class File extends Model<File> {
 
 	@Override
 	public String toString() {
-		return "File{" +
+		return "AttachedFile{" +
 			"id=" + id +
 			", gmtCreate=" + gmtCreate +
 			", gmtModified=" + gmtModified +
