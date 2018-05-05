@@ -2,10 +2,8 @@ package org.cqtguniversity.lqms.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import io.swagger.annotations.ApiOperation;
-import jdk.tools.jlink.internal.Archive;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.cqtguniversity.lqms.entity.UserAccount;
-import org.cqtguniversity.lqms.entity.UserInfo;
 import org.cqtguniversity.lqms.mapper.UserAccountMapper;
 import org.cqtguniversity.lqms.pojo.dto.useraccount.SaveUserAccountDTO;
 import org.cqtguniversity.lqms.pojo.dto.useraccount.SearchUserAccountDTO;
@@ -17,10 +15,7 @@ import org.cqtguniversity.lqms.pojo.vo.result.ParamErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.SuccessVO;
 import org.cqtguniversity.lqms.pojo.vo.useraccount.SimpleUserAccountVO;
 import org.cqtguniversity.lqms.pojo.vo.useraccount.UserAccountVO;
-import org.cqtguniversity.lqms.pojo.vo.userinfo.SimpleUserInfoVO;
 import org.cqtguniversity.lqms.service.UserAccountService;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import org.hibernate.metamodel.internal.EntityTypeImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,7 +34,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserAccount> implements UserAccountService {
-   //引用用户账户
+
+    //引用用户账户
     private final UserAccountMapper userAccountMapper;
     //注入用户账户
     @Autowired
@@ -61,14 +57,29 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
         simpleUserAccountVO.setUserName(userAccount.getUserName());
         return  simpleUserAccountVO;
     }
+
+    private boolean isUnique(String userName) {
+        EntityWrapper<UserAccount> entityWrapper = new EntityWrapper<>();
+        entityWrapper.where("user_name", userName);
+        int total = userAccountMapper.selectCount(entityWrapper);
+        return 0 == total;
+    }
+
     @Override
     public BaseVO addUserAccount(SaveUserAccountDTO saveUserAccountDTO) {
        //合理性判断
         if(null != saveUserAccountDTO.getId() || StringUtils.isEmpty(saveUserAccountDTO.getUserName())
-        || StringUtils.isEmpty(saveUserAccountDTO.getUserPassword())||StringUtils.isEmpty(saveUserAccountDTO.getAnswer())
-        || StringUtils.isEmpty(saveUserAccountDTO.getQuestion())){
+        || StringUtils.isEmpty(saveUserAccountDTO.getUserPassword()) || StringUtils.isEmpty(saveUserAccountDTO.getCellPhone())){
          return ParamErrorVO.getInstance();
         }
+
+        // 检验用户名是否唯一
+        if (!isUnique(saveUserAccountDTO.getUserName())) {
+            return new ErrorVO("用户名已存在");
+        }
+
+        // 获取一个用户节点记录
+
         //合理性通过
         UserAccount userAccount = new UserAccount();
         //复制基本信息，忽略id
@@ -100,9 +111,7 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
     public BaseVO updateUserAccount(SaveUserAccountDTO saveUserAccountDTO) {
        //合理性判断
         if (null == saveUserAccountDTO.getId()|| StringUtils.isEmpty(saveUserAccountDTO.getUserName())
-                || StringUtils.isEmpty(saveUserAccountDTO.getUserPassword())
-                || StringUtils.isEmpty(saveUserAccountDTO.getQuestion())
-                || StringUtils.isEmpty(saveUserAccountDTO.getAnswer())){
+                || StringUtils.isEmpty(saveUserAccountDTO.getUserPassword())){
             return ParamErrorVO.getInstance();
         }
         //合理性通过查询用户账户是否存在

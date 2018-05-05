@@ -19,17 +19,13 @@ public class SaveUserAccountDTO extends BaseDTO {
      */
     private String userName;
     /**
+     * 手机号
+     */
+    private String cellPhone;
+    /**
      * 密码
      */
     private String userPassword;
-    /**
-     * 密保问题
-     */
-    private String question;
-    /**
-     * 密保答案
-     */
-    private String answer;
 
     public Long getId() {
         return id;
@@ -47,38 +43,29 @@ public class SaveUserAccountDTO extends BaseDTO {
         this.userName = userName;
     }
 
+    public String getCellPhone() {
+        return cellPhone;
+    }
+
+    public void setCellPhone(String cellPhone) {
+        this.cellPhone = cellPhone;
+    }
+
     public String getUserPassword() {
         return userPassword;
     }
 
-    public void setUserPassword(String  userPassword) {
+    public void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
-    }
-
-    public String getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(String question) {
-        this.question = question;
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
     }
 
     @Override
     public String toString() {
-        return super.toString() + "SaveUserAccountDTO{" +
+        return "SaveUserAccountDTO{" +
                 "id=" + id +
                 ", userName='" + userName + '\'' +
+                ", cellPhone='" + cellPhone + '\'' +
                 ", userPassword='" + userPassword + '\'' +
-                ", question='" + question + '\'' +
-                ", answer='" + answer + '\'' +
                 '}';
     }
 }

@@ -12,5 +12,7 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-05-01
  */
 public interface UserNodeService extends IService<UserNode> {
-	
+
+    void getUserNode(String cellPhone, Long userAccountId);
+
 }

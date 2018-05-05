@@ -42,6 +42,13 @@
 			<artifactId>spring-boot-starter-activemq</artifactId>
 		</dependency>
 
+		<!--cellPhone Verification code-->
+		<dependency>
+			<groupId>com.taobao</groupId>
+			<artifactId>alidayu</artifactId>
+			<version>1.0</version>
+		</dependency>
+
 		<!--Database version control-->
 		<dependency>
 			<groupId>org.flywaydb</groupId>
@@ -114,7 +121,6 @@
 			<artifactId>commons-io</artifactId>
 			<version>1.3.2</version>
 		</dependency>
-
 	</dependencies>
 
 	<build>

@@ -19,6 +19,7 @@ import org.cqtguniversity.lqms.service.UserInfoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
@@ -54,6 +55,20 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         simpleUserInfoVO.setEmail(userInfo.getEmail());
         simpleUserInfoVO.setRealName(userInfo.getRealName() );
         return  simpleUserInfoVO;
+    }
+
+    @Override
+    public Long getUserInfo(String cellPhone) {
+        // 断言传入的cellPhone必须不为空
+        Assert.notNull(cellPhone, "cellPhone must is not null");
+        UserInfo userInfo = new UserInfo();
+        userInfo.setCellPhone(cellPhone);
+        Calendar calendar = Calendar.getInstance();
+        userInfo.setGmtCreated(calendar.getTime());
+        userInfo.setGmtModified(calendar.getTime());
+        userInfo.setIsDeleted(0);
+        userInfoMapper.insert(userInfo);
+        return userInfo.getId();
     }
 
     @Override

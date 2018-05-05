@@ -14,6 +14,10 @@ import org.cqtguniversity.lqms.pojo.vo.BaseVO;
  * @since 2018-05-01
  */
 public interface UserInfoService extends IService<UserInfo> {
+
+    // 获取一个用户信息
+    Long getUserInfo(String cellPhone);
+
 	//增加用户
     BaseVO addUserInfo (SaveUserInfoDTO saveUserInfoDTO);
     //删除用户通过IDS

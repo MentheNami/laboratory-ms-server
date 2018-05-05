@@ -15,6 +15,7 @@ import org.cqtguniversity.lqms.pojo.vo.BaseVO;
  * @since 2018-05-01
  */
 public interface UserAccountService extends IService<UserAccount> {
+
 	//增加用户账户
     BaseVO addUserAccount (SaveUserAccountDTO saveUserAccountDTO);
     //删除用户账户通过IDS
