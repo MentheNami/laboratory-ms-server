@@ -1,7 +1,8 @@
 package org.cqtguniversity.lqms.service;
 
-import org.cqtguniversity.lqms.entity.Laboratory;
 import com.baomidou.mybatisplus.service.IService;
+import org.cqtguniversity.lqms.entity.Laboratory;
+import org.cqtguniversity.lqms.pojo.dto.laboratory.LaboratoryDTO;
 import org.cqtguniversity.lqms.pojo.dto.laboratory.SaveLaboratoryDTO;
 import org.cqtguniversity.lqms.pojo.dto.laboratory.SearchLaboratoryDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
@@ -27,6 +28,8 @@ public interface LaboratoryService extends IService<Laboratory> {
 
     // 查询实验室详情
     BaseVO selectById(Long id);
+
+    LaboratoryDTO selectLaboratoryDTO(Long id);
 
     // 获取实验室列表
     BaseVO getLaboratoryList(SearchLaboratoryDTO searchLaboratoryDTO);

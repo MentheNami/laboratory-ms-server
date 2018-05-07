@@ -25,6 +25,8 @@ public interface DeviceService extends IService<Device> {
     // 查询设备信息详情
     BaseVO selectById(Long id);
 
+    BaseVO selectDetail(Long id);
+
     // 查询设备信息列表
 	BaseVO getDeviceList(SearchDeviceDTO searchDeviceDTO);
 }

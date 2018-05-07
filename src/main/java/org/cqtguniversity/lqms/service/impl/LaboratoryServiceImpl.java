@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import org.cqtguniversity.lqms.entity.Laboratory;
 import org.cqtguniversity.lqms.mapper.LaboratoryMapper;
+import org.cqtguniversity.lqms.pojo.dto.laboratory.LaboratoryDTO;
 import org.cqtguniversity.lqms.pojo.dto.laboratory.SaveLaboratoryDTO;
 import org.cqtguniversity.lqms.pojo.dto.laboratory.SearchLaboratoryDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
@@ -20,6 +21,7 @@ import org.cqtguniversity.lqms.util.ConfigOptionConstruct;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -64,6 +66,11 @@ public class LaboratoryServiceImpl extends ServiceImpl<LaboratoryMapper, Laborat
         laboratoryVO.setIsAutonomy(laboratory.getIsAutonomy() == 0 ? "否" : "是");
         laboratoryVO.setFloor(ConfigOptionConstruct.getOptionById(laboratory.getFloor()).getKey());
         return laboratoryVO;
+    }
+
+    private Laboratory selectLaboratory(Long id) {
+        Assert.notNull(id, "id must is not null");
+        return laboratoryMapper.selectById(id);
     }
 
     @Override
@@ -155,6 +162,14 @@ public class LaboratoryServiceImpl extends ServiceImpl<LaboratoryMapper, Laborat
         // 基本信息复制
         BeanUtils.copyProperties(laboratory, laboratoryVO, "gmtCreate", "gmt_modified", "isDeleted");
         return new DetailResultVO(laboratoryVO);
+    }
+
+    @Override
+    public LaboratoryDTO selectLaboratoryDTO(Long id) {
+        Laboratory laboratory = selectLaboratory(id);
+        LaboratoryDTO laboratoryDTO = new LaboratoryDTO();
+        BeanUtils.copyProperties(laboratory, laboratoryDTO);
+        return laboratoryDTO;
     }
 
     @Override

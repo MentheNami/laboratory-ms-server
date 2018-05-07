@@ -1,20 +1,19 @@
 package org.cqtguniversity.lqms.web;
 
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.cqtguniversity.lqms.pojo.dto.complaint.SaveComplaintDTO;
+import org.cqtguniversity.lqms.pojo.dto.divece.SaveDeviceDTO;
+import org.cqtguniversity.lqms.pojo.dto.divece.SearchDeviceDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 import org.cqtguniversity.lqms.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 设备表 前端控制器
+ *
  * @author TangShengYu
  * @since 2018-04-30
  */
@@ -32,9 +31,39 @@ public class DeviceController {
         this.deviceService = deviceService;
     }
 
-    //@ApiOperation(value = "新增设备")
-    //@PostMapping(value = "/addComplaint")
-    //public BaseVO addComplaint(SaveComplaintDTO saveComplaintDTO) {
-    //    return deviceService.addComplaint(saveComplaintDTO);
-    //}
+    @ApiOperation(value = "新增设备")
+    @PostMapping(value = "/addDevice")
+    public BaseVO addDevice(SaveDeviceDTO saveDeviceDTO) {
+        return deviceService.addDevice(saveDeviceDTO);
+    }
+
+    @ApiOperation(value = "批量删除设备")
+    @PostMapping(value = "/removeByIds")
+    public BaseVO removeByIds(Long[] ids) {
+        return deviceService.removeByIds(ids);
+    }
+
+    @ApiOperation(value = "更新设备")
+    @PostMapping(value = "/updateDevice")
+    public BaseVO updateDevice(SaveDeviceDTO saveDeviceDTO) {
+        return deviceService.updateDevice(saveDeviceDTO);
+    }
+
+    @ApiOperation(value = "选择一个设备（用于修改）")
+    @PostMapping(value = "/selectById")
+    public BaseVO selectById(Long id) {
+        return deviceService.selectById(id);
+    }
+
+    @ApiOperation(value = "获取设备详情")
+    @PostMapping(value = "/selectDetail")
+    public BaseVO selectDetail(Long id) {
+        return deviceService.selectDetail(id);
+    }
+
+    @ApiOperation(value = "获取设备列表")
+    @PostMapping(value = "/getDeviceList")
+    public BaseVO getDeviceList(SearchDeviceDTO saveDeviceDTO) {
+        return deviceService.getDeviceList(saveDeviceDTO);
+    }
 }
