@@ -13,4 +13,10 @@
 		<result column="department_id" property="departmentId" />
 	</resultMap>
 
+	<select id="selectByUserId" resultMap="BaseResultMap">
+		select id, gmt_created, gmt_modified, user_id, info_id, role_id, department_id
+		from user_node
+		where user_id = #{userId};
+	</select>
+
 </mapper>

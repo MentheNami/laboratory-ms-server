@@ -7,6 +7,7 @@ import org.cqtguniversity.lqms.entity.UserInfo;
 import org.cqtguniversity.lqms.mapper.UserInfoMapper;
 import org.cqtguniversity.lqms.pojo.dto.userinfo.SaveUserInfoDTO;
 import org.cqtguniversity.lqms.pojo.dto.userinfo.SearchUserInfoDTO;
+import org.cqtguniversity.lqms.pojo.dto.userinfo.UserInfoDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 import org.cqtguniversity.lqms.pojo.vo.DetailResultVO;
 import org.cqtguniversity.lqms.pojo.vo.ListVO;
@@ -69,6 +70,25 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         userInfo.setIsDeleted(0);
         userInfoMapper.insert(userInfo);
         return userInfo.getId();
+    }
+
+    @Override
+    public UserInfoDTO selectUserInfoDTO(Long id) {
+        Assert.notNull(id, "id must is not null");
+        UserInfo userInfo = userInfoMapper.selectById(id);
+        if (null == userInfo) {
+            System.out.println("存在错误的用户信息id：" + id + ", 请检查用户信息表");
+            return null;
+        }
+        UserInfoDTO userInfoDTO = new UserInfoDTO();
+        BeanUtils.copyProperties(userInfo, userInfoDTO);
+        return userInfoDTO;
+    }
+
+    @Override
+    public UserInfoVO selectByUserName(String userName) {
+
+        return null;
     }
 
     @Override

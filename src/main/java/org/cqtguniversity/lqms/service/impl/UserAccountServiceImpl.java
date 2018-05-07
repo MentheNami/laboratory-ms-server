@@ -5,26 +5,33 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.cqtguniversity.lqms.entity.UserAccount;
 import org.cqtguniversity.lqms.mapper.UserAccountMapper;
+import org.cqtguniversity.lqms.pojo.dto.role.RoleDTO;
 import org.cqtguniversity.lqms.pojo.dto.useraccount.SaveUserAccountDTO;
 import org.cqtguniversity.lqms.pojo.dto.useraccount.SearchUserAccountDTO;
+import org.cqtguniversity.lqms.pojo.dto.userinfo.UserInfoDTO;
+import org.cqtguniversity.lqms.pojo.dto.usernode.UserNodeDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 import org.cqtguniversity.lqms.pojo.vo.DetailResultVO;
 import org.cqtguniversity.lqms.pojo.vo.ListVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ParamErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.SuccessVO;
+import org.cqtguniversity.lqms.pojo.vo.useraccount.SessionUserVO;
 import org.cqtguniversity.lqms.pojo.vo.useraccount.SimpleUserAccountVO;
 import org.cqtguniversity.lqms.pojo.vo.useraccount.UserAccountVO;
+import org.cqtguniversity.lqms.service.RoleService;
 import org.cqtguniversity.lqms.service.UserAccountService;
+import org.cqtguniversity.lqms.service.UserInfoService;
+import org.cqtguniversity.lqms.service.UserNodeService;
+import org.cqtguniversity.lqms.util.ConfigOptionConstruct;
+import org.cqtguniversity.lqms.util.MD5Util;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
+import javax.servlet.http.HttpSession;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -35,13 +42,21 @@ import java.util.stream.Collectors;
 @Service
 public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserAccount> implements UserAccountService {
 
-    //引用用户账户
-    private final UserAccountMapper userAccountMapper;
-    //注入用户账户
+    // 注入用户账户服务
     @Autowired
-    public UserAccountServiceImpl(UserAccountMapper userAccountMapper) {
-        this.userAccountMapper = userAccountMapper;
-    }
+    private UserAccountMapper userAccountMapper;
+
+    // 注入用户信息服务
+    @Autowired
+    private UserInfoService userInfoService;
+
+    // 注入用户角色服务
+    @Autowired
+    private RoleService roleService;
+
+    // 注入用户节点服务
+    @Autowired
+    private UserNodeService userNodeService;
 
     /**
      * 将用户实体翻译成为对应的VO
@@ -63,6 +78,44 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
         entityWrapper.where("user_name", userName);
         int total = userAccountMapper.selectCount(entityWrapper);
         return 0 == total;
+    }
+
+    @Override
+    public BaseVO login(String userName, String password, HttpSession httpSession) {
+        if (null == userName || null == password) {
+            return ParamErrorVO.getInstance();
+        }
+        // 通过用户名得到账户信息
+        UserAccount userAccount = userAccountMapper.selectByUserName(userName);
+        if (null == userAccount) {
+            return new ErrorVO("用户名不存在");
+        }
+        if (!userAccount.getUserPassword().equals(MD5Util.MD5(password))) {
+            return new ErrorVO("密码错误");
+        }
+        // 用户名密码正确
+        UserNodeDTO userNodeDTO = userNodeService.selectByUserAccountId(userAccount.getId());
+        if (null == userNodeDTO) {
+            return ErrorVO.getInternalError();
+        }
+        UserInfoDTO userInfoDTO = userInfoService.selectUserInfoDTO(userNodeDTO.getInfoId());
+        if (null == userInfoDTO) {
+            return ErrorVO.getInternalError();
+        }
+        RoleDTO roleDTO = roleService.selectRoleDTO(userNodeDTO.getRoleId());
+        if (null == roleDTO) {
+            return ErrorVO.getInternalError();
+        }
+        SessionUserVO sessionUserVO = new SessionUserVO();
+        // 设置真实姓名
+        sessionUserVO.setRealName(userInfoDTO.getRealName());
+        // 设置用户姓名
+        sessionUserVO.setUserName(userAccount.getUserName());
+        // 设置角色
+        sessionUserVO.setUserName(ConfigOptionConstruct.getOptionById(roleDTO.getRoleName()).getKey());
+        httpSession.setAttribute("sessionUserVO", sessionUserVO);
+        // Session设置基本信息
+        return new DetailResultVO(sessionUserVO);
     }
 
     @Override

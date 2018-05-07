@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.service.IService;
 import org.cqtguniversity.lqms.pojo.dto.SearchDTO;
 import org.cqtguniversity.lqms.pojo.dto.userinfo.SaveUserInfoDTO;
 import org.cqtguniversity.lqms.pojo.dto.userinfo.SearchUserInfoDTO;
+import org.cqtguniversity.lqms.pojo.dto.userinfo.UserInfoDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
+import org.cqtguniversity.lqms.pojo.vo.userinfo.UserInfoVO;
 
 /**
  * 用户表 服务类
@@ -17,7 +19,8 @@ public interface UserInfoService extends IService<UserInfo> {
 
     // 获取一个用户信息
     Long getUserInfo(String cellPhone);
-
+    UserInfoDTO selectUserInfoDTO(Long id);
+    UserInfoVO selectByUserName(String userName);
 	//增加用户
     BaseVO addUserInfo (SaveUserInfoDTO saveUserInfoDTO);
     //删除用户通过IDS

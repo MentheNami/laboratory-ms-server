@@ -8,6 +8,7 @@ import org.cqtguniversity.lqms.pojo.dto.numberrule.SearchNumberRuleDTO;
 import org.cqtguniversity.lqms.pojo.dto.useraccount.SaveUserAccountDTO;
 import org.cqtguniversity.lqms.pojo.dto.useraccount.SearchUserAccountDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
+import org.cqtguniversity.lqms.pojo.vo.BooleanResultVO;
 import org.cqtguniversity.lqms.service.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * <p>
@@ -34,6 +37,23 @@ public class UserAccountController {
     public UserAccountController(UserAccountService userAccountService) {
         this.userAccountService = userAccountService;
     }
+
+    @ApiOperation(value = "登录验证")
+    @GetMapping(value = "/checkLogin")
+    public BaseVO checkLogin(HttpSession httpSession) {
+        if (null == httpSession.getAttribute("sessionUserVO")) {
+            return new BooleanResultVO(false);
+        } else {
+            return new BooleanResultVO(true);
+        }
+    }
+
+    @ApiOperation(value = "登录")
+    @PostMapping(value = "/login")
+    public BaseVO login(String userName, String password, HttpSession httpSession) {
+        return userAccountService.login(userName, password, httpSession);
+    }
+
     @ApiOperation(value = "新增用户账户")
     @PostMapping(value = "/addUserAccount")
     public BaseVO addUserAccount(SaveUserAccountDTO saveUserAccountDTO) {

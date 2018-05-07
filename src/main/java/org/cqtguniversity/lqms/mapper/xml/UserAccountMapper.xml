@@ -13,4 +13,10 @@
 		<result column="answer" property="answer" />
 	</resultMap>
 
+	<select id="selectByUserName" resultMap="BaseResultMap">
+		select id, gmt_created, gmt_modified, user_name, user_password, question, answer
+		from user_account
+		where user_name = #{userName};
+	</select>
+
 </mapper>

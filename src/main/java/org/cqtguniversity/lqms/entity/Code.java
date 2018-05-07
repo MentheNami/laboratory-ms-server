@@ -12,41 +12,41 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 用户角色表
+ * 验证码表
  * </p>
  *
  * @author TangShengYu
- * @since 2018-04-30
+ * @since 2018-05-07
  */
-@TableName("role")
-public class Role extends Model<Role> {
+@TableName("code")
+public class Code extends Model<Code> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 序号自增
+     * 自增序号
      */
 	@TableId(value="id", type= IdType.AUTO)
 	private Long id;
     /**
      * 创建时间
      */
-	@TableField("gmt_created")
-	private Date gmtCreated;
+	@TableField("gmt_create")
+	private Date gmtCreate;
     /**
      * 修改时间
      */
 	@TableField("gmt_modified")
 	private Date gmtModified;
     /**
-     * 角色名
+     * 手机
      */
-	@TableField("role_name")
-	private Long roleName;
+	@TableField("cell_phone")
+	private String cellPhone;
     /**
-     * 描述
+     * 验证码
      */
-	private Long description;
+	private String code;
 
 
 	public Long getId() {
@@ -57,12 +57,12 @@ public class Role extends Model<Role> {
 		this.id = id;
 	}
 
-	public Date getGmtCreated() {
-		return gmtCreated;
+	public Date getGmtCreate() {
+		return gmtCreate;
 	}
 
-	public void setGmtCreated(Date gmtCreated) {
-		this.gmtCreated = gmtCreated;
+	public void setGmtCreate(Date gmtCreate) {
+		this.gmtCreate = gmtCreate;
 	}
 
 	public Date getGmtModified() {
@@ -73,24 +73,20 @@ public class Role extends Model<Role> {
 		this.gmtModified = gmtModified;
 	}
 
-	public static long getSerialVersionUID() {
-		return serialVersionUID;
+	public String getCellPhone() {
+		return cellPhone;
 	}
 
-	public Long getRoleName() {
-		return roleName;
+	public void setCellPhone(String cellPhone) {
+		this.cellPhone = cellPhone;
 	}
 
-	public void setRoleName(Long roleName) {
-		this.roleName = roleName;
+	public String getCode() {
+		return code;
 	}
 
-	public Long getDescription() {
-		return description;
-	}
-
-	public void setDescription(Long description) {
-		this.description = description;
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	@Override
@@ -100,12 +96,12 @@ public class Role extends Model<Role> {
 
 	@Override
 	public String toString() {
-		return "Role{" +
+		return "Code{" +
 			"id=" + id +
-			", gmtCreated=" + gmtCreated +
+			", gmtCreate=" + gmtCreate +
 			", gmtModified=" + gmtModified +
-			", roleName=" + roleName +
-			", description=" + description +
+			", cellPhone=" + cellPhone +
+			", code=" + code +
 			"}";
 	}
 }

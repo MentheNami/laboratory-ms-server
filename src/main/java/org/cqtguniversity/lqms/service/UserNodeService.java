@@ -2,6 +2,8 @@ package org.cqtguniversity.lqms.service;
 
 import org.cqtguniversity.lqms.entity.UserNode;
 import com.baomidou.mybatisplus.service.IService;
+import org.cqtguniversity.lqms.pojo.dto.usernode.UserNodeDTO;
+import org.cqtguniversity.lqms.pojo.vo.userinfo.UserInfoVO;
 
 /**
  * <p>
@@ -14,5 +16,7 @@ import com.baomidou.mybatisplus.service.IService;
 public interface UserNodeService extends IService<UserNode> {
 
     void getUserNode(String cellPhone, Long userAccountId);
+
+    UserNodeDTO selectByUserAccountId(Long userAccountID);
 
 }

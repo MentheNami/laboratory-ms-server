@@ -3,11 +3,14 @@ package org.cqtguniversity.lqms.service.impl;
 import org.cqtguniversity.lqms.entity.UserInfo;
 import org.cqtguniversity.lqms.entity.UserNode;
 import org.cqtguniversity.lqms.mapper.UserNodeMapper;
+import org.cqtguniversity.lqms.pojo.dto.usernode.UserNodeDTO;
 import org.cqtguniversity.lqms.service.UserInfoService;
 import org.cqtguniversity.lqms.service.UserNodeService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.Calendar;
 
@@ -22,12 +25,11 @@ import java.util.Calendar;
 @Service
 public class UserNodeServiceImpl extends ServiceImpl<UserNodeMapper, UserNode> implements UserNodeService {
 
-    private final UserInfoService userInfoService;
+    @Autowired
+    private UserInfoService userInfoService;
 
     @Autowired
-    public UserNodeServiceImpl(UserInfoService userInfoService) {
-        this.userInfoService = userInfoService;
-    }
+    private UserNodeMapper userNodeMapper;
 
     @Override
     public void getUserNode(String cellPhone, Long userAccountId) {
@@ -42,5 +44,18 @@ public class UserNodeServiceImpl extends ServiceImpl<UserNodeMapper, UserNode> i
         userNode.setRoleId(2L);
         userNode.setUserId(userAccountId);
         userNode.insert();
+    }
+
+    @Override
+    public UserNodeDTO selectByUserAccountId(Long userAccountID) {
+        Assert.notNull(userAccountID, "userAccountID must is not null");
+        UserNode userNode = userNodeMapper.selectByUserId(userAccountID);
+        if (null == userNode) {
+            System.out.println("存在错误的user_id :" + userAccountID + ", 请检查用户节点表");
+            return null;
+        }
+        UserNodeDTO userNodeDTO = new UserNodeDTO();
+        BeanUtils.copyProperties(userNode, userAccountID);
+        return userNodeDTO;
     }
 }

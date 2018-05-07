@@ -1,5 +1,6 @@
 package org.cqtguniversity.lqms.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import org.cqtguniversity.lqms.entity.UserInfo;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import org.springframework.stereotype.Repository;
@@ -14,5 +15,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserInfoMapper extends BaseMapper<UserInfo> {
+
+    UserInfo selectByRealName(@Param("realName") String realName);
 
 }

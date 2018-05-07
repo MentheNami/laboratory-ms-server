@@ -13,4 +13,10 @@
 		<result column="is_deleted" property="isDeleted" />
 	</resultMap>
 
+	<select id="selectByRealName" resultMap="BaseResultMap">
+		select id, gmt_created, gmt_modified, real_name, cell_phone, email, is_deleted
+		from user_info
+		where real_name = #{realName};
+	</select>
+
 </mapper>
