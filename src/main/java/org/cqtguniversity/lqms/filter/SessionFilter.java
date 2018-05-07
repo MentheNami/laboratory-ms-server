@@ -33,7 +33,7 @@ public class SessionFilter implements Filter {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         } else {
-            if (null != httpSession.getAttribute("simpleUserVO")) {
+            if (null != httpSession.getAttribute("sessionUserVO")) {
                 //  放行
                 filterChain.doFilter(servletRequest, servletResponse);
                 return;

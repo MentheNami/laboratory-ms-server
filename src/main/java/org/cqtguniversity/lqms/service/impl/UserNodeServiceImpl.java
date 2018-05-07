@@ -55,7 +55,7 @@ public class UserNodeServiceImpl extends ServiceImpl<UserNodeMapper, UserNode> i
             return null;
         }
         UserNodeDTO userNodeDTO = new UserNodeDTO();
-        BeanUtils.copyProperties(userNode, userAccountID);
+        BeanUtils.copyProperties(userNode, userNodeDTO);
         return userNodeDTO;
     }
 }

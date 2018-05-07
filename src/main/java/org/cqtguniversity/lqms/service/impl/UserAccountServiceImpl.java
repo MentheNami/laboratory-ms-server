@@ -112,7 +112,7 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
         // 设置用户姓名
         sessionUserVO.setUserName(userAccount.getUserName());
         // 设置角色
-        sessionUserVO.setUserName(ConfigOptionConstruct.getOptionById(roleDTO.getRoleName()).getKey());
+        sessionUserVO.setRole(ConfigOptionConstruct.getOptionById(roleDTO.getRoleName()).getKey());
         httpSession.setAttribute("sessionUserVO", sessionUserVO);
         // Session设置基本信息
         return new DetailResultVO(sessionUserVO);

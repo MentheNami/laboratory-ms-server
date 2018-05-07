@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserNodeMapper extends BaseMapper<UserNode> {
 
-    UserNode selectByUserId(@Param("user_id") Long userId);
+    UserNode selectByUserId(@Param("userId") Long userId);
 
 }

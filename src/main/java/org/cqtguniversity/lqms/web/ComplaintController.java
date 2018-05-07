@@ -59,6 +59,7 @@ public class ComplaintController {
     public BaseVO selectById(Long id) {
         return complaintService.selectById(id);
     }
+
     @ApiOperation(value = "查询投诉列表")
     @GetMapping(value = "/getComplaintList")
     public BaseVO getComplaintList(SearchComplaintDTO searchComplaintDTO) {
