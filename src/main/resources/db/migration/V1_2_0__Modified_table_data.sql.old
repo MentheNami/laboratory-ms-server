@@ -10,31 +10,10 @@ Target Server Type    : MYSQL
 Target Server Version : 50527
 File Encoding         : 65001
 
-Date: 2018-05-08 01:37:23
+Date: 2018-05-01 19:34:17
 */
 
 SET FOREIGN_KEY_CHECKS=0;
-
--- ----------------------------
--- Table structure for attached_file
--- ----------------------------
-DROP TABLE IF EXISTS `attached_file`;
-CREATE TABLE `attached_file` (
-  `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增序号',
-  `gmt_create` datetime NOT NULL COMMENT '创建时间',
-  `gmt_modified` datetime NOT NULL COMMENT '修改时间',
-  `file_no` varchar(31) COLLATE utf8_bin NOT NULL COMMENT '文件编号',
-  `uploaded_by` bigint(11) unsigned NOT NULL COMMENT '上传者',
-  `file_type` bigint(11) unsigned NOT NULL COMMENT '文件类型',
-  `file_name` varchar(127) COLLATE utf8_bin NOT NULL COMMENT '文件名称',
-  `file_path` varchar(255) COLLATE utf8_bin NOT NULL COMMENT '文件路径',
-  `file_extension` varchar(12) COLLATE utf8_bin NOT NULL COMMENT '文件格式',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='文件表';
-
--- ----------------------------
--- Records of attached_file
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for attached_group
@@ -54,24 +33,6 @@ CREATE TABLE `attached_group` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for code
--- ----------------------------
-DROP TABLE IF EXISTS `code`;
-CREATE TABLE `code` (
-  `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增序号',
-  `gmt_create` datetime NOT NULL COMMENT '创建时间',
-  `gmt_modified` datetime NOT NULL COMMENT '修改时间',
-  `cell_phone` char(11) COLLATE utf8_bin NOT NULL COMMENT '手机',
-  `code` char(6) COLLATE utf8_bin NOT NULL COMMENT '验证码',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='验证码表';
-
--- ----------------------------
--- Records of code
--- ----------------------------
-INSERT INTO `code` VALUES ('9', '2018-05-07 12:48:43', '2018-05-07 12:48:43', '13647696216', '836409');
-
--- ----------------------------
 -- Table structure for common_content
 -- ----------------------------
 DROP TABLE IF EXISTS `common_content`;
@@ -81,13 +42,11 @@ CREATE TABLE `common_content` (
   `gmt_modified` datetime NOT NULL COMMENT '修改时间',
   `content` text COLLATE utf8_bin COMMENT '长文本',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='长文本表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='长文本表';
 
 -- ----------------------------
 -- Records of common_content
 -- ----------------------------
-INSERT INTO `common_content` VALUES ('1', '2018-05-08 00:48:52', '2018-05-08 00:48:54', 0xE59B9BE5A4A7E79A86E7A9BAE5A5A5E696AFE58DA1E68EA5E794B5E8AF9DE58886E8A7A3E58DA1);
-INSERT INTO `common_content` VALUES ('2', '2018-05-08 00:49:10', '2018-05-08 00:49:13', 0xE59B9BE5A4A7E79A86E7A9BAE59B9EE688BFE997B4E58DA1E7BAA2E783A7E8B186E88590E78B82E6ACA2E88A82);
 
 -- ----------------------------
 -- Table structure for complaint
@@ -100,12 +59,12 @@ CREATE TABLE `complaint` (
   `complainant_name` varchar(255) COLLATE utf8_bin NOT NULL COMMENT '投诉方名称',
   `complaint_no` varchar(31) COLLATE utf8_bin NOT NULL COMMENT '投诉编号',
   `contact_name` varchar(31) COLLATE utf8_bin NOT NULL COMMENT '联系人',
-  `contact_phone` char(11) COLLATE utf8_bin NOT NULL COMMENT '联系电话',
+  `contact_phone` int(11) unsigned NOT NULL COMMENT '联系电话',
   `contact_email` varchar(63) COLLATE utf8_bin NOT NULL COMMENT '联系邮箱',
   `address` varchar(63) COLLATE utf8_bin NOT NULL COMMENT '地址',
   `complaint_title` varchar(63) COLLATE utf8_bin NOT NULL COMMENT '投诉标题',
   `complaint_detail` bigint(11) unsigned NOT NULL COMMENT '投诉详情',
-  `complainant_status` tinyint(1) unsigned NOT NULL COMMENT '投诉状态',
+  `complainant_status` bigint(11) unsigned NOT NULL COMMENT '投诉状态',
   `is_deleted` tinyint(1) unsigned NOT NULL COMMENT '逻辑删除',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='投诉表';
@@ -150,7 +109,7 @@ CREATE TABLE `config_option_detail` (
   `priority` int(5) NOT NULL COMMENT '优先级排序',
   `use_count` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '使用数量',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='配置选项详情';
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='配置选项详情';
 
 -- ----------------------------
 -- Records of config_option_detail
@@ -192,9 +151,6 @@ INSERT INTO `config_option_detail` VALUES ('34', '2018-05-01 18:46:56', '2018-05
 INSERT INTO `config_option_detail` VALUES ('35', '2018-05-01 18:47:21', '2018-05-01 18:47:23', '0', '0', '9', '学士学位', 'bachelorDegree', '1', '0');
 INSERT INTO `config_option_detail` VALUES ('36', '2018-05-01 18:49:10', '2018-05-01 18:49:12', '0', '0', '9', '硕士学位', 'masterDegee', '1', '0');
 INSERT INTO `config_option_detail` VALUES ('37', '2018-05-01 19:27:15', '2018-05-01 19:27:12', '0', '0', '9', '博士学位', 'doctorDegee', '1', '0');
-INSERT INTO `config_option_detail` VALUES ('38', '2018-05-02 13:54:19', '2018-05-02 13:54:19', '0', '0', '10', '管理员', 'admin', '1', '0');
-INSERT INTO `config_option_detail` VALUES ('39', '2018-05-07 14:54:28', '2018-05-07 14:54:29', '0', '0', '10', '实验室人员', 'laboratoryUser', '1', '0');
-INSERT INTO `config_option_detail` VALUES ('40', '2018-05-07 14:55:06', '2018-05-07 14:55:07', '0', '0', '10', '基本用户', 'baseUser', '1', '0');
 
 -- ----------------------------
 -- Table structure for config_option_group
@@ -208,7 +164,7 @@ CREATE TABLE `config_option_group` (
   `group_name` varchar(32) COLLATE utf8_bin NOT NULL COMMENT '配置组-名字',
   `is_deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '逻辑删除：1（是）/0（否）',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='配置选项组';
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='配置选项组';
 
 -- ----------------------------
 -- Records of config_option_group
@@ -222,7 +178,6 @@ INSERT INTO `config_option_group` VALUES ('6', '2018-05-01 12:40:41', '2018-05-0
 INSERT INTO `config_option_group` VALUES ('7', '2018-05-01 14:04:43', '2018-05-01 14:04:47', 'securityQuestion', '密保问题', '0');
 INSERT INTO `config_option_group` VALUES ('8', '2018-05-01 18:39:54', '2018-05-01 18:39:58', 'education', '学历', '0');
 INSERT INTO `config_option_group` VALUES ('9', '2018-05-01 18:40:30', '2018-05-01 18:40:33', 'educationalLevel\r\n', '学位', '0');
-INSERT INTO `config_option_group` VALUES ('10', '2018-05-07 14:52:57', '2018-05-07 14:52:59', 'roleType', '用户角色', '0');
 
 -- ----------------------------
 -- Table structure for department
@@ -345,20 +300,18 @@ CREATE TABLE `laboratory` (
   `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '序号自增',
   `gmt_create` datetime NOT NULL COMMENT '创建时间',
   `gmt_modified` datetime NOT NULL COMMENT '修改时间',
-  `floor` bigint(11) unsigned NOT NULL COMMENT '所属楼层',
+  `floor` tinyint(2) unsigned NOT NULL COMMENT '所属楼层',
   `laboratory_name` varchar(63) COLLATE utf8_bin NOT NULL COMMENT '实验室名称',
   `capacity` tinyint(3) unsigned NOT NULL COMMENT '实验室容量',
   `is_autonomy` tinyint(1) unsigned NOT NULL COMMENT '是否自主预定',
   `is_deleted` tinyint(1) unsigned NOT NULL COMMENT '逻辑删除',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='实验室表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='实验室表';
 
 -- ----------------------------
 -- Records of laboratory
 -- ----------------------------
-INSERT INTO `laboratory` VALUES ('1', '2018-05-01 18:35:33', '2018-05-01 23:32:28', '17', '无线电测试实验室', '10', '0', '0');
-INSERT INTO `laboratory` VALUES ('2', '2018-05-01 23:00:49', '2018-05-01 23:00:49', '18', 'sdf', '21', '0', '0');
-INSERT INTO `laboratory` VALUES ('3', '2018-05-01 23:48:32', '2018-05-01 23:48:35', '17', 'sdaf', '21', '0', '1');
+INSERT INTO `laboratory` VALUES ('1', '2018-05-01 18:35:33', '2018-05-01 18:35:36', '17', '无线电测试实验室', '10', '0', '0');
 
 -- ----------------------------
 -- Table structure for module
@@ -404,7 +357,7 @@ CREATE TABLE `number_rule` (
 INSERT INTO `number_rule` VALUES ('1', '2018-04-01 11:14:54', '2018-05-01 11:15:08', '1', 'SXLQMS-SQ-{YEAR}-{NUM}', '1');
 INSERT INTO `number_rule` VALUES ('2', '2018-05-01 11:15:14', '2018-05-01 11:15:18', '2', 'SXLQMS-SB-{YEAR}-{NUM}', '1');
 INSERT INTO `number_rule` VALUES ('3', '2018-05-01 11:22:42', '2018-05-01 11:22:44', '3', 'SXLQMS-TS-{YEAR}-{NUM}', '1');
-INSERT INTO `number_rule` VALUES ('4', '2018-05-01 12:21:34', '2018-05-01 12:21:36', '4', 'SXLQMS-WJ-{YEAR}-{NUM}', '1');
+INSERT INTO `number_rule` VALUES ('4', '2018-05-01 12:21:34', '2018-05-01 12:21:36', '4', 'SXLQMS-{TYPE}WJ-{YEAR}-{NUM}', '1');
 
 -- ----------------------------
 -- Table structure for role
@@ -412,17 +365,17 @@ INSERT INTO `number_rule` VALUES ('4', '2018-05-01 12:21:34', '2018-05-01 12:21:
 DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role` (
   `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '序号自增',
-  `gmt_create` datetime NOT NULL COMMENT '创建时间',
+  `gmt_created` datetime NOT NULL COMMENT '创建时间',
   `gmt_modified` datetime NOT NULL COMMENT '修改时间',
-  `role_name` bigint(11) unsigned NOT NULL COMMENT '角色名',
-  `description` bigint(11) unsigned NOT NULL COMMENT '描述id',
+  `role_name` varchar(31) COLLATE utf8_bin NOT NULL COMMENT '角色名',
+  `description` varchar(127) COLLATE utf8_bin NOT NULL COMMENT '描述',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='用户角色表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='用户角色表';
 
 -- ----------------------------
 -- Records of role
 -- ----------------------------
-INSERT INTO `role` VALUES ('1', '2018-05-07 15:16:05', '2018-05-07 15:16:08', '38', '1');
+INSERT INTO `role` VALUES ('1', '2018-05-01 18:27:22', '2018-05-01 18:27:24', '超级管理员', '开放所有功能，巴拉巴拉巴拉');
 
 -- ----------------------------
 -- Table structure for role_module
@@ -448,7 +401,7 @@ INSERT INTO `role_module` VALUES ('1', '2018-05-01 18:27:07', '2018-05-01 18:27:
 DROP TABLE IF EXISTS `task_info`;
 CREATE TABLE `task_info` (
   `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增-序号',
-  `gmt_create` datetime NOT NULL COMMENT '创建时间',
+  `gmt_created` datetime NOT NULL COMMENT '创建时间',
   `gmt_modified` datetime NOT NULL COMMENT '修改时间',
   `process_id` bigint(11) unsigned NOT NULL COMMENT '所属流程',
   `task_name` varchar(255) COLLATE utf8_bin NOT NULL COMMENT '任务名称',
@@ -481,9 +434,9 @@ CREATE TABLE `user_account` (
   `gmt_create` datetime NOT NULL COMMENT '创建时间',
   `gmt_modified` datetime NOT NULL COMMENT '修改时间',
   `user_name` varchar(31) COLLATE utf8_bin NOT NULL COMMENT '用户名',
-  `user_password` char(32) COLLATE utf8_bin NOT NULL COMMENT '密码',
-  `question` varchar(63) COLLATE utf8_bin DEFAULT NULL COMMENT '密保问题',
-  `answer` char(32) COLLATE utf8_bin DEFAULT NULL COMMENT '密保答案',
+  `user_password` varchar(63) COLLATE utf8_bin NOT NULL COMMENT '密码',
+  `question` varchar(63) COLLATE utf8_bin NOT NULL COMMENT '密保问题',
+  `answer` varchar(63) COLLATE utf8_bin NOT NULL COMMENT '密保答案',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='用户账户表';
 
@@ -498,11 +451,11 @@ INSERT INTO `user_account` VALUES ('1', '2018-05-01 18:25:12', '2018-05-01 18:25
 DROP TABLE IF EXISTS `user_info`;
 CREATE TABLE `user_info` (
   `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '序号-自增',
-  `gmt_create` datetime NOT NULL COMMENT '创建时间',
+  `gmt_created` datetime NOT NULL COMMENT '创建时间',
   `gmt_modified` datetime NOT NULL COMMENT '修改时间',
-  `real_name` varchar(31) COLLATE utf8_bin DEFAULT NULL COMMENT '真实姓名',
+  `real_name` varchar(31) COLLATE utf8_bin NOT NULL COMMENT '真实姓名',
   `cell_phone` char(11) COLLATE utf8_bin NOT NULL COMMENT '手机',
-  `email` varchar(63) COLLATE utf8_bin DEFAULT NULL COMMENT '邮箱',
+  `email` varchar(63) COLLATE utf8_bin NOT NULL COMMENT '邮箱',
   `is_deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '逻辑删除 1 表示是，0 表示否',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='用户表';
@@ -553,6 +506,69 @@ CREATE TABLE `work_record` (
 -- ----------------------------
 INSERT INTO `work_record` VALUES ('1', '2018-05-01 18:13:37', '2018-05-01 18:13:40', '1', '2018-05-01', '2018-05-01', '重庆信息通信研究院', '实习生');
 
--- 2018/05/08
+
+ALTER TABLE `laboratory`
+MODIFY COLUMN `floor`  bigint(11) UNSIGNED NOT NULL COMMENT '所属楼层' AFTER `gmt_modified`;
+
+ALTER TABLE `complaint`
+MODIFY COLUMN `complainant_status`  tinyint(1) UNSIGNED NOT NULL COMMENT '投诉状态' AFTER `complaint_detail`;
+
+
+-- ----------------------------
+-- Table structure for attached_file
+-- ----------------------------
+DROP TABLE IF EXISTS `attached_file`;
+CREATE TABLE `attached_file` (
+  `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增序号',
+  `gmt_create` datetime NOT NULL COMMENT '创建时间',
+  `gmt_modified` datetime NOT NULL COMMENT '修改时间',
+  `file_no` varchar(31) COLLATE utf8_bin NOT NULL COMMENT '文件编号',
+  `uploaded_by` bigint(11) unsigned NOT NULL COMMENT '上传者',
+  `file_type` bigint(11) unsigned NOT NULL COMMENT '文件类型',
+  `file_name` varchar(127) COLLATE utf8_bin NOT NULL COMMENT '文件名称',
+  `file_path` varchar(255) COLLATE utf8_bin NOT NULL COMMENT '文件路径',
+  `file_extension` varchar(12) COLLATE utf8_bin NOT NULL COMMENT '文件格式',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='文件表';
+
+ALTER TABLE `user_account`
+MODIFY COLUMN `user_password`  char(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '密码' AFTER `user_name`,
+MODIFY COLUMN `question`  varchar(63) CHARACTER SET utf8 COLLATE utf8_bin NULL COMMENT '密保问题' AFTER `user_password`,
+MODIFY COLUMN `answer`  char(32) CHARACTER SET utf8 COLLATE utf8_bin NULL COMMENT '密保答案' AFTER `question`;
+
+ALTER TABLE `user_info`
+MODIFY COLUMN `real_name`  varchar(31) CHARACTER SET utf8 COLLATE utf8_bin NULL COMMENT '真实姓名' AFTER `gmt_modified`,
+MODIFY COLUMN `email`  varchar(63) CHARACTER SET utf8 COLLATE utf8_bin NULL COMMENT '邮箱' AFTER `cell_phone`;
+
+CREATE TABLE `code` (
+`id`  bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增序号' ,
+`gmt_create`  datetime NOT NULL COMMENT '创建时间' ,
+`gmt_modified`  datetime NOT NULL COMMENT '修改时间' ,
+`cell_phone`  char(11) NOT NULL COMMENT '手机' ,
+`code`  char(6) NOT NULL COMMENT '验证码' ,
+PRIMARY KEY (`id`)
+)
+COMMENT='验证码表'
+;
+
+
 ALTER TABLE `role`
-ADD COLUMN `level`  tinyint(2) UNSIGNED NOT NULL COMMENT '角色级别' AFTER `description`;
+MODIFY COLUMN `role_name`  bigint(11) UNSIGNED NOT NULL COMMENT '角色名' AFTER `gmt_modified`,
+MODIFY COLUMN `description`  bigint(11) UNSIGNED NOT NULL COMMENT '描述id' AFTER `role_name`;
+
+ALTER TABLE `complaint`
+MODIFY COLUMN `contact_phone`  char(11) NOT NULL COMMENT '联系电话' AFTER `contact_name`;
+
+ALTER TABLE `user_info`
+CHANGE COLUMN `gmt_created` `gmt_create`  datetime NOT NULL COMMENT '创建时间' AFTER `id`;
+
+ALTER TABLE `task_info`
+CHANGE COLUMN `gmt_created` `gmt_create`  datetime NOT NULL COMMENT '创建时间' AFTER `id`;
+
+ALTER TABLE `role`
+CHANGE COLUMN `gmt_created` `gmt_create`  datetime NOT NULL COMMENT '创建时间' AFTER `id`;
+
+
+ALTER TABLE `role`
+MODIFY COLUMN `role_name`  bigint(11) UNSIGNED NOT NULL COMMENT '角色名' AFTER `gmt_modified`,
+MODIFY COLUMN `description`  bigint(11) UNSIGNED NOT NULL COMMENT '描述id' AFTER `role_name`;

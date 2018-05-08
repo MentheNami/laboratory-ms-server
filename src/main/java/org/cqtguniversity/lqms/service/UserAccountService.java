@@ -20,6 +20,8 @@ public interface UserAccountService extends IService<UserAccount> {
 
     BaseVO login(String userName, String password, HttpSession httpSession);
 
+    BaseVO quit(HttpSession httpSession);
+
 	//增加用户账户
     BaseVO addUserAccount(SaveUserAccountDTO saveUserAccountDTO);
     //删除用户账户通过IDS

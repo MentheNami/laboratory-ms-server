@@ -32,8 +32,8 @@ public class TaskInfo extends Model<TaskInfo> {
     /**
      * 创建时间
      */
-	@TableField("gmt_created")
-	private Date gmtCreated;
+	@TableField("gmt_create")
+	private Date gmtCreate;
     /**
      * 修改时间
      */
@@ -121,12 +121,12 @@ public class TaskInfo extends Model<TaskInfo> {
 		this.id = id;
 	}
 
-	public Date getGmtCreated() {
-		return gmtCreated;
+	public Date getGmtCreate() {
+		return gmtCreate;
 	}
 
-	public void setGmtCreated(Date gmtCreated) {
-		this.gmtCreated = gmtCreated;
+	public void setGmtCreate(Date gmtCreate) {
+		this.gmtCreate = gmtCreate;
 	}
 
 	public Date getGmtModified() {
@@ -266,7 +266,7 @@ public class TaskInfo extends Model<TaskInfo> {
 	public String toString() {
 		return "TaskInfo{" +
 			"id=" + id +
-			", gmtCreated=" + gmtCreated +
+			", gmtCreate=" + gmtCreate +
 			", gmtModified=" + gmtModified +
 			", processId=" + processId +
 			", taskName=" + taskName +

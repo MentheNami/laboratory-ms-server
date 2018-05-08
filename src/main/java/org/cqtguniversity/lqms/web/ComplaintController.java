@@ -19,9 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * <p>
  * 投诉表 前端控制器
- * </p>
  *
  * @author Wang26211
  * @since 2018-05-02
@@ -51,9 +49,10 @@ public class ComplaintController {
 
     @ApiOperation(value = "更新投诉")
     @PostMapping(value = "/updateComplaint")
-    public BaseVO updateComplaint(SaveComplaintDTO saveComplaintDTO){
+    public BaseVO updateComplaint(SaveComplaintDTO saveComplaintDTO) {
         return complaintService.updateComplaint(saveComplaintDTO);
     }
+
     @ApiOperation(value = "查询投诉详情")
     @GetMapping(value = "/selectById")
     public BaseVO selectById(Long id) {

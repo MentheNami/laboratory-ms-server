@@ -65,7 +65,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         UserInfo userInfo = new UserInfo();
         userInfo.setCellPhone(cellPhone);
         Calendar calendar = Calendar.getInstance();
-        userInfo.setGmtCreated(calendar.getTime());
+        userInfo.setGmtCreate(calendar.getTime());
         userInfo.setGmtModified(calendar.getTime());
         userInfo.setIsDeleted(0);
         userInfoMapper.insert(userInfo);
@@ -104,7 +104,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         //复制基本信息
         BeanUtils.copyProperties(saveUserInfoDTO,userInfo,"id");
         //设置创建时间
-        userInfo.setGmtCreated(Calendar.getInstance().getTime());
+        userInfo.setGmtCreate(Calendar.getInstance().getTime());
         //设置修改时间
         userInfo.setGmtModified(Calendar.getInstance().getTime());
         //逻辑删除

@@ -1,4 +1,4 @@
-package org.cqtguniversity.lqms.pojo.dto.role;
+package org.cqtguniversity.lqms.pojo.dto.commoncontent;
 
 import org.cqtguniversity.lqms.pojo.dto.BaseDTO;
 
@@ -6,13 +6,13 @@ import java.util.Date;
 
 /**
  * @author Tangshengyu
- * @create 2018- 05- 07- 14:41
+ * @create 2018- 05- 07- 19:18
  */
 
-public class RoleDTO extends BaseDTO {
+public class CommonContentDTO extends BaseDTO {
 
     /**
-     * 序号自增
+     * 自增-序号
      */
     private Long id;
     /**
@@ -24,17 +24,9 @@ public class RoleDTO extends BaseDTO {
      */
     private Date gmtModified;
     /**
-     * 角色名
+     * 长文本
      */
-    private Long roleName;
-    /**
-     * 描述
-     */
-    private Long description;
-    /**
-     * 角色级别
-     */
-    private Integer level;
+    private String content;
 
     public Long getId() {
         return id;
@@ -60,39 +52,21 @@ public class RoleDTO extends BaseDTO {
         this.gmtModified = gmtModified;
     }
 
-    public Long getRoleName() {
-        return roleName;
+    public String getContent() {
+        return content;
     }
 
-    public void setRoleName(Long roleName) {
-        this.roleName = roleName;
-    }
-
-    public Long getDescription() {
-        return description;
-    }
-
-    public void setDescription(Long description) {
-        this.description = description;
-    }
-
-    public Integer getLevel() {
-        return level;
-    }
-
-    public void setLevel(Integer level) {
-        this.level = level;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     @Override
     public String toString() {
-        return super.toString() + "RoleDTO{" +
+        return super.toString() + "CommonContentDTO{" +
                 "id=" + id +
                 ", gmtCreate=" + gmtCreate +
                 ", gmtModified=" + gmtModified +
-                ", roleName=" + roleName +
-                ", description=" + description +
-                ", level=" + level +
+                ", content='" + content + '\'' +
                 '}';
     }
 }

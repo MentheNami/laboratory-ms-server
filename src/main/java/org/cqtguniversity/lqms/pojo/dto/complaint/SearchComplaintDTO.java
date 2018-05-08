@@ -1,13 +1,6 @@
-package org.cqtguniversity.lqms.pojo.dto.complaint;/**
- * @author wang26211
- * @create 2018- 05- 02- 17:03
- */
+package org.cqtguniversity.lqms.pojo.dto.complaint;
 
-import com.baomidou.mybatisplus.annotations.TableField;
-import org.cqtguniversity.lqms.pojo.dto.BaseDTO;
 import org.cqtguniversity.lqms.pojo.dto.SearchDTO;
-
-import java.util.Date;
 
 /**
  * @author wang26211
@@ -24,13 +17,13 @@ public class SearchComplaintDTO extends SearchDTO{
      */
     private String contactName;
     /**
-     * 投诉方名称
-     */
-    private String complainantName;
-    /**
      * 投诉状态
      */
     private Long complainantStatus;
+    /**
+     * 投诉详情
+     */
+    private String complaintDetail;
 
     public String getComplaintNo() {
         return complaintNo;
@@ -48,14 +41,6 @@ public class SearchComplaintDTO extends SearchDTO{
         this.contactName = contactName;
     }
 
-    public String getComplainantName() {
-        return complainantName;
-    }
-
-    public void setComplainantName(String complainantName) {
-        this.complainantName = complainantName;
-    }
-
     public Long getComplainantStatus() {
         return complainantStatus;
     }
@@ -64,13 +49,21 @@ public class SearchComplaintDTO extends SearchDTO{
         this.complainantStatus = complainantStatus;
     }
 
+    public String getComplaintDetail() {
+        return complaintDetail;
+    }
+
+    public void setComplaintDetail(String complaintDetail) {
+        this.complaintDetail = complaintDetail;
+    }
+
     @Override
     public String toString() {
-        return super.toString()+"SearchComplaintDTO{" +
+        return super.toString() + "SearchComplaintDTO{" +
                 "complaintNo='" + complaintNo + '\'' +
                 ", contactName='" + contactName + '\'' +
-                ", complainantName='" + complainantName + '\'' +
                 ", complainantStatus=" + complainantStatus +
+                ", complaintDetail='" + complaintDetail + '\'' +
                 '}';
     }
 }

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.cqtguniversity.lqms.construct.NumTypeConstruct;
 import org.cqtguniversity.lqms.entity.Device;
 import org.cqtguniversity.lqms.mapper.DeviceMapper;
+import org.cqtguniversity.lqms.pojo.dto.divece.DeviceDTO;
 import org.cqtguniversity.lqms.pojo.dto.divece.SaveDeviceDTO;
 import org.cqtguniversity.lqms.pojo.dto.divece.SearchDeviceDTO;
 import org.cqtguniversity.lqms.pojo.dto.laboratory.LaboratoryDTO;
@@ -180,6 +181,14 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         Device device = deviceMapper.selectById(id);
         BeanUtils.copyProperties(device, deviceVO);
         return new DetailResultVO(deviceVO);
+    }
+
+    @Override
+    public DeviceDTO selectDeviceDTO(Long id) {
+        Device device = getDevice(id);
+        DeviceDTO deviceDTO = new DeviceDTO();
+        BeanUtils.copyProperties(device, deviceDTO);
+        return deviceDTO;
     }
 
     @Override

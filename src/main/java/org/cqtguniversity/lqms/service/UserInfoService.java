@@ -19,7 +19,9 @@ public interface UserInfoService extends IService<UserInfo> {
 
     // 获取一个用户信息
     Long getUserInfo(String cellPhone);
+
     UserInfoDTO selectUserInfoDTO(Long id);
+
     UserInfoVO selectByUserName(String userName);
 	//增加用户
     BaseVO addUserInfo (SaveUserInfoDTO saveUserInfoDTO);

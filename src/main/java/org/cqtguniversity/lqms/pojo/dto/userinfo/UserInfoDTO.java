@@ -18,7 +18,7 @@ public class UserInfoDTO extends BaseDTO {
     /**
      * 创建时间
      */
-    private Date gmtCreated;
+    private Date gmtCreate;
     /**
      * 修改时间
      */
@@ -48,12 +48,12 @@ public class UserInfoDTO extends BaseDTO {
         this.id = id;
     }
 
-    public Date getGmtCreated() {
-        return gmtCreated;
+    public Date getGmtCreate() {
+        return gmtCreate;
     }
 
-    public void setGmtCreated(Date gmtCreated) {
-        this.gmtCreated = gmtCreated;
+    public void setGmtCreate(Date gmtCreate) {
+        this.gmtCreate = gmtCreate;
     }
 
     public Date getGmtModified() {
@@ -100,7 +100,7 @@ public class UserInfoDTO extends BaseDTO {
     public String toString() {
         return super.toString() + "UserInfoDTO{" +
                 "id=" + id +
-                ", gmtCreated=" + gmtCreated +
+                ", gmtCreate=" + gmtCreate +
                 ", gmtModified=" + gmtModified +
                 ", realName='" + realName + '\'' +
                 ", cellPhone='" + cellPhone + '\'' +

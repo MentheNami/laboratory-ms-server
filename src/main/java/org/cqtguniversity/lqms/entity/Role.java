@@ -31,8 +31,8 @@ public class Role extends Model<Role> {
     /**
      * 创建时间
      */
-	@TableField("gmt_created")
-	private Date gmtCreated;
+	@TableField("gmt_create")
+	private Date gmtCreate;
     /**
      * 修改时间
      */
@@ -47,6 +47,10 @@ public class Role extends Model<Role> {
      * 描述
      */
 	private Long description;
+	/**
+	 * 角色级别
+	 */
+	private Integer level;
 
 
 	public Long getId() {
@@ -57,12 +61,12 @@ public class Role extends Model<Role> {
 		this.id = id;
 	}
 
-	public Date getGmtCreated() {
-		return gmtCreated;
+	public Date getGmtCreate() {
+		return gmtCreate;
 	}
 
-	public void setGmtCreated(Date gmtCreated) {
-		this.gmtCreated = gmtCreated;
+	public void setGmtCreate(Date gmtCreate) {
+		this.gmtCreate = gmtCreate;
 	}
 
 	public Date getGmtModified() {
@@ -93,6 +97,14 @@ public class Role extends Model<Role> {
 		this.description = description;
 	}
 
+	public Integer getLevel() {
+		return level;
+	}
+
+	public void setLevel(Integer level) {
+		this.level = level;
+	}
+
 	@Override
 	protected Serializable pkVal() {
 		return this.id;
@@ -101,11 +113,12 @@ public class Role extends Model<Role> {
 	@Override
 	public String toString() {
 		return "Role{" +
-			"id=" + id +
-			", gmtCreated=" + gmtCreated +
-			", gmtModified=" + gmtModified +
-			", roleName=" + roleName +
-			", description=" + description +
-			"}";
+				"id=" + id +
+				", gmtCreate=" + gmtCreate +
+				", gmtModified=" + gmtModified +
+				", roleName=" + roleName +
+				", description=" + description +
+				", level=" + level +
+				'}';
 	}
 }

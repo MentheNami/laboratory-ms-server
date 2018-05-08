@@ -21,6 +21,10 @@ public class SessionUserVO extends BaseVO {
      * 角色
      */
     private String role;
+    /**
+     * 角色级别
+     */
+    private Integer level;
 
     public String getUserName() {
         return userName;
@@ -46,12 +50,21 @@ public class SessionUserVO extends BaseVO {
         this.role = role;
     }
 
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
     @Override
     public String toString() {
-        return super.toString() + "SessionUserVO{" +
+        return "SessionUserVO{" +
                 "userName='" + userName + '\'' +
                 ", realName='" + realName + '\'' +
                 ", role='" + role + '\'' +
+                ", level=" + level +
                 '}';
     }
 }

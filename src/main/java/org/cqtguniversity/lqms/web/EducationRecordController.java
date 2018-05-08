@@ -1,9 +1,9 @@
 package org.cqtguniversity.lqms.web;
 
 
+import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -13,7 +13,8 @@ import org.springframework.stereotype.Controller;
  * @author TangShengYu
  * @since 2018-04-30
  */
-@Controller
+@Api(description = "人员学历及学位记录接口")
+@RestController
 @RequestMapping("/educationRecord")
 public class EducationRecordController {
 	

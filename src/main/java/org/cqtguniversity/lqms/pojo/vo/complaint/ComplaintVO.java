@@ -1,7 +1,4 @@
-package org.cqtguniversity.lqms.pojo.vo.complaint;/**
- * @author wang26211
- * @create 2018- 05- 02- 18:55
- */
+package org.cqtguniversity.lqms.pojo.vo.complaint;
 
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 
@@ -9,11 +6,15 @@ import org.cqtguniversity.lqms.pojo.vo.BaseVO;
  * @author wang26211
  * @create 2018- 05- 02- 18:55
  */
-public class ComplaintVO extends BaseVO{
+public class ComplaintVO extends BaseVO {
     /**
      * 自增序号
      */
     private Long id;
+    /**
+     * 创建时间
+     */
+    private String gmtCreate;
     /**
      * 投诉方名称
      */
@@ -29,7 +30,7 @@ public class ComplaintVO extends BaseVO{
     /**
      * 联系电话
      */
-    private Integer contactPhone;
+    private String contactPhone;
     /**
      * 联系邮箱
      */
@@ -45,7 +46,7 @@ public class ComplaintVO extends BaseVO{
     /**
      * 投诉详情
      */
-    private Long complaintDetail;
+    private String complaintDetail;
     /**
      * 投诉状态
      */
@@ -57,6 +58,14 @@ public class ComplaintVO extends BaseVO{
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(String gmtCreate) {
+        this.gmtCreate = gmtCreate;
     }
 
     public String getComplainantName() {
@@ -83,11 +92,11 @@ public class ComplaintVO extends BaseVO{
         this.contactName = contactName;
     }
 
-    public Integer getContactPhone() {
+    public String getContactPhone() {
         return contactPhone;
     }
 
-    public void setContactPhone(Integer contactPhone) {
+    public void setContactPhone(String contactPhone) {
         this.contactPhone = contactPhone;
     }
 
@@ -115,11 +124,11 @@ public class ComplaintVO extends BaseVO{
         this.complaintTitle = complaintTitle;
     }
 
-    public Long getComplaintDetail() {
+    public String getComplaintDetail() {
         return complaintDetail;
     }
 
-    public void setComplaintDetail(Long complaintDetail) {
+    public void setComplaintDetail(String complaintDetail) {
         this.complaintDetail = complaintDetail;
     }
 
@@ -133,17 +142,18 @@ public class ComplaintVO extends BaseVO{
 
     @Override
     public String toString() {
-        return super.toString()+"ComplaintVO{" +
+        return super.toString() + "ComplaintVO{" +
                 "id=" + id +
+                ", gmtCreate='" + gmtCreate + '\'' +
                 ", complainantName='" + complainantName + '\'' +
                 ", complaintNo='" + complaintNo + '\'' +
                 ", contactName='" + contactName + '\'' +
-                ", contactPhone=" + contactPhone +
+                ", contactPhone='" + contactPhone + '\'' +
                 ", contactEmail='" + contactEmail + '\'' +
                 ", address='" + address + '\'' +
                 ", complaintTitle='" + complaintTitle + '\'' +
-                ", complaintDetail=" + complaintDetail +
-                ", complainantStatus=" + complainantStatus +
+                ", complaintDetail='" + complaintDetail + '\'' +
+                ", complainantStatus='" + complainantStatus + '\'' +
                 '}';
     }
 }

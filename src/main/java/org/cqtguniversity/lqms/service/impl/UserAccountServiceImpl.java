@@ -111,11 +111,23 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
         sessionUserVO.setRealName(userInfoDTO.getRealName());
         // 设置用户姓名
         sessionUserVO.setUserName(userAccount.getUserName());
+
         // 设置角色
         sessionUserVO.setRole(ConfigOptionConstruct.getOptionById(roleDTO.getRoleName()).getKey());
+        // 设置角色级别
+        sessionUserVO.setLevel(roleDTO.getLevel());
         httpSession.setAttribute("sessionUserVO", sessionUserVO);
         // Session设置基本信息
         return new DetailResultVO(sessionUserVO);
+    }
+
+    @Override
+    public BaseVO quit(HttpSession httpSession) {
+        if (null == httpSession) {
+            return new ErrorVO("错误的登录状态");
+        }
+        httpSession.removeAttribute("sessionUserVO");
+        return new SuccessVO("退出成功");
     }
 
     @Override

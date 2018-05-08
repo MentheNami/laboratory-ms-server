@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/commonContent")
 public class CommonContentController {
-	private final CommonContentService commonContentService;
+    private final CommonContentService commonContentService;
 
     @Autowired
     public CommonContentController(CommonContentService commonContentService) {
@@ -37,24 +37,29 @@ public class CommonContentController {
 
     @ApiOperation(value = "新增长文本")
     @PostMapping(value = "/addCommonContent")
-    public BaseVO addCommonContent(SaveCommonContentDTO saveCommonContentDTO ) {
+    public BaseVO addCommonContent(SaveCommonContentDTO saveCommonContentDTO) {
         return commonContentService.addCommonContent(saveCommonContentDTO);
     }
+
     @ApiOperation(value = "删除长文本通过ID")
     @PostMapping(value = "/removeById")
     public BaseVO removeById(Long id) {
         return commonContentService.removeById(id);
     }
-    @ApiOperation(value = "更新长文本")
-    @PostMapping(value = "/updateCommonContent")
-    public BaseVO updateCommonContent(SaveCommonContentDTO saveCommonContentDTO){
-        return commonContentService.updateCommonContent(saveCommonContentDTO);
 
-    } @ApiOperation(value = "查询长文本详情")
+    //@ApiOperation(value = "更新长文本")
+    //@PostMapping(value = "/updateCommonContent")
+    //public BaseVO updateCommonContent(SaveCommonContentDTO saveCommonContentDTO) {
+    //    return commonContentService.updateCommonContent(saveCommonContentDTO);
+    //
+    //}
+
+    @ApiOperation(value = "查询长文本详情")
     @GetMapping(value = "/selectById")
     public BaseVO selectById(Long id) {
         return commonContentService.selectById(id);
     }
+
     @ApiOperation(value = "查询长文本列表")
     @GetMapping(value = "/getCommonContentList")
     public BaseVO getComplaintList(SaveCommonContentDTO saveCommonContentDTO) {

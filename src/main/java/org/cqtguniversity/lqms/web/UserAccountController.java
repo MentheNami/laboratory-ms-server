@@ -54,6 +54,12 @@ public class UserAccountController {
         return userAccountService.login(userName, password, httpSession);
     }
 
+    @ApiOperation(value = "退出")
+    @GetMapping(value = "/quit")
+    public BaseVO quit(HttpSession httpSession) {
+        return userAccountService.quit(httpSession);
+    }
+
     @ApiOperation(value = "新增用户账户")
     @PostMapping(value = "/addUserAccount")
     public BaseVO addUserAccount(SaveUserAccountDTO saveUserAccountDTO) {

@@ -18,5 +18,9 @@ public class NumTypeConstruct {
      * 文件编号
      */
     public static final String FILENO = "fileNo";
+    /**
+     * 文件编号
+     */
+    public static final String APPLYNO = "applyNo";
 
 }

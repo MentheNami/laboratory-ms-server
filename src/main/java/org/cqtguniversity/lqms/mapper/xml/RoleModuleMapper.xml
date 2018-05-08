@@ -9,6 +9,7 @@
 		<result column="gmt_modified" property="gmtModified" />
 		<result column="role_id" property="roleId" />
 		<result column="module_id" property="moduleId" />
+		<result column="level" property="level" />
 	</resultMap>
 
 </mapper>

@@ -57,7 +57,7 @@ public class Complaint extends Model<Complaint> {
      * 联系电话
      */
 	@TableField("contact_phone")
-	private Integer contactPhone;
+	private String contactPhone;
     /**
      * 联系邮箱
      */
@@ -137,11 +137,11 @@ public class Complaint extends Model<Complaint> {
 		this.contactName = contactName;
 	}
 
-	public Integer getContactPhone() {
+	public String getContactPhone() {
 		return contactPhone;
 	}
 
-	public void setContactPhone(Integer contactPhone) {
+	public void setContactPhone(String contactPhone) {
 		this.contactPhone = contactPhone;
 	}
 

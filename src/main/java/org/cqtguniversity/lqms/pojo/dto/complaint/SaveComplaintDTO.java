@@ -27,7 +27,7 @@ public class SaveComplaintDTO extends BaseDTO{
     /**
      * 联系电话
      */
-    private Integer contactPhone;
+    private String contactPhone;
     /**
      * 联系邮箱
      */
@@ -43,11 +43,7 @@ public class SaveComplaintDTO extends BaseDTO{
     /**
      * 投诉详情
      */
-    private Long complaintDetail;
-    /**
-     * 投诉状态
-     */
-    private Integer complainantStatus;
+    private String complaintDetail;
 
     public Long getId() {
         return id;
@@ -73,11 +69,11 @@ public class SaveComplaintDTO extends BaseDTO{
         this.contactName = contactName;
     }
 
-    public Integer getContactPhone() {
+    public String getContactPhone() {
         return contactPhone;
     }
 
-    public void setContactPhone(Integer contactPhone) {
+    public void setContactPhone(String contactPhone) {
         this.contactPhone = contactPhone;
     }
 
@@ -105,34 +101,27 @@ public class SaveComplaintDTO extends BaseDTO{
         this.complaintTitle = complaintTitle;
     }
 
-    public Long getComplaintDetail() {
+    public String getComplaintDetail() {
         return complaintDetail;
     }
 
-    public void setComplaintDetail(Long complaintDetail) {
+    public void setComplaintDetail(String complaintDetail) {
         this.complaintDetail = complaintDetail;
     }
 
-    public Integer getComplainantStatus() {
-        return complainantStatus;
-    }
-
-    public void setComplainantStatus(Integer complainantStatus) {
-        this.complainantStatus = complainantStatus;
-    }
     // 源于阿里巴巴Java开发规范，P7  12.
+
     @Override
     public String toString() {
-        return super .toString()+"SaveComplaintDTO{" +
+        return super.toString() + "SaveComplaintDTO{" +
                 "id=" + id +
                 ", complainantName='" + complainantName + '\'' +
                 ", contactName='" + contactName + '\'' +
-                ", contactPhone=" + contactPhone +
+                ", contactPhone='" + contactPhone + '\'' +
                 ", contactEmail='" + contactEmail + '\'' +
                 ", address='" + address + '\'' +
                 ", complaintTitle='" + complaintTitle + '\'' +
-                ", complaintDetail=" + complaintDetail +
-                ", complainantStatus=" + complainantStatus +
+                ", complaintDetail='" + complaintDetail + '\'' +
                 '}';
     }
 }

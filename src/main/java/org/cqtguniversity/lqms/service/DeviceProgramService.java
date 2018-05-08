@@ -1,7 +1,10 @@
 package org.cqtguniversity.lqms.service;
 
-import org.cqtguniversity.lqms.entity.DeviceProgram;
 import com.baomidou.mybatisplus.service.IService;
+import org.cqtguniversity.lqms.entity.DeviceProgram;
+import org.cqtguniversity.lqms.pojo.dto.deviceprogram.SaveDeviceProgramDTO;
+import org.cqtguniversity.lqms.pojo.dto.deviceprogram.SearchDeviceProgramDTO;
+import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 
 /**
  * <p>
@@ -12,5 +15,16 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-04-30
  */
 public interface DeviceProgramService extends IService<DeviceProgram> {
-	
+
+    //新增设备方案
+    BaseVO addDeviceProgram(SaveDeviceProgramDTO saveDeviceProgramDTO);
+
+    //删除设备通过Id
+    BaseVO removeById(Long id);
+    //修改设备方案
+    BaseVO updateDeviceProgram(SaveDeviceProgramDTO saveDeviceProgramDTO);
+    //查询方案详情通过id
+    BaseVO selectById(Long id);
+    //查询方案列表
+    BaseVO getDeviceProgramList(SearchDeviceProgramDTO searchDeviceProgramDTO);
 }

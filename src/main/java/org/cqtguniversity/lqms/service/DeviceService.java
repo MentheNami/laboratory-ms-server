@@ -2,6 +2,7 @@ package org.cqtguniversity.lqms.service;
 
 import org.cqtguniversity.lqms.entity.Device;
 import com.baomidou.mybatisplus.service.IService;
+import org.cqtguniversity.lqms.pojo.dto.divece.DeviceDTO;
 import org.cqtguniversity.lqms.pojo.dto.divece.SaveDeviceDTO;
 import org.cqtguniversity.lqms.pojo.dto.divece.SearchDeviceDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
@@ -24,6 +25,8 @@ public interface DeviceService extends IService<Device> {
 
     // 查询设备信息详情
     BaseVO selectById(Long id);
+
+    DeviceDTO selectDeviceDTO(Long id);
 
     BaseVO selectDetail(Long id);
 
