@@ -13,6 +13,7 @@ import org.cqtguniversity.lqms.pojo.vo.ListVO;
 import org.cqtguniversity.lqms.pojo.vo.file.SimpleAttachedFileVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ParamErrorVO;
+import org.cqtguniversity.lqms.pojo.vo.useraccount.SessionUserVO;
 import org.cqtguniversity.lqms.service.AttachedFileService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.cqtguniversity.lqms.service.NumberRuleService;
@@ -30,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -114,7 +116,11 @@ public class AttachedFileServiceImpl extends ServiceImpl<AttachedFileMapper, Att
     }
 
     @Override
-    public BaseVO uploadAttachedFile(MultipartFile multipartFile, SaveAttachedFileDTO saveAttachedFileDTO) {
+    public BaseVO uploadAttachedFile(MultipartFile multipartFile, SaveAttachedFileDTO saveAttachedFileDTO, HttpSession httpSession) {
+        SessionUserVO sessionUserVO = (SessionUserVO) httpSession.getAttribute("sessionUserVO");
+        if (null == sessionUserVO) {
+            return new ErrorVO("用户未登陆");
+        }
         // 获取上传文件的名字（包括后缀名）
         String fileName = multipartFile.getOriginalFilename();
         assert fileName != null;
@@ -152,6 +158,7 @@ public class AttachedFileServiceImpl extends ServiceImpl<AttachedFileMapper, Att
             attachedFile.setGmtCreate(calendar.getTime());
             attachedFile.setGmtModified(calendar.getTime());
             attachedFile.setFileExtension(extension);
+            attachedFile.setUploadedBy(sessionUserVO.getUserInfoId());
             attachedFile.setFileType(saveAttachedFileDTO.getFileType());
             attachedFile.setFileNo(numberRuleService.getNum(NumTypeConstruct.FILENO, ConfigOptionConstruct.getOptionById(saveAttachedFileDTO.getFileType()).getValue()));
             attachedFileMapper.insert(attachedFile);
