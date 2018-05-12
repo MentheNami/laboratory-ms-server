@@ -86,6 +86,20 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     }
 
     @Override
+    public List<Long> selectIdsByRealName(String realName) {
+        EntityWrapper<UserInfo> entityWrapper = new EntityWrapper<>();
+        entityWrapper.like("real_name", realName);
+        // 模糊查询所有用户
+        List<UserInfo> userInfoList = userInfoMapper.selectList(entityWrapper);
+        if (null == userInfoList || 0 == userInfoList.size()) {
+            // 模糊查询到没有记录，返回空，告诉调用此接口者，没有数据
+            return null;
+        }
+        // 返回所有用户Id
+        return userInfoList.stream().map(UserInfo::getId).collect(Collectors.toList());
+    }
+
+    @Override
     public UserInfoVO selectByUserName(String userName) {
 
         return null;

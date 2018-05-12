@@ -1,7 +1,4 @@
-package org.cqtguniversity.lqms.pojo.vo.numberrule;/**
- * @author wang26211
- * @create 2018- 05- 03- 14:49
- */
+package org.cqtguniversity.lqms.pojo.vo.numberrule;
 
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 
@@ -15,9 +12,13 @@ public class NumberRuleVO extends BaseVO {
      */
     private Long id;
     /**
+     * 创建时间
+     */
+    private String gmtCreate;
+    /**
      * 规则类型
      */
-    private String ruleType;
+    private Long ruleType;
     /**
      * 编号前缀
      */
@@ -25,7 +26,7 @@ public class NumberRuleVO extends BaseVO {
     /**
      * 下一个编号
      */
-    private Long nextNumber;
+    private String nextNumber;
 
     public Long getId() {
         return id;
@@ -35,11 +36,19 @@ public class NumberRuleVO extends BaseVO {
         this.id = id;
     }
 
-    public String getRuleType() {
+    public String getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(String gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public Long getRuleType() {
         return ruleType;
     }
 
-    public void setRuleType(String ruleType) {
+    public void setRuleType(Long ruleType) {
         this.ruleType = ruleType;
     }
 
@@ -51,21 +60,22 @@ public class NumberRuleVO extends BaseVO {
         this.prefixNumber = prefixNumber;
     }
 
-    public Long getNextNumber() {
+    public String getNextNumber() {
         return nextNumber;
     }
 
-    public void setNextNumber(Long nextNumber) {
+    public void setNextNumber(String nextNumber) {
         this.nextNumber = nextNumber;
     }
 
     @Override
     public String toString() {
-        return super.toString()+"NumberRuleVO{" +
+        return super.toString() + "NumberRuleVO{" +
                 "id=" + id +
-                ", ruleType=" + ruleType +
+                ", gmtCreate='" + gmtCreate + '\'' +
+                ", ruleType='" + ruleType + '\'' +
                 ", prefixNumber='" + prefixNumber + '\'' +
-                ", nextNumber=" + nextNumber +
+                ", nextNumber='" + nextNumber + '\'' +
                 '}';
     }
 }

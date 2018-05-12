@@ -41,11 +41,13 @@ public class NumberRuleController {
     public BaseVO addNumberRule(SaveNumberRuleDTO saveNumberRuleDTO) {
         return numberRuleService.addNumberRule(saveNumberRuleDTO);
     }
+
     @ApiOperation(value = "删除编号规则通过IDS")
     @PostMapping(value = "/removeByIds")
     public BaseVO removeByIds(Long[] ids) {
         return numberRuleService.removeByIds(ids);
     }
+
     @ApiOperation(value = "更新编号规则")
     @PostMapping(value = "/updateNumberRule")
     public BaseVO updateNumberRule(SaveNumberRuleDTO saveNumberRuleDTO) {
@@ -56,6 +58,7 @@ public class NumberRuleController {
     public BaseVO selectById(Long id) {
         return numberRuleService.selectById(id);
     }
+
     @ApiOperation(value = "查询编号规则列表")
     @GetMapping(value = "/getNumberRule")
     public BaseVO getNumberRuleList(SearchNumberRuleDTO searchNumberRuleDTO) {

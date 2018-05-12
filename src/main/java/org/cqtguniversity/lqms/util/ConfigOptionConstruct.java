@@ -200,7 +200,7 @@ public class ConfigOptionConstruct {
         return true;
     }
 
-    public static String transferRoomSHStatus(Integer status) {
+    public static String transferStatus(Integer status) {
         switch (status) {
             case 0 :
                 return "待审批";

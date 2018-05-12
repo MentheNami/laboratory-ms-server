@@ -1,10 +1,7 @@
 package org.cqtguniversity.lqms.pojo.vo.numberrule;
 
 
-import com.baomidou.mybatisplus.annotations.TableField;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
-
-import java.util.Date;
 
 /**
  * @author wang26211
@@ -18,7 +15,7 @@ public class SimpleNumberRuleVO extends BaseVO {
     /**
      * 创建时间
      */
-    private Date gmtCreate;
+    private String gmtCreate;
     /**
      * 规则类型
      */
@@ -30,7 +27,7 @@ public class SimpleNumberRuleVO extends BaseVO {
     /**
      * 下一个编号
      */
-    private Long nextNumber;
+    private String nextNumber;
 
     public Long getId() {
         return id;
@@ -40,11 +37,11 @@ public class SimpleNumberRuleVO extends BaseVO {
         this.id = id;
     }
 
-    public Date getGmtCreate() {
+    public String getGmtCreate() {
         return gmtCreate;
     }
 
-    public void setGmtCreate(Date gmtCreate) {
+    public void setGmtCreate(String gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
@@ -64,22 +61,22 @@ public class SimpleNumberRuleVO extends BaseVO {
         this.prefixNumber = prefixNumber;
     }
 
-    public Long getNextNumber() {
+    public String getNextNumber() {
         return nextNumber;
     }
 
-    public void setNextNumber(Long nextNumber) {
+    public void setNextNumber(String nextNumber) {
         this.nextNumber = nextNumber;
     }
 
     @Override
     public String toString() {
-        return super.toString() +"SimpleNumberRuleVO{" +
+        return super.toString() + "SimpleNumberRuleVO{" +
                 "id=" + id +
-                ", gmtCreate=" + gmtCreate +
+                ", gmtCreate='" + gmtCreate + '\'' +
                 ", ruleType='" + ruleType + '\'' +
                 ", prefixNumber='" + prefixNumber + '\'' +
-                ", nextNumber=" + nextNumber +
+                ", nextNumber='" + nextNumber + '\'' +
                 '}';
     }
 }

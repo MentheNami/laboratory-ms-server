@@ -25,23 +25,23 @@ public class SessionFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-        //  判断用户是否已经登录
-        HttpSession httpSession = httpServletRequest.getSession();
-        if ("/userAccount/checkLogin".equals(httpServletRequest.getServletPath()) || "/userAccount/login".equals(httpServletRequest.getServletPath())) {
-            //  放行
-            filterChain.doFilter(servletRequest, servletResponse);
-            return;
-        } else {
-            if (null != httpSession.getAttribute("sessionUserVO")) {
-                //  放行
-                filterChain.doFilter(servletRequest, servletResponse);
-                return;
-            }
-        }
-        try (Writer writer = servletResponse.getWriter()) {
-            writer.write("{\"status\":false}");
-        }
+        //HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+        ////  判断用户是否已经登录
+        //HttpSession httpSession = httpServletRequest.getSession();
+        //if ("/userAccount/checkLogin".equals(httpServletRequest.getServletPath()) || "/userAccount/login".equals(httpServletRequest.getServletPath())) {
+        //    //  放行
+        //    filterChain.doFilter(servletRequest, servletResponse);
+        //    return;
+        //} else {
+        //    if (null != httpSession.getAttribute("sessionUserVO")) {
+        //        //  放行
+        //        filterChain.doFilter(servletRequest, servletResponse);
+        //        return;
+        //    }
+        //}
+        //try (Writer writer = servletResponse.getWriter()) {
+        //    writer.write("{\"status\":false}");
+        //}
         //  放行
         filterChain.doFilter(servletRequest, servletResponse);
     }

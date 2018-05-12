@@ -8,11 +8,16 @@ import org.cqtguniversity.lqms.pojo.dto.file.SaveAttachedFileDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 import org.cqtguniversity.lqms.service.AttachedFileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 /**
  * 文件表 前端控制器
@@ -24,13 +29,23 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/attachedFile")
 public class AttachedFileController {
 
+    private final AttachedFileService attachedFileService;
+
     @Autowired
-    private AttachedFileService attachedFileService;
+    public AttachedFileController(AttachedFileService attachedFileService) {
+        this.attachedFileService = attachedFileService;
+    }
 
     @ApiOperation(value = "上传文件")
     @PostMapping(value = "/uploadAttachedFile")
     public BaseVO uploadAttachedFile(MultipartFile multipartFile, SaveAttachedFileDTO saveAttachedFileDTO){
         return attachedFileService.uploadAttachedFile(multipartFile, saveAttachedFileDTO);
+    }
+
+    @ApiOperation(value = "下载文件")
+    @GetMapping(value = "/downloadFile")
+    public ResponseEntity<InputStreamResource> downloadFile(Long id) throws IOException {
+        return attachedFileService.downloadFile(id);
     }
 	
 }

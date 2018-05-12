@@ -53,7 +53,7 @@ public class CommonContentServiceImpl extends ServiceImpl<CommonContentMapper, C
         commonContent.setContent(content);
         Calendar calendar = Calendar.getInstance();
         commonContent.setGmtCreate(calendar.getTime());
-        commonContent.setGmtCreate(calendar.getTime());
+        commonContent.setGmtModified(calendar.getTime());
         commonContent.insert();
         CommonContentDTO commonContentDTO = new CommonContentDTO();
         BeanUtils.copyProperties(commonContent, commonContentDTO);

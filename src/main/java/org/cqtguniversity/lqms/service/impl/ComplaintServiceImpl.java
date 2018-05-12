@@ -9,6 +9,7 @@ import org.cqtguniversity.lqms.entity.CommonContent;
 import org.cqtguniversity.lqms.entity.Complaint;
 import org.cqtguniversity.lqms.mapper.ComplaintMapper;
 import org.cqtguniversity.lqms.pojo.dto.commoncontent.CommonContentDTO;
+import org.cqtguniversity.lqms.pojo.dto.complaint.ComplaintDTO;
 import org.cqtguniversity.lqms.pojo.dto.complaint.SaveComplaintDTO;
 import org.cqtguniversity.lqms.pojo.dto.complaint.SearchComplaintDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
@@ -19,10 +20,12 @@ import org.cqtguniversity.lqms.pojo.vo.complaint.SimpleComplaintVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ParamErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.SuccessVO;
+import org.cqtguniversity.lqms.service.AsyncTaskService;
 import org.cqtguniversity.lqms.service.CommonContentService;
 import org.cqtguniversity.lqms.service.ComplaintService;
 import org.cqtguniversity.lqms.service.NumberRuleService;
 import org.cqtguniversity.lqms.util.MyDateUtil;
+import org.cqtguniversity.lqms.util.email.WangYiEmail;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,6 +54,9 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
     @Autowired
     private CommonContentService commonContentService;
 
+    @Autowired
+    private AsyncTaskService asyncTaskService;
+
     // 构造方法注入相关服务
     @Autowired
     public ComplaintServiceImpl(ComplaintMapper complaintMapper, NumberRuleService numberRuleService) {
@@ -71,6 +77,30 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
         BeanUtils.copyProperties(complaint, simpleComplaintVO, "complainantStatus");
         simpleComplaintVO.setComplainantStatus(complaint.getComplainantStatus() == 0? "未受理" : "已受理");
         return simpleComplaintVO;
+    }
+
+    @Override
+    public ComplaintDTO selectComplaintDTO(Long id) {
+        Complaint complaint = complaintMapper.selectById(id);
+        if (null == complaint || 1 == complaint.getIsDeleted()) {
+            System.out.println("存在错误的投诉编号，请检查投诉表");
+            return null;
+        }
+        ComplaintDTO complaintDTO = new ComplaintDTO();
+        BeanUtils.copyProperties(complaint, complaintDTO);
+        return complaintDTO;
+    }
+
+    @Override
+    public boolean acceptComplaintDTO(Long id) {
+        Complaint complaint = complaintMapper.selectById(id);
+        if (null == complaint) {
+            System.out.println("存在错误的投诉建议，请检查投诉表");
+            return false;
+        }
+        complaint.setComplainantStatus(1);
+        complaint.updateById();
+        return true;
     }
 
     @Override
@@ -106,6 +136,10 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
         complaint.setIsDeleted(0);
         //插入数据
         complaintMapper.insert(complaint);
+        // 发送邮件给处理人员
+        asyncTaskService.complaintEmail(saveComplaintDTO.getComplaintTitle(), saveComplaintDTO.getComplaintDetail());
+        // 发送邮件给投诉人
+        asyncTaskService.complaintSendEmail(saveComplaintDTO.getContactEmail(), saveComplaintDTO.getComplainantName());
         return SuccessVO.getInstance();
     }
 

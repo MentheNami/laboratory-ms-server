@@ -111,7 +111,8 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
         sessionUserVO.setRealName(userInfoDTO.getRealName());
         // 设置用户姓名
         sessionUserVO.setUserName(userAccount.getUserName());
-
+        // 设置用户用户信息Id
+        sessionUserVO.setUserInfoId(userInfoDTO.getId());
         // 设置角色
         sessionUserVO.setRole(ConfigOptionConstruct.getOptionById(roleDTO.getRoleName()).getKey());
         // 设置角色级别

@@ -2,6 +2,7 @@ package org.cqtguniversity.lqms.service;
 
 import org.cqtguniversity.lqms.entity.Complaint;
 import com.baomidou.mybatisplus.service.IService;
+import org.cqtguniversity.lqms.pojo.dto.complaint.ComplaintDTO;
 import org.cqtguniversity.lqms.pojo.dto.complaint.SaveComplaintDTO;
 import org.cqtguniversity.lqms.pojo.dto.complaint.SearchComplaintDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
@@ -15,6 +16,11 @@ import org.cqtguniversity.lqms.pojo.vo.BaseVO;
  * @since 2018-05-02
  */
 public interface ComplaintService extends IService<Complaint> {
+
+    ComplaintDTO selectComplaintDTO(Long id);
+
+    boolean acceptComplaintDTO(Long id);
+
     //增加投诉
     BaseVO addComplaint(SaveComplaintDTO saveComplaintDTO);
     //删除投诉通过ID

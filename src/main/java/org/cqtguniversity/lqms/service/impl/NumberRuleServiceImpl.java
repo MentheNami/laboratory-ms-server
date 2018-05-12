@@ -13,11 +13,13 @@ import org.cqtguniversity.lqms.pojo.vo.DetailResultVO;
 import org.cqtguniversity.lqms.pojo.vo.ListVO;
 import org.cqtguniversity.lqms.pojo.vo.config.KeyAndValueVO;
 import org.cqtguniversity.lqms.pojo.vo.numberrule.NumberRuleVO;
+import org.cqtguniversity.lqms.pojo.vo.numberrule.SimpleNumberRuleVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ParamErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.SuccessVO;
 import org.cqtguniversity.lqms.service.NumberRuleService;
 import org.cqtguniversity.lqms.util.ConfigOptionConstruct;
+import org.cqtguniversity.lqms.util.MyDateUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,21 +49,23 @@ public class NumberRuleServiceImpl extends ServiceImpl<NumberRuleMapper, NumberR
         this.numberRuleMapper = numberRuleMapper;
     }
 
-    private NumberRuleVO transferNumberRuleVO(NumberRule numberRule) {
+    private SimpleNumberRuleVO transferSimpleNumberRuleVO(NumberRule numberRule) {
         //创建一个编号规则VO
-        NumberRuleVO  numberRuleVO = new NumberRuleVO();
+        SimpleNumberRuleVO  simpleNumberRuleVO = new SimpleNumberRuleVO();
         //设置ID
-        numberRuleVO.setId(numberRule.getId());
+        simpleNumberRuleVO.setId(numberRule.getId());
         //设置前缀编号
-        numberRuleVO.setPrefixNumber(numberRule.getPrefixNumber());
+        simpleNumberRuleVO.setPrefixNumber(numberRule.getPrefixNumber());
+        simpleNumberRuleVO.setGmtCreate(MyDateUtil.simpleDateFormat(numberRule.getGmtCreate(), MyDateUtil.YYYY_MM_DD_C));
+        DecimalFormat decimalFormat = new DecimalFormat("00000");
         //设置下一个编号
-        numberRuleVO.setNextNumber(numberRule.getNextNumber());
+        simpleNumberRuleVO.setNextNumber(decimalFormat.format(numberRule.getNextNumber()));
         //通过规则类型ID获取规则类型KeyAndValueVO对象
         KeyAndValueVO ruleTypeKeyAndValueVO = ConfigOptionConstruct.getOptionById(numberRule.getRuleType());
         //设置规则类型
-        numberRuleVO.setRuleType(ruleTypeKeyAndValueVO == null? "" : ruleTypeKeyAndValueVO.getKey());
+        simpleNumberRuleVO.setRuleType(ruleTypeKeyAndValueVO == null? "" : ruleTypeKeyAndValueVO.getKey());
         //返回规则类型VO
-        return numberRuleVO;
+        return simpleNumberRuleVO;
     }
 
     private String getPrefix(String numType, String type) {
@@ -188,7 +192,12 @@ public class NumberRuleServiceImpl extends ServiceImpl<NumberRuleMapper, NumberR
         }
         NumberRuleVO numberRuleVO = new NumberRuleVO();
         //复制基本信息除了创建时间、修改时间、isDeleted
-        BeanUtils.copyProperties(numberRule, numberRuleVO, "gmtCreate", "gmt_modified", "isDeleted");
+        numberRuleVO.setId(numberRule.getId());
+        DecimalFormat decimalFormat = new DecimalFormat("00000");
+        numberRuleVO.setNextNumber(decimalFormat.format(numberRule.getNextNumber()));
+        numberRuleVO.setPrefixNumber(numberRule.getPrefixNumber());
+        numberRuleVO.setRuleType(numberRule.getRuleType());
+        numberRuleVO.setGmtCreate(MyDateUtil.simpleDateFormat(numberRule.getGmtCreate(), MyDateUtil.YYYY_MM_DD_C));
         return new DetailResultVO(numberRuleVO);
     }
 
@@ -216,8 +225,8 @@ public class NumberRuleServiceImpl extends ServiceImpl<NumberRuleMapper, NumberR
             List<NumberRule> numberRuleList = numberRuleMapper.selectPage(page, entityWrapper);
             if (null != numberRuleList && 0 != numberRuleList.size()) {
                 // 通过Java8 Stream流操作语法糖  将投诉实体集合翻译为VO集合
-                List<NumberRuleVO> complaintVOList = numberRuleList.stream().map(this::transferNumberRuleVO).collect(Collectors.toList());
-                return new ListVO<>(total, page, complaintVOList);
+                List<SimpleNumberRuleVO> simpleNumberRuleVOList = numberRuleList.stream().map(this::transferSimpleNumberRuleVO).collect(Collectors.toList());
+                return new ListVO<>(total, page, simpleNumberRuleVOList);
             }
         }
         return new ListVO<>(0, searchNumberRuleDTO.getPage(), searchNumberRuleDTO.getRows(), new ArrayList<>());

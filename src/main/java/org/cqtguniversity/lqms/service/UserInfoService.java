@@ -10,6 +10,8 @@ import org.cqtguniversity.lqms.pojo.dto.userinfo.UserInfoDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 import org.cqtguniversity.lqms.pojo.vo.userinfo.UserInfoVO;
 
+import java.util.List;
+
 /**
  * 用户表 服务类
  * @author Wang26211
@@ -17,10 +19,13 @@ import org.cqtguniversity.lqms.pojo.vo.userinfo.UserInfoVO;
  */
 public interface UserInfoService extends IService<UserInfo> {
 
-    // 获取一个用户信息
+    // 通过手机号注册一个用户
     Long getUserInfo(String cellPhone);
 
+    // 获取一个用户的信息
     UserInfoDTO selectUserInfoDTO(Long id);
+
+    List<Long> selectIdsByRealName(String realName);
 
     UserInfoVO selectByUserName(String userName);
 	//增加用户

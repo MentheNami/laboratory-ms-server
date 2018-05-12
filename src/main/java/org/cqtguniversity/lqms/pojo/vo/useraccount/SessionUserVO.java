@@ -14,6 +14,10 @@ public class SessionUserVO extends BaseVO {
      */
     private String userName;
     /**
+     * 用户信息Id
+     */
+    private Long userInfoId;
+    /**
      * 真实姓名
      */
     private String realName;
@@ -32,6 +36,14 @@ public class SessionUserVO extends BaseVO {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public Long getUserInfoId() {
+        return userInfoId;
+    }
+
+    public void setUserInfoId(Long userInfoId) {
+        this.userInfoId = userInfoId;
     }
 
     public String getRealName() {
@@ -60,8 +72,9 @@ public class SessionUserVO extends BaseVO {
 
     @Override
     public String toString() {
-        return "SessionUserVO{" +
+        return super.toString() + "SessionUserVO{" +
                 "userName='" + userName + '\'' +
+                ", userInfoId='" + userInfoId + '\'' +
                 ", realName='" + realName + '\'' +
                 ", role='" + role + '\'' +
                 ", level=" + level +

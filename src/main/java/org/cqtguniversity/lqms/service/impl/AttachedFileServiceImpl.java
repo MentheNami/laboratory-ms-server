@@ -13,6 +13,11 @@ import org.cqtguniversity.lqms.service.NumberRuleService;
 import org.cqtguniversity.lqms.util.ConfigOptionConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -93,5 +98,27 @@ public class AttachedFileServiceImpl extends ServiceImpl<AttachedFileMapper, Att
             return new ErrorVO("文件删除错误");
         }
 
+    }
+
+    @Override
+    public ResponseEntity<InputStreamResource> downloadFile(Long id) throws IOException {
+        AttachedFile attachedFile = attachedFileMapper.selectById(id);
+        if (null == attachedFile) {
+            return null;
+        }
+        String filePath = pathHead + attachedFile.getFilePath();
+        String fileName = attachedFile.getFileName() + "." + attachedFile.getFileExtension();
+        FileSystemResource file = new FileSystemResource(filePath);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Content-Disposition", String.format("attachment; filename=%s", new String(fileName.getBytes("UTF-8"), "ISO-8859-1")));
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentLength(file.contentLength())
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(new InputStreamResource(file.getInputStream()));
     }
 }

@@ -4,7 +4,11 @@ import org.cqtguniversity.lqms.entity.AttachedFile;
 import com.baomidou.mybatisplus.service.IService;
 import org.cqtguniversity.lqms.pojo.dto.file.SaveAttachedFileDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 /**
  * <p>
@@ -17,4 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface AttachedFileService extends IService<AttachedFile> {
 
     BaseVO uploadAttachedFile(MultipartFile multipartFile, SaveAttachedFileDTO saveAttachedFileDTO);
+
+    ResponseEntity<InputStreamResource> downloadFile(Long id) throws IOException;
+
 }
