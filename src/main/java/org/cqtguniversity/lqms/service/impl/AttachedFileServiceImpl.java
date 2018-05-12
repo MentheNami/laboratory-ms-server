@@ -1,16 +1,24 @@
 package org.cqtguniversity.lqms.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import org.cqtguniversity.lqms.construct.NumTypeConstruct;
 import org.cqtguniversity.lqms.entity.AttachedFile;
 import org.cqtguniversity.lqms.mapper.AttachedFileMapper;
 import org.cqtguniversity.lqms.pojo.dto.file.SaveAttachedFileDTO;
+import org.cqtguniversity.lqms.pojo.dto.file.SearchAttachedFileDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 import org.cqtguniversity.lqms.pojo.vo.DetailResultVO;
+import org.cqtguniversity.lqms.pojo.vo.ListVO;
+import org.cqtguniversity.lqms.pojo.vo.file.SimpleAttachedFileVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ErrorVO;
+import org.cqtguniversity.lqms.pojo.vo.result.ParamErrorVO;
 import org.cqtguniversity.lqms.service.AttachedFileService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.cqtguniversity.lqms.service.NumberRuleService;
+import org.cqtguniversity.lqms.service.UserInfoService;
 import org.cqtguniversity.lqms.util.ConfigOptionConstruct;
+import org.cqtguniversity.lqms.util.MyDateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -19,12 +27,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -41,6 +53,9 @@ public class AttachedFileServiceImpl extends ServiceImpl<AttachedFileMapper, Att
 
     private final NumberRuleService numberRuleService;
 
+    @Autowired
+    private UserInfoService userInfoService;
+
     @Value("${file.uploadAndDownload.pathHead}")
     private String pathHead;
 
@@ -48,6 +63,54 @@ public class AttachedFileServiceImpl extends ServiceImpl<AttachedFileMapper, Att
     public AttachedFileServiceImpl(AttachedFileMapper attachedFileMapper, NumberRuleService numberRuleService) {
         this.attachedFileMapper = attachedFileMapper;
         this.numberRuleService = numberRuleService;
+    }
+
+    /**
+     * 翻译文件信息
+     * @param attachedFile 文件实体
+     * @return 文件VO
+     */
+    private SimpleAttachedFileVO transferSimpleAttachedFileVO(AttachedFile attachedFile) {
+        SimpleAttachedFileVO simpleAttachedFileVO = new SimpleAttachedFileVO();
+        simpleAttachedFileVO.setId(attachedFile.getId());
+        simpleAttachedFileVO.setFileName(attachedFile.getFileName() + attachedFile.getFileExtension());
+        simpleAttachedFileVO.setFileNo(attachedFile.getFileNo());
+        simpleAttachedFileVO.setFileType(ConfigOptionConstruct.getOptionById(attachedFile.getFileType()).getKey());
+        simpleAttachedFileVO.setGmtCreate(MyDateUtil.simpleDateFormat(attachedFile.getGmtCreate(), MyDateUtil.YYYY_MM_DD_C));
+        simpleAttachedFileVO.setUploadedBy(userInfoService.selectUserInfoDTO(attachedFile.getUploadedBy()).getRealName());
+        return simpleAttachedFileVO;
+    }
+
+    @Override
+    public BaseVO getAttachedFileList(SearchAttachedFileDTO searchAttachedFileDTO) {
+        if (!searchAttachedFileDTO.isLegitimate()) {
+            return ParamErrorVO.getInstance();
+        }
+        EntityWrapper<AttachedFile> entityWrapper = new EntityWrapper<>();
+        if (!StringUtils.isEmpty(searchAttachedFileDTO.getFileNo())) {
+            entityWrapper.like("file_no", searchAttachedFileDTO.getFileNo());
+        }
+        if (!StringUtils.isEmpty(searchAttachedFileDTO.getFileName())) {
+            entityWrapper.like("file_name", searchAttachedFileDTO.getFileName());
+        }
+        if (!StringUtils.isEmpty(searchAttachedFileDTO.getUploadedBy())) {
+            List<Long> userIds = userInfoService.selectIdsByRealName(searchAttachedFileDTO.getUploadedBy());
+            entityWrapper.in("uploaded_by", userIds);
+        }
+        if (null != searchAttachedFileDTO.getFileType()) {
+            entityWrapper.where("file_type={0}", searchAttachedFileDTO.getFileType());
+        }
+        int total = attachedFileMapper.selectCount(entityWrapper);
+        Page page = new Page(searchAttachedFileDTO.getPage(), searchAttachedFileDTO.getRows());
+        if (0 != total) {
+            entityWrapper.orderBy("gmt_modified");
+            List<AttachedFile> attachedFileList = attachedFileMapper.selectPage(page, entityWrapper);
+            if (null != attachedFileList && 0 != attachedFileList.size()) {
+                List<SimpleAttachedFileVO> simpleAttachedFileVOList = attachedFileList.stream().map(this::transferSimpleAttachedFileVO).collect(Collectors.toList());
+                return new ListVO<>(total, page, simpleAttachedFileVOList);
+            }
+        }
+        return new ListVO<>(0, page, new ArrayList<>());
     }
 
     @Override

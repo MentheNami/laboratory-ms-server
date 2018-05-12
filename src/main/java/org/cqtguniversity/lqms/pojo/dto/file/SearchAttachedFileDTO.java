@@ -19,7 +19,7 @@ public class SearchAttachedFileDTO extends SearchDTO {
     /**
      * 上传者
      */
-    private Long uploadedBy;
+    private String uploadedBy;
     /**
      * 文件类型
      */
@@ -37,11 +37,11 @@ public class SearchAttachedFileDTO extends SearchDTO {
         this.fileNo = fileNo;
     }
 
-    public Long getUploadedBy() {
+    public String getUploadedBy() {
         return uploadedBy;
     }
 
-    public void setUploadedBy(Long uploadedBy) {
+    public void setUploadedBy(String uploadedBy) {
         this.uploadedBy = uploadedBy;
     }
 

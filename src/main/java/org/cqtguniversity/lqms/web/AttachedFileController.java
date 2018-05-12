@@ -4,7 +4,9 @@ package org.cqtguniversity.lqms.web;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.cqtguniversity.lqms.entity.AttachedFile;
+import org.cqtguniversity.lqms.pojo.dto.complaintaccept.SaveComplaintAcceptDTO;
 import org.cqtguniversity.lqms.pojo.dto.file.SaveAttachedFileDTO;
+import org.cqtguniversity.lqms.pojo.dto.file.SearchAttachedFileDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 import org.cqtguniversity.lqms.service.AttachedFileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +48,12 @@ public class AttachedFileController {
     @GetMapping(value = "/downloadFile")
     public ResponseEntity<InputStreamResource> downloadFile(Long id) throws IOException {
         return attachedFileService.downloadFile(id);
+    }
+
+    @ApiOperation(value = "获取文件列表")
+    @GetMapping(value = "/getAttachedFileList")
+    public BaseVO getAttachedFileList(SearchAttachedFileDTO searchAttachedFileDTO) {
+        return attachedFileService.getAttachedFileList(searchAttachedFileDTO);
     }
 	
 }

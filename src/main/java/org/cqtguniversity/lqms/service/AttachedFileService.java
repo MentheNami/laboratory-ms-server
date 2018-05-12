@@ -3,6 +3,7 @@ package org.cqtguniversity.lqms.service;
 import org.cqtguniversity.lqms.entity.AttachedFile;
 import com.baomidou.mybatisplus.service.IService;
 import org.cqtguniversity.lqms.pojo.dto.file.SaveAttachedFileDTO;
+import org.cqtguniversity.lqms.pojo.dto.file.SearchAttachedFileDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,8 @@ import java.io.IOException;
  * @since 2018-05-04
  */
 public interface AttachedFileService extends IService<AttachedFile> {
+
+    BaseVO getAttachedFileList(SearchAttachedFileDTO searchAttachedFileDTO);
 
     BaseVO uploadAttachedFile(MultipartFile multipartFile, SaveAttachedFileDTO saveAttachedFileDTO);
 
