@@ -15,9 +15,9 @@ public class SimpleComplaintVO extends BaseVO {
      */
     private Long id;
     /**
-     * 创建时间
+     * 投诉事件
      */
-    private Date gmtCreate;
+    private String gmtCreate;
     /**
      * 投诉方名称
      */
@@ -33,7 +33,7 @@ public class SimpleComplaintVO extends BaseVO {
     /**
      * 联系电话
      */
-    private Integer contactPhone;
+    private String contactPhone;
     /**
      * 联系邮箱
      */
@@ -63,11 +63,11 @@ public class SimpleComplaintVO extends BaseVO {
         this.id = id;
     }
 
-    public Date getGmtCreate() {
+    public String getGmtCreate() {
         return gmtCreate;
     }
 
-    public void setGmtCreate(Date gmtCreate) {
+    public void setGmtCreate(String gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
@@ -95,11 +95,11 @@ public class SimpleComplaintVO extends BaseVO {
         this.contactName = contactName;
     }
 
-    public Integer getContactPhone() {
+    public String getContactPhone() {
         return contactPhone;
     }
 
-    public void setContactPhone(Integer contactPhone) {
+    public void setContactPhone(String contactPhone) {
         this.contactPhone = contactPhone;
     }
 

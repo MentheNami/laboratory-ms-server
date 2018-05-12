@@ -74,7 +74,17 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
         // 创建实验室VO
         SimpleComplaintVO simpleComplaintVO = new SimpleComplaintVO();
         // 复制基本信息
-        BeanUtils.copyProperties(complaint, simpleComplaintVO, "complainantStatus");
+        simpleComplaintVO.setId(complaint.getId());
+        simpleComplaintVO.setAddress(complaint.getAddress());
+        simpleComplaintVO.setComplainantName(complaint.getComplainantName());
+        simpleComplaintVO.setComplaintDetail(commonContentService.selectCommonContentDTO(complaint.getComplaintDetail()).getContent());
+        simpleComplaintVO.setComplaintNo(complaint.getComplaintNo());
+        simpleComplaintVO.setAddress(complaint.getAddress());
+        simpleComplaintVO.setComplaintTitle(complaint.getComplaintTitle());
+        simpleComplaintVO.setContactEmail(complaint.getContactEmail());
+        simpleComplaintVO.setContactName(complaint.getContactName());
+        simpleComplaintVO.setContactPhone(complaint.getContactPhone());
+        simpleComplaintVO.setGmtCreate(MyDateUtil.simpleDateFormat(complaint.getGmtCreate(), MyDateUtil.YYYY_MM_DD_C));
         simpleComplaintVO.setComplainantStatus(complaint.getComplainantStatus() == 0? "未受理" : "已受理");
         return simpleComplaintVO;
     }
