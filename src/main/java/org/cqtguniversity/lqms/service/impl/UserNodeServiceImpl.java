@@ -1,5 +1,6 @@
 package org.cqtguniversity.lqms.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.cqtguniversity.lqms.entity.UserInfo;
 import org.cqtguniversity.lqms.entity.UserNode;
 import org.cqtguniversity.lqms.mapper.UserNodeMapper;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.Calendar;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -31,6 +34,12 @@ public class UserNodeServiceImpl extends ServiceImpl<UserNodeMapper, UserNode> i
     @Autowired
     private UserNodeMapper userNodeMapper;
 
+    private UserNodeDTO transferUserNodeDTO(UserNode userNode) {
+        UserNodeDTO userNodeDTO = new UserNodeDTO();
+        BeanUtils.copyProperties(userNode, userNodeDTO);
+        return userNodeDTO;
+    }
+
     @Override
     public void getUserNode(String cellPhone, Long userAccountId) {
         UserNode userNode = new UserNode();
@@ -40,10 +49,21 @@ public class UserNodeServiceImpl extends ServiceImpl<UserNodeMapper, UserNode> i
         userNode.setGmtCreate(calendar.getTime());
         userNode.setGmtModified(calendar.getTime());
         userNode.setInfoId(userInfoService.getUserInfo(cellPhone));
-        // 2代表普通用户（游客）
+        // 2代表基本用户（游客）
         userNode.setRoleId(2L);
         userNode.setUserId(userAccountId);
         userNode.insert();
+    }
+
+    @Override
+    public List<UserNodeDTO> getUserNodeDTOListByRoleId(Long roleId) {
+        EntityWrapper<UserNode> entityWrapper = new EntityWrapper<>();
+        entityWrapper.where("role_id={0}", roleId);
+        List<UserNode> userNodeList = userNodeMapper.selectList(entityWrapper);
+        if (null == userNodeList || 0 == userNodeList.size()) {
+            return null;
+        }
+        return userNodeList.stream().map(this::transferUserNodeDTO).collect(Collectors.toList());
     }
 
     @Override

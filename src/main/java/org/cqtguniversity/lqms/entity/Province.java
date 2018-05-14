@@ -12,14 +12,14 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 部门信息
+ * 
  * </p>
  *
  * @author TangShengYu
- * @since 2018-04-30
+ * @since 2018-05-13
  */
-@TableName("department")
-public class Department extends Model<Department> {
+@TableName("province")
+public class Province extends Model<Province> {
 
     private static final long serialVersionUID = 1L;
 
@@ -39,14 +39,11 @@ public class Department extends Model<Department> {
 	@TableField("gmt_modified")
 	private Date gmtModified;
     /**
-     * 部门名称
+     * 省份名称
      */
-	@TableField("department_name")
-	private String departmentName;
-    /**
-     * 部门负责人
-     */
-	private Long principal;
+	@TableField("province_name")
+	private String provinceName;
+
 
 	public Long getId() {
 		return id;
@@ -72,20 +69,12 @@ public class Department extends Model<Department> {
 		this.gmtModified = gmtModified;
 	}
 
-	public String getDepartmentName() {
-		return departmentName;
+	public String getProvinceName() {
+		return provinceName;
 	}
 
-	public void setDepartmentName(String departmentName) {
-		this.departmentName = departmentName;
-	}
-
-	public Long getPrincipal() {
-		return principal;
-	}
-
-	public void setPrincipal(Long principal) {
-		this.principal = principal;
+	public void setProvinceName(String provinceName) {
+		this.provinceName = provinceName;
 	}
 
 	@Override
@@ -95,12 +84,11 @@ public class Department extends Model<Department> {
 
 	@Override
 	public String toString() {
-		return "Department{" +
+		return "Province{" +
 			"id=" + id +
 			", gmtCreate=" + gmtCreate +
 			", gmtModified=" + gmtModified +
-			", departmentName=" + departmentName +
-			", principal=" + principal +
+			", provinceName=" + provinceName +
 			"}";
 	}
 }

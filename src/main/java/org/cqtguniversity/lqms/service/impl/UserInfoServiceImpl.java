@@ -4,10 +4,12 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.cqtguniversity.lqms.entity.UserInfo;
+import org.cqtguniversity.lqms.entity.UserNode;
 import org.cqtguniversity.lqms.mapper.UserInfoMapper;
 import org.cqtguniversity.lqms.pojo.dto.userinfo.SaveUserInfoDTO;
 import org.cqtguniversity.lqms.pojo.dto.userinfo.SearchUserInfoDTO;
 import org.cqtguniversity.lqms.pojo.dto.userinfo.UserInfoDTO;
+import org.cqtguniversity.lqms.pojo.dto.usernode.UserNodeDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 import org.cqtguniversity.lqms.pojo.vo.DetailResultVO;
 import org.cqtguniversity.lqms.pojo.vo.ListVO;
@@ -17,6 +19,7 @@ import org.cqtguniversity.lqms.pojo.vo.result.SuccessVO;
 import org.cqtguniversity.lqms.pojo.vo.userinfo.SimpleUserInfoVO;
 import org.cqtguniversity.lqms.pojo.vo.userinfo.UserInfoVO;
 import org.cqtguniversity.lqms.service.UserInfoService;
+import org.cqtguniversity.lqms.service.UserNodeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +41,10 @@ import java.util.stream.Collectors;
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> implements UserInfoService {
     //引用用户服务
     private final  UserInfoMapper userInfoMapper;
+
+    @Autowired
+    private UserNodeService userNodeService;
+
     @Autowired
     public UserInfoServiceImpl(UserInfoMapper userInfoMapper) {
         this.userInfoMapper = userInfoMapper;
@@ -204,6 +211,14 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         }
         if (!StringUtils.isEmpty(searchUserInfoDTO.getEmail())){
             entityWrapper.like("email",searchUserInfoDTO.getEmail());
+        }
+        // 携带用户角色查询
+        if (null != searchUserInfoDTO.getRoleId()) {
+            List<UserNodeDTO> userNodeDTOList = userNodeService.getUserNodeDTOListByRoleId(searchUserInfoDTO.getRoleId());
+            if (null != userNodeDTOList && 0 != userNodeDTOList.size()) {
+                List<Long> userInfoIdList = userNodeDTOList.stream().map(UserNodeDTO::getInfoId).collect(Collectors.toList());
+                entityWrapper.in("id", userInfoIdList);
+            }
         }
         //查询总条数
         int total = userInfoMapper.selectCount(entityWrapper);

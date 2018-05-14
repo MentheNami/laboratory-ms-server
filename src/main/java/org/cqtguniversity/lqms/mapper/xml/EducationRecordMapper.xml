@@ -10,7 +10,6 @@
 		<result column="user_id" property="userId" />
 		<result column="graduation_date" property="graduationDate" />
 		<result column="school" property="school" />
-		<result column="major" property="major" />
 		<result column="academic_qualifications" property="academicQualifications" />
 		<result column="academic_degree" property="academicDegree" />
 		<result column="graduation_certificate_no" property="graduationCertificateNo" />

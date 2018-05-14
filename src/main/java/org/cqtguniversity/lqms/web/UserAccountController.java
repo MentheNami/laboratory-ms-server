@@ -80,6 +80,7 @@ public class UserAccountController {
     public BaseVO selectById(long id) {
         return userAccountService.selectById(id);
     }
+
     @ApiOperation(value = "查询用户账户列表")
     @GetMapping(value = "/getUserAccount")
     public BaseVO getUserAccount(SearchUserAccountDTO searchUserAccountDTO) {

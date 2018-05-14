@@ -8,10 +8,7 @@ import org.cqtguniversity.lqms.pojo.dto.laboratory.SearchLaboratoryDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 
 /**
- * <p>
  * 实验室表 服务类
- * </p>
- *
  * @author TangShengYu
  * @since 2018-04-30
  */

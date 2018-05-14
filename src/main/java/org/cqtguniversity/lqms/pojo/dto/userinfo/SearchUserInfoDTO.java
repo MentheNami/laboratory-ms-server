@@ -1,6 +1,5 @@
 package org.cqtguniversity.lqms.pojo.dto.userinfo;
 
-import org.cqtguniversity.lqms.pojo.dto.BaseDTO;
 import org.cqtguniversity.lqms.pojo.dto.SearchDTO;
 
 /**
@@ -8,6 +7,11 @@ import org.cqtguniversity.lqms.pojo.dto.SearchDTO;
  * @create 2018- 05- 04- 15:58
  */
 public class SearchUserInfoDTO extends SearchDTO{
+
+    /**
+     * 用户角色
+     */
+    private Long roleId;
     /**
      * 真实姓名
      */
@@ -20,6 +24,14 @@ public class SearchUserInfoDTO extends SearchDTO{
      * 邮箱
      */
     private String email;
+
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
+    }
 
     public String getRealName() {
         return realName;
@@ -47,8 +59,9 @@ public class SearchUserInfoDTO extends SearchDTO{
 
     @Override
     public String toString() {
-        return super.toString()+ "SearchUserInfoDTO{" +
-                "realName='" + realName + '\'' +
+        return super.toString() + "SearchUserInfoDTO{" +
+                "roleId=" + roleId +
+                ", realName='" + realName + '\'' +
                 ", cellPhone='" + cellPhone + '\'' +
                 ", email='" + email + '\'' +
                 '}';

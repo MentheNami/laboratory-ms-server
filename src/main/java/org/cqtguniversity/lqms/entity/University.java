@@ -12,19 +12,19 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 部门信息
+ * 
  * </p>
  *
  * @author TangShengYu
- * @since 2018-04-30
+ * @since 2018-05-13
  */
-@TableName("department")
-public class Department extends Model<Department> {
+@TableName("university")
+public class University extends Model<University> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 自增序号
+     * 序号自增
      */
 	@TableId(value="id", type= IdType.AUTO)
 	private Long id;
@@ -39,14 +39,28 @@ public class Department extends Model<Department> {
 	@TableField("gmt_modified")
 	private Date gmtModified;
     /**
-     * 部门名称
+     * 大学名称
      */
-	@TableField("department_name")
-	private String departmentName;
+	@TableField("university_name")
+	private String universityName;
     /**
-     * 部门负责人
+     * 身份Id
      */
-	private Long principal;
+	@TableField("province_id")
+	private Long provinceId;
+    /**
+     * 级别
+     */
+	private Long level;
+    /**
+     * 网站
+     */
+	private String website;
+    /**
+     * 城市
+     */
+	private String city;
+
 
 	public Long getId() {
 		return id;
@@ -72,20 +86,44 @@ public class Department extends Model<Department> {
 		this.gmtModified = gmtModified;
 	}
 
-	public String getDepartmentName() {
-		return departmentName;
+	public String getUniversityName() {
+		return universityName;
 	}
 
-	public void setDepartmentName(String departmentName) {
-		this.departmentName = departmentName;
+	public void setUniversityName(String universityName) {
+		this.universityName = universityName;
 	}
 
-	public Long getPrincipal() {
-		return principal;
+	public Long getProvinceId() {
+		return provinceId;
 	}
 
-	public void setPrincipal(Long principal) {
-		this.principal = principal;
+	public void setProvinceId(Long provinceId) {
+		this.provinceId = provinceId;
+	}
+
+	public Long getLevel() {
+		return level;
+	}
+
+	public void setLevel(Long level) {
+		this.level = level;
+	}
+
+	public String getWebsite() {
+		return website;
+	}
+
+	public void setWebsite(String website) {
+		this.website = website;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
 	}
 
 	@Override
@@ -95,12 +133,15 @@ public class Department extends Model<Department> {
 
 	@Override
 	public String toString() {
-		return "Department{" +
+		return "University{" +
 			"id=" + id +
 			", gmtCreate=" + gmtCreate +
 			", gmtModified=" + gmtModified +
-			", departmentName=" + departmentName +
-			", principal=" + principal +
+			", universityName=" + universityName +
+			", provinceId=" + provinceId +
+			", level=" + level +
+			", website=" + website +
+			", city=" + city +
 			"}";
 	}
 }

@@ -53,10 +53,6 @@ public class EducationRecord extends Model<EducationRecord> {
      */
 	private Long school;
     /**
-     * 专业
-     */
-	private Long major;
-    /**
      * 学历
      */
 	@TableField("academic_qualifications")
@@ -131,14 +127,6 @@ public class EducationRecord extends Model<EducationRecord> {
 		this.school = school;
 	}
 
-	public Long getMajor() {
-		return major;
-	}
-
-	public void setMajor(Long major) {
-		this.major = major;
-	}
-
 	public Long getAcademicQualifications() {
 		return academicQualifications;
 	}
@@ -193,7 +181,6 @@ public class EducationRecord extends Model<EducationRecord> {
 			", userId=" + userId +
 			", graduationDate=" + graduationDate +
 			", school=" + school +
-			", major=" + major +
 			", academicQualifications=" + academicQualifications +
 			", academicDegree=" + academicDegree +
 			", graduationCertificateNo=" + graduationCertificateNo +

@@ -55,9 +55,11 @@ public class UserInfoController {
     public BaseVO selectById(Long id) {
         return userInfoService.selectById(id);
     }
+
     @ApiOperation(value = "查询用户列表")
     @GetMapping(value = "/getUserInfo")
     public BaseVO getUserInfo(SearchUserInfoDTO searchUserAccountDTO) {
         return userInfoService.getUserInfoList(searchUserAccountDTO);
     }
+
 }

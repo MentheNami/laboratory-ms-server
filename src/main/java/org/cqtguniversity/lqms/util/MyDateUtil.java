@@ -3,6 +3,7 @@ package org.cqtguniversity.lqms.util;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -25,5 +26,23 @@ public class MyDateUtil {
         }
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
         return simpleDateFormat.format(date);
+    }
+
+    public static boolean isEqual(Date startTime, Date endTime) {
+        Calendar calDateA = Calendar.getInstance();
+        calDateA.setTime(startTime);
+
+        Calendar calDateB = Calendar.getInstance();
+        calDateB.setTime(endTime);
+
+        return calDateA.get(Calendar.YEAR) == calDateB.get(Calendar.YEAR)
+                && calDateA.get(Calendar.MONTH) == calDateB.get(Calendar.MONTH)
+                &&  calDateA.get(Calendar.DAY_OF_MONTH) == calDateB.get(Calendar.DAY_OF_MONTH);
+    }
+
+    public static Integer getPeriod(Date periodTime) {
+        Calendar calendarPeriod = Calendar.getInstance();
+        calendarPeriod.setTime(periodTime);
+        return calendarPeriod.get(Calendar.HOUR_OF_DAY);
     }
 }

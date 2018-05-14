@@ -4,9 +4,12 @@ package org.cqtguniversity.lqms.web;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.cqtguniversity.lqms.pojo.dto.complaint.SaveComplaintDTO;
+import org.cqtguniversity.lqms.pojo.dto.complaint.SearchComplaintDTO;
 import org.cqtguniversity.lqms.pojo.dto.complaintaccept.SaveComplaintAcceptDTO;
+import org.cqtguniversity.lqms.pojo.dto.complaintaccept.SearchComplaintAcceptDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 import org.cqtguniversity.lqms.service.ComplaintAcceptService;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,4 +37,11 @@ public class ComplaintAcceptController {
     public BaseVO handlingComplaint(HttpSession httpSession, SaveComplaintAcceptDTO saveComplaintAcceptDTO) {
         return complaintAcceptService.handlingComplaint(httpSession, saveComplaintAcceptDTO);
     }
+
+    @ApiOperation(value = "查询投诉处理列表")
+    @GetMapping(value = "/getComplaintAcceptList")
+    public BaseVO getComplaintAcceptList(SearchComplaintAcceptDTO searchComplaintAcceptDTO) {
+        return complaintAcceptService.getComplaintAcceptList(searchComplaintAcceptDTO);
+    }
+
 }

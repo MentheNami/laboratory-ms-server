@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.service.IService;
 import org.cqtguniversity.lqms.pojo.dto.usernode.UserNodeDTO;
 import org.cqtguniversity.lqms.pojo.vo.userinfo.UserInfoVO;
 
+import java.util.List;
+
 /**
  * <p>
  * 用户节点表 服务类
@@ -16,6 +18,8 @@ import org.cqtguniversity.lqms.pojo.vo.userinfo.UserInfoVO;
 public interface UserNodeService extends IService<UserNode> {
 
     void getUserNode(String cellPhone, Long userAccountId);
+
+    List<UserNodeDTO> getUserNodeDTOListByRoleId(Long roleId);
 
     UserNodeDTO selectByUserAccountId(Long userAccountID);
 
