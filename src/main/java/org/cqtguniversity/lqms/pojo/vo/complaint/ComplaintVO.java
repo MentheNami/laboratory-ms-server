@@ -24,18 +24,6 @@ public class ComplaintVO extends BaseVO {
      */
     private String complaintNo;
     /**
-     * 联系人
-     */
-    private String contactName;
-    /**
-     * 联系电话
-     */
-    private String contactPhone;
-    /**
-     * 联系邮箱
-     */
-    private String contactEmail;
-    /**
      * 地址
      */
     private String address;
@@ -84,30 +72,6 @@ public class ComplaintVO extends BaseVO {
         this.complaintNo = complaintNo;
     }
 
-    public String getContactName() {
-        return contactName;
-    }
-
-    public void setContactName(String contactName) {
-        this.contactName = contactName;
-    }
-
-    public String getContactPhone() {
-        return contactPhone;
-    }
-
-    public void setContactPhone(String contactPhone) {
-        this.contactPhone = contactPhone;
-    }
-
-    public String getContactEmail() {
-        return contactEmail;
-    }
-
-    public void setContactEmail(String contactEmail) {
-        this.contactEmail = contactEmail;
-    }
-
     public String getAddress() {
         return address;
     }
@@ -147,9 +111,6 @@ public class ComplaintVO extends BaseVO {
                 ", gmtCreate='" + gmtCreate + '\'' +
                 ", complainantName='" + complainantName + '\'' +
                 ", complaintNo='" + complaintNo + '\'' +
-                ", contactName='" + contactName + '\'' +
-                ", contactPhone='" + contactPhone + '\'' +
-                ", contactEmail='" + contactEmail + '\'' +
                 ", address='" + address + '\'' +
                 ", complaintTitle='" + complaintTitle + '\'' +
                 ", complaintDetail='" + complaintDetail + '\'' +

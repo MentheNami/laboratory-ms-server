@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.service.IService;
 import org.cqtguniversity.lqms.pojo.dto.educationrecord.SaveEducationRecordDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * <p>
  * 人员学历及学位记录 服务类
@@ -20,5 +22,8 @@ public interface EducationRecordService extends IService<EducationRecord> {
     BaseVO updateEducationRecord(SaveEducationRecordDTO saveEducationRecordDTO);
 
     BaseVO selectById(Long id);
+
+    // 获取个人档案学历
+    BaseVO getSelfEducationRecord(HttpSession httpSession);
 
 }

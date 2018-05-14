@@ -41,7 +41,7 @@ public class UserAccountController {
     @ApiOperation(value = "登录验证")
     @GetMapping(value = "/checkLogin")
     public BaseVO checkLogin(HttpSession httpSession) {
-        if (null == httpSession.getAttribute("sessionUserVO")) {
+        if (null == httpSession.getAttribute("sessionDTO")) {
             return new BooleanResultVO(false);
         } else {
             return new BooleanResultVO(true);

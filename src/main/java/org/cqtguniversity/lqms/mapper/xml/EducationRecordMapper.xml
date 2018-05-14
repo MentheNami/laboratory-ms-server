@@ -17,4 +17,8 @@
 		<result column="is_deleted" property="isDeleted" />
 	</resultMap>
 
+	<select id="selectByUserId" resultMap="BaseResultMap">
+		select * from education_record where user_id = #{userId}
+	</select>
+
 </mapper>

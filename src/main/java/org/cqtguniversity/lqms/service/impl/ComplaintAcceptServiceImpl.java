@@ -5,16 +5,17 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.cqtguniversity.lqms.entity.ComplaintAccept;
 import org.cqtguniversity.lqms.mapper.ComplaintAcceptMapper;
+import org.cqtguniversity.lqms.pojo.dto.SessionDTO;
 import org.cqtguniversity.lqms.pojo.dto.complaint.ComplaintDTO;
 import org.cqtguniversity.lqms.pojo.dto.complaintaccept.SaveComplaintAcceptDTO;
 import org.cqtguniversity.lqms.pojo.dto.complaintaccept.SearchComplaintAcceptDTO;
+import org.cqtguniversity.lqms.pojo.dto.userinfo.UserInfoDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 import org.cqtguniversity.lqms.pojo.vo.ListVO;
 import org.cqtguniversity.lqms.pojo.vo.complaintaccept.SimpleComplaintAcceptVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ParamErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.SuccessVO;
-import org.cqtguniversity.lqms.pojo.vo.useraccount.SessionUserVO;
 import org.cqtguniversity.lqms.service.*;
 import org.cqtguniversity.lqms.util.ConfigOptionConstruct;
 import org.cqtguniversity.lqms.util.MyDateUtil;
@@ -99,8 +100,8 @@ public class ComplaintAcceptServiceImpl extends ServiceImpl<ComplaintAcceptMappe
 
     @Override
     public BaseVO handlingComplaint(HttpSession httpSession, SaveComplaintAcceptDTO saveComplaintAcceptDTO) {
-        SessionUserVO sessionUserVO = (SessionUserVO) httpSession.getAttribute("sessionUserVO");
-        if (null == sessionUserVO) {
+        SessionDTO sessionDTO = (SessionDTO) httpSession.getAttribute("sessionDTO");
+        if (null == sessionDTO) {
             return new ErrorVO("用户未登陆");
         }
         ComplaintDTO complaintDTO = complaintService.selectComplaintDTO(saveComplaintAcceptDTO.getComplainId());
@@ -109,7 +110,7 @@ public class ComplaintAcceptServiceImpl extends ServiceImpl<ComplaintAcceptMappe
         }
         ComplaintAccept complaintAccept = new ComplaintAccept();
         // 设置投诉处理人
-        complaintAccept.setAcceptorBy(sessionUserVO.getUserInfoId());
+        complaintAccept.setAcceptorBy(sessionDTO.getUserInfoDTO().getId());
         // 设置处理投诉编号
         complaintAccept.setComplainId(saveComplaintAcceptDTO.getComplainId());
         // 设置处理意见
@@ -129,8 +130,9 @@ public class ComplaintAcceptServiceImpl extends ServiceImpl<ComplaintAcceptMappe
         if (!complaintService.acceptComplaintDTO(saveComplaintAcceptDTO.getComplainId())) {
             return ErrorVO.getInternalError();
         }
+        UserInfoDTO userInfoDTO = userInfoService.selectUserInfoDTO(complaintDTO.getUserId());
         // 发送邮件
-        asyncTaskService.acceptComplaintEmail(complaintDTO.getContactEmail(), "投诉编号：" + complaintDTO.getComplaintNo() + "【" + ConfigOptionConstruct.transferStatus(complaintAccept.getProcessingAdvice()) + "】", saveComplaintAcceptDTO.getProcessingContent() + "【受理人：" + sessionUserVO.getRealName() + "】");
+        asyncTaskService.acceptComplaintEmail(userInfoDTO.getEmail(), "投诉编号：" + complaintDTO.getComplaintNo() + "【" + ConfigOptionConstruct.transferStatus(complaintAccept.getProcessingAdvice()) + "】", saveComplaintAcceptDTO.getProcessingContent() + "【受理人：" + sessionDTO.getUserInfoDTO().getRealName() + "】");
         return SuccessVO.getInstance();
     }
 }

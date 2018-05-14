@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.cqtguniversity.lqms.entity.UserInfo;
-import org.cqtguniversity.lqms.entity.UserNode;
 import org.cqtguniversity.lqms.mapper.UserInfoMapper;
+import org.cqtguniversity.lqms.pojo.dto.SessionDTO;
 import org.cqtguniversity.lqms.pojo.dto.userinfo.SaveUserInfoDTO;
 import org.cqtguniversity.lqms.pojo.dto.userinfo.SearchUserInfoDTO;
 import org.cqtguniversity.lqms.pojo.dto.userinfo.UserInfoDTO;
@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import java.io.Serializable;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -195,12 +195,41 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     }
 
     @Override
+    public BaseVO getSelfInfo(HttpSession httpSession) {
+        SessionDTO sessionDTO = (SessionDTO) httpSession.getAttribute("sessionDTO");
+        if (null == sessionDTO) {
+            return new ErrorVO("用户未登陆");
+        }
+        return new DetailResultVO(getSimpleUserInfoVO(sessionDTO.getUserInfoDTO().getId()));
+    }
+
+    @Override
+    public SimpleUserInfoVO getSimpleUserInfoVO(Long id) {
+        UserInfo userInfo = userInfoMapper.selectById(id);
+        SimpleUserInfoVO simpleUserInfoVO = new SimpleUserInfoVO();
+        BeanUtils.copyProperties(userInfo, simpleUserInfoVO);
+        return simpleUserInfoVO;
+    }
+
+    @Override
     public BaseVO getUserInfoList(SearchUserInfoDTO searchUserInfoDTO) {
         //合理性判断
         if (!searchUserInfoDTO.isLegitimate()) {
             return ParamErrorVO.getInstance();
         }
         EntityWrapper<UserInfo> entityWrapper = new EntityWrapper<>();
+        // 携带用户角色查询
+        if (null != searchUserInfoDTO.getRoleId()) {
+            List<UserNodeDTO> userNodeDTOList = userNodeService.getUserNodeDTOListByRoleId(searchUserInfoDTO.getRoleId());
+            if (null != userNodeDTOList && 0 != userNodeDTOList.size()) {
+                // 该角色下存在用户
+                List<Long> userInfoIdList = userNodeDTOList.stream().map(UserNodeDTO::getInfoId).collect(Collectors.toList());
+                entityWrapper.in("id", userInfoIdList);
+            } else {
+                // 该角色下不存在用户
+                return new ListVO<>(new ArrayList<>());
+            }
+        }
         entityWrapper.where("is_deleted={0}",0);
         //增加模糊查询
         if(!StringUtils.isEmpty(searchUserInfoDTO.getCellPhone())){
@@ -211,14 +240,6 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         }
         if (!StringUtils.isEmpty(searchUserInfoDTO.getEmail())){
             entityWrapper.like("email",searchUserInfoDTO.getEmail());
-        }
-        // 携带用户角色查询
-        if (null != searchUserInfoDTO.getRoleId()) {
-            List<UserNodeDTO> userNodeDTOList = userNodeService.getUserNodeDTOListByRoleId(searchUserInfoDTO.getRoleId());
-            if (null != userNodeDTOList && 0 != userNodeDTOList.size()) {
-                List<Long> userInfoIdList = userNodeDTOList.stream().map(UserNodeDTO::getInfoId).collect(Collectors.toList());
-                entityWrapper.in("id", userInfoIdList);
-            }
         }
         //查询总条数
         int total = userInfoMapper.selectCount(entityWrapper);

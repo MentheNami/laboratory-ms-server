@@ -28,21 +28,13 @@ public class ComplaintDTO extends BaseDTO {
      */
     private String complainantName;
     /**
+     * 用户信息id
+     */
+    private Long userId;
+    /**
      * 投诉编号
      */
     private String complaintNo;
-    /**
-     * 联系人
-     */
-    private String contactName;
-    /**
-     * 联系电话
-     */
-    private String contactPhone;
-    /**
-     * 联系邮箱
-     */
-    private String contactEmail;
     /**
      * 地址
      */
@@ -92,36 +84,20 @@ public class ComplaintDTO extends BaseDTO {
         this.complainantName = complainantName;
     }
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
     public String getComplaintNo() {
         return complaintNo;
     }
 
     public void setComplaintNo(String complaintNo) {
         this.complaintNo = complaintNo;
-    }
-
-    public String getContactName() {
-        return contactName;
-    }
-
-    public void setContactName(String contactName) {
-        this.contactName = contactName;
-    }
-
-    public String getContactPhone() {
-        return contactPhone;
-    }
-
-    public void setContactPhone(String contactPhone) {
-        this.contactPhone = contactPhone;
-    }
-
-    public String getContactEmail() {
-        return contactEmail;
-    }
-
-    public void setContactEmail(String contactEmail) {
-        this.contactEmail = contactEmail;
     }
 
     public String getAddress() {
@@ -163,10 +139,8 @@ public class ComplaintDTO extends BaseDTO {
                 ", gmtCreate=" + gmtCreate +
                 ", gmtModified=" + gmtModified +
                 ", complainantName='" + complainantName + '\'' +
+                ", userId=" + userId +
                 ", complaintNo='" + complaintNo + '\'' +
-                ", contactName='" + contactName + '\'' +
-                ", contactPhone='" + contactPhone + '\'' +
-                ", contactEmail='" + contactEmail + '\'' +
                 ", address='" + address + '\'' +
                 ", complaintTitle='" + complaintTitle + '\'' +
                 ", complaintDetail=" + complaintDetail +

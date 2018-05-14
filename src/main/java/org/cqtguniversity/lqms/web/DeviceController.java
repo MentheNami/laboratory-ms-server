@@ -7,6 +7,7 @@ import org.cqtguniversity.lqms.pojo.dto.divece.SearchDeviceDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 import org.cqtguniversity.lqms.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,13 +57,13 @@ public class DeviceController {
     }
 
     @ApiOperation(value = "获取设备详情")
-    @PostMapping(value = "/selectDetail")
+    @GetMapping(value = "/selectDetail")
     public BaseVO selectDetail(Long id) {
         return deviceService.selectDetail(id);
     }
 
     @ApiOperation(value = "获取设备列表")
-    @PostMapping(value = "/getDeviceList")
+    @GetMapping(value = "/getDeviceList")
     public BaseVO getDeviceList(SearchDeviceDTO saveDeviceDTO) {
         return deviceService.getDeviceList(saveDeviceDTO);
     }

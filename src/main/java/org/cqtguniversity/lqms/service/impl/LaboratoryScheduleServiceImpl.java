@@ -1,9 +1,9 @@
 package org.cqtguniversity.lqms.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.cqtguniversity.lqms.entity.LaboratorySchedule;
 import org.cqtguniversity.lqms.mapper.LaboratoryScheduleMapper;
+import org.cqtguniversity.lqms.pojo.dto.SessionDTO;
 import org.cqtguniversity.lqms.pojo.dto.laboratory.LaboratoryDTO;
 import org.cqtguniversity.lqms.pojo.dto.laboratoryschedule.SaveLaboratoryScheduleDTO;
 import org.cqtguniversity.lqms.pojo.dto.laboratoryschedule.SearchLaboratoryScheduleDTO;
@@ -13,7 +13,6 @@ import org.cqtguniversity.lqms.pojo.vo.laboratoryschedule.LaboratoryScheduleFont
 import org.cqtguniversity.lqms.pojo.vo.result.ErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ParamErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.SuccessVO;
-import org.cqtguniversity.lqms.pojo.vo.useraccount.SessionUserVO;
 import org.cqtguniversity.lqms.service.LaboratoryScheduleService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.cqtguniversity.lqms.service.LaboratoryService;
@@ -46,8 +45,8 @@ public class LaboratoryScheduleServiceImpl extends ServiceImpl<LaboratorySchedul
 
     @Override
     public BaseVO addLaboratorySchedule(HttpSession httpSession, SaveLaboratoryScheduleDTO saveLaboratoryScheduleDTO) {
-        SessionUserVO sessionUserVO = (SessionUserVO) httpSession.getAttribute("sessionUserVO");
-        if (null == sessionUserVO) {
+        SessionDTO sessionDTO = (SessionDTO) httpSession.getAttribute("sessionDTO");
+        if (null == sessionDTO) {
             return new ErrorVO("用户未登陆");
         }
         if (null == saveLaboratoryScheduleDTO.getEndTime() || StringUtils.isEmpty(saveLaboratoryScheduleDTO.getInstruction())
@@ -98,7 +97,7 @@ public class LaboratoryScheduleServiceImpl extends ServiceImpl<LaboratorySchedul
         laboratorySchedule.setStartTime(saveLaboratoryScheduleDTO.getStartTime());
         laboratorySchedule.setLaboratoryId(saveLaboratoryScheduleDTO.getLaboratoryId());
         laboratorySchedule.setInstruction(saveLaboratoryScheduleDTO.getInstruction());
-        laboratorySchedule.setUserId(sessionUserVO.getUserInfoId());
+        laboratorySchedule.setUserId(sessionDTO.getUserInfoDTO().getId());
         Calendar calendar = Calendar.getInstance();
         laboratorySchedule.setGmtCreate(calendar.getTime());
         laboratorySchedule.setGmtModified(calendar.getTime());
@@ -108,8 +107,8 @@ public class LaboratoryScheduleServiceImpl extends ServiceImpl<LaboratorySchedul
 
     @Override
     public BaseVO acceptById(HttpSession httpSession, Long id, Integer scheduleStatus) {
-        SessionUserVO sessionUserVO = (SessionUserVO) httpSession.getAttribute("sessionUserVO");
-        if (null == sessionUserVO) {
+        SessionDTO sessionDTO = (SessionDTO) httpSession.getAttribute("sessionDTO");
+        if (null == sessionDTO) {
             return new ErrorVO("用户未登陆");
         }
         if (null == id) {
@@ -128,7 +127,7 @@ public class LaboratoryScheduleServiceImpl extends ServiceImpl<LaboratorySchedul
         }
         laboratorySchedule.setGmtModified(calendar.getTime());
         laboratorySchedule.setScheduleStatus(scheduleStatus);
-        laboratorySchedule.setCheckUser(sessionUserVO.getUserInfoId());
+        laboratorySchedule.setCheckUser(sessionDTO.getUserInfoDTO().getId());
         laboratorySchedule.updateById();
         return SuccessVO.getInstance();
     }

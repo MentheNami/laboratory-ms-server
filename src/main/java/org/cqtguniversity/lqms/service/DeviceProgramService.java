@@ -21,10 +21,13 @@ public interface DeviceProgramService extends IService<DeviceProgram> {
 
     //删除设备通过Id
     BaseVO removeById(Long id);
+
     //修改设备方案
     BaseVO updateDeviceProgram(SaveDeviceProgramDTO saveDeviceProgramDTO);
+
     //查询方案详情通过id
     BaseVO selectById(Long id);
+
     //查询方案列表
     BaseVO getDeviceProgramList(SearchDeviceProgramDTO searchDeviceProgramDTO);
 }

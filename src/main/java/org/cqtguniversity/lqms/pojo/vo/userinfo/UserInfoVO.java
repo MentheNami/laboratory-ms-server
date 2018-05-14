@@ -8,6 +8,7 @@ import org.cqtguniversity.lqms.pojo.vo.BaseVO;
  * @create 2018- 05- 04- 17:26
  */
 public class UserInfoVO extends BaseVO {
+
     /**
      * 序号-自增
      */

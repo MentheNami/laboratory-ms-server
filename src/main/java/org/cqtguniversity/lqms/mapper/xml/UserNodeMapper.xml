@@ -19,4 +19,10 @@
 		where user_id = #{userId};
 	</select>
 
+	<select id="selectByInfoId" resultMap="BaseResultMap">
+		select id, gmt_create, gmt_modified, user_id, info_id, role_id, department_id
+		from user_node
+		where info_id = #{infoId};
+	</select>
+
 </mapper>

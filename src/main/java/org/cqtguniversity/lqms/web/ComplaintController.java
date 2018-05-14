@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * 投诉表 前端控制器
  *
@@ -37,8 +39,8 @@ public class ComplaintController {
 
     @ApiOperation(value = "新增投诉")
     @PostMapping(value = "/addComplaint")
-    public BaseVO addComplaint(SaveComplaintDTO saveComplaintDTO) {
-        return complaintService.addComplaint(saveComplaintDTO);
+    public BaseVO addComplaint(HttpSession httpSession, SaveComplaintDTO saveComplaintDTO) {
+        return complaintService.addComplaint(httpSession, saveComplaintDTO);
     }
 
     @ApiOperation(value = "删除投诉通过ID")
@@ -64,4 +66,11 @@ public class ComplaintController {
     public BaseVO getComplaintList(SearchComplaintDTO searchComplaintDTO) {
         return complaintService.getComplaintList(searchComplaintDTO);
     }
+
+    @ApiOperation(value = "查询我的投诉")
+    @GetMapping(value = "/getMyComplaintList")
+    public BaseVO getMyComplaintList(HttpSession httpSession) {
+        return complaintService.getMyComplaintList(httpSession);
+    }
+
 }

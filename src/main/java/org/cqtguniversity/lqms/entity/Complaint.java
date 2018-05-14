@@ -49,20 +49,10 @@ public class Complaint extends Model<Complaint> {
 	@TableField("complaint_no")
 	private String complaintNo;
     /**
-     * 联系人
+     * 用户信息id
      */
-	@TableField("contact_name")
-	private String contactName;
-    /**
-     * 联系电话
-     */
-	@TableField("contact_phone")
-	private String contactPhone;
-    /**
-     * 联系邮箱
-     */
-	@TableField("contact_email")
-	private String contactEmail;
+	@TableField("user_id")
+	private Long userId;
     /**
      * 地址
      */
@@ -129,28 +119,12 @@ public class Complaint extends Model<Complaint> {
 		this.complaintNo = complaintNo;
 	}
 
-	public String getContactName() {
-		return contactName;
+	public Long getUserId() {
+		return userId;
 	}
 
-	public void setContactName(String contactName) {
-		this.contactName = contactName;
-	}
-
-	public String getContactPhone() {
-		return contactPhone;
-	}
-
-	public void setContactPhone(String contactPhone) {
-		this.contactPhone = contactPhone;
-	}
-
-	public String getContactEmail() {
-		return contactEmail;
-	}
-
-	public void setContactEmail(String contactEmail) {
-		this.contactEmail = contactEmail;
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 	public String getAddress() {
@@ -206,9 +180,7 @@ public class Complaint extends Model<Complaint> {
 			", gmtModified=" + gmtModified +
 			", complainantName=" + complainantName +
 			", complaintNo=" + complaintNo +
-			", contactName=" + contactName +
-			", contactPhone=" + contactPhone +
-			", contactEmail=" + contactEmail +
+			", userId=" + userId +
 			", address=" + address +
 			", complaintTitle=" + complaintTitle +
 			", complaintDetail=" + complaintDetail +

@@ -9,9 +9,7 @@
 		<result column="gmt_modified" property="gmtModified" />
 		<result column="complainant_name" property="complainantName" />
 		<result column="complaint_no" property="complaintNo" />
-		<result column="contact_name" property="contactName" />
-		<result column="contact_phone" property="contactPhone" />
-		<result column="contact_email" property="contactEmail" />
+		<result column="user_id" property="userId" />
 		<result column="address" property="address" />
 		<result column="complaint_title" property="complaintTitle" />
 		<result column="complaint_detail" property="complaintDetail" />

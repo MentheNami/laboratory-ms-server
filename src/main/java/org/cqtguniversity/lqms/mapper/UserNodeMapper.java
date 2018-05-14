@@ -13,6 +13,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserNodeMapper extends BaseMapper<UserNode> {
 
+    // 通过账户id获取用户节点
     UserNode selectByUserId(@Param("userId") Long userId);
+
+    // 通过信息id获取用户节点
+    UserNode selectByInfoId(@Param("infoId") Long infoId);
 
 }

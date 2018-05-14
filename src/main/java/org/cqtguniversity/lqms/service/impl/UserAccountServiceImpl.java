@@ -5,18 +5,20 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.cqtguniversity.lqms.entity.UserAccount;
 import org.cqtguniversity.lqms.mapper.UserAccountMapper;
+import org.cqtguniversity.lqms.pojo.dto.SessionDTO;
 import org.cqtguniversity.lqms.pojo.dto.role.RoleDTO;
 import org.cqtguniversity.lqms.pojo.dto.useraccount.SaveUserAccountDTO;
 import org.cqtguniversity.lqms.pojo.dto.useraccount.SearchUserAccountDTO;
+import org.cqtguniversity.lqms.pojo.dto.useraccount.UserAccountDTO;
 import org.cqtguniversity.lqms.pojo.dto.userinfo.UserInfoDTO;
 import org.cqtguniversity.lqms.pojo.dto.usernode.UserNodeDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 import org.cqtguniversity.lqms.pojo.vo.DetailResultVO;
 import org.cqtguniversity.lqms.pojo.vo.ListVO;
+import org.cqtguniversity.lqms.pojo.vo.SessionVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ParamErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.SuccessVO;
-import org.cqtguniversity.lqms.pojo.vo.useraccount.SessionUserVO;
 import org.cqtguniversity.lqms.pojo.vo.useraccount.SimpleUserAccountVO;
 import org.cqtguniversity.lqms.pojo.vo.useraccount.UserAccountVO;
 import org.cqtguniversity.lqms.service.RoleService;
@@ -31,11 +33,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpSession;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  * 用户账户表 服务实现类
+ *
  * @author Wang26211
  * @since 2018-05-01
  */
@@ -60,17 +66,18 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
 
     /**
      * 将用户实体翻译成为对应的VO
+     *
      * @param userAccount
      * @return
      */
-    private SimpleUserAccountVO transferSimpleUserAccountVO (UserAccount userAccount) {
+    private SimpleUserAccountVO transferSimpleUserAccountVO(UserAccount userAccount) {
         // 创建实验室VO
-        SimpleUserAccountVO simpleUserAccountVO= new SimpleUserAccountVO();
+        SimpleUserAccountVO simpleUserAccountVO = new SimpleUserAccountVO();
         // 封装属性
         simpleUserAccountVO.setId(userAccount.getId());
         simpleUserAccountVO.setQuestion(userAccount.getQuestion());
         simpleUserAccountVO.setUserName(userAccount.getUserName());
-        return  simpleUserAccountVO;
+        return simpleUserAccountVO;
     }
 
     private boolean isUnique(String userName) {
@@ -106,20 +113,23 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
         if (null == roleDTO) {
             return ErrorVO.getInternalError();
         }
-        SessionUserVO sessionUserVO = new SessionUserVO();
-        // 设置真实姓名
-        sessionUserVO.setRealName(userInfoDTO.getRealName());
-        // 设置用户姓名
-        sessionUserVO.setUserName(userAccount.getUserName());
-        // 设置用户用户信息Id
-        sessionUserVO.setUserInfoId(userInfoDTO.getId());
-        // 设置角色
-        sessionUserVO.setRole(ConfigOptionConstruct.getOptionById(roleDTO.getRoleName()).getKey());
-        // 设置角色级别
-        sessionUserVO.setLevel(roleDTO.getLevel());
-        httpSession.setAttribute("sessionUserVO", sessionUserVO);
-        // Session设置基本信息
-        return new DetailResultVO(sessionUserVO);
+        SessionDTO sessionDTO = new SessionDTO();
+        UserAccountDTO userAccountDTO = new UserAccountDTO();
+        BeanUtils.copyProperties(userAccount, userAccountDTO);
+        // 设置账户
+        sessionDTO.setUserAccountDTO(userAccountDTO);
+        // 设置用户信息
+        sessionDTO.setUserInfoDTO(userInfoDTO);
+        // 设置用户角色
+        sessionDTO.setRoleDTO(roleDTO);
+        // SessionDTO设置基本信息
+        httpSession.setAttribute("sessionDTO", sessionDTO);
+        SessionVO sessionVO = new SessionVO();
+        sessionVO.setUserName(userAccountDTO.getUserName());
+        sessionVO.setRole(ConfigOptionConstruct.getOptionById(roleDTO.getRoleName()).getKey());
+        sessionVO.setLevel(roleDTO.getLevel());
+        // 返回SessionVO
+        return new DetailResultVO(sessionVO);
     }
 
     @Override
@@ -127,16 +137,16 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
         if (null == httpSession) {
             return new ErrorVO("错误的登录状态");
         }
-        httpSession.removeAttribute("sessionUserVO");
+        httpSession.removeAttribute("sessionDTO");
         return new SuccessVO("退出成功");
     }
 
     @Override
     public BaseVO addUserAccount(SaveUserAccountDTO saveUserAccountDTO) {
-       //合理性判断
-        if(null != saveUserAccountDTO.getId() || StringUtils.isEmpty(saveUserAccountDTO.getUserName())
-        || StringUtils.isEmpty(saveUserAccountDTO.getUserPassword()) || StringUtils.isEmpty(saveUserAccountDTO.getCellPhone())){
-         return ParamErrorVO.getInstance();
+        //合理性判断
+        if (null != saveUserAccountDTO.getId() || StringUtils.isEmpty(saveUserAccountDTO.getUserName())
+                || StringUtils.isEmpty(saveUserAccountDTO.getUserPassword()) || StringUtils.isEmpty(saveUserAccountDTO.getCellPhone())) {
+            return ParamErrorVO.getInstance();
         }
 
         // 检验用户名是否唯一
@@ -149,12 +159,12 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
         //合理性通过
         UserAccount userAccount = new UserAccount();
         //复制基本信息，忽略id
-        BeanUtils.copyProperties(saveUserAccountDTO, userAccount,"id");
+        BeanUtils.copyProperties(saveUserAccountDTO, userAccount, "id");
         //设置生成时间
         userAccount.setGmtCreate(Calendar.getInstance().getTime());
         //设置修改时间
         userAccount.setGmtModified(Calendar.getInstance().getTime());
-       //插入数据
+        //插入数据
         userAccountMapper.insert(userAccount);
         return SuccessVO.getInstance();
     }
@@ -162,7 +172,7 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
     @Override
     public BaseVO removeByIds(Long[] Ids) {
         //合理性判断
-        if(null == Ids){
+        if (null == Ids) {
             return ParamErrorVO.getInstance();
         }
         //合理性通过
@@ -175,32 +185,32 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
 
     @Override
     public BaseVO updateUserAccount(SaveUserAccountDTO saveUserAccountDTO) {
-       //合理性判断
-        if (null == saveUserAccountDTO.getId()|| StringUtils.isEmpty(saveUserAccountDTO.getUserName())
-                || StringUtils.isEmpty(saveUserAccountDTO.getUserPassword())){
+        //合理性判断
+        if (null == saveUserAccountDTO.getId() || StringUtils.isEmpty(saveUserAccountDTO.getUserName())
+                || StringUtils.isEmpty(saveUserAccountDTO.getUserPassword())) {
             return ParamErrorVO.getInstance();
         }
         //合理性通过查询用户账户是否存在
-         UserAccount userAccount = userAccountMapper.selectById(saveUserAccountDTO.getId());
+        UserAccount userAccount = userAccountMapper.selectById(saveUserAccountDTO.getId());
         //如果用户账户为空或者用户标记为1
-        if (null == userAccount || 1 == userAccount.getId()){
+        if (null == userAccount || 1 == userAccount.getId()) {
             return new ErrorVO("用户账户不存");
         }
         //复制基本信息
-        BeanUtils.copyProperties(saveUserAccountDTO, userAccount,"gmtCreate","gmt_modified");
+        BeanUtils.copyProperties(saveUserAccountDTO, userAccount, "gmtCreate", "gmt_modified");
         return SuccessVO.getInstance();
     }
 
     @Override
     public BaseVO selectById(Long id) {
         //合理性判断
-        if(null == id){
+        if (null == id) {
             //返回前端逻辑错误
             return ParamErrorVO.getInstance();
         }
         //判断用户账户是否存
         UserAccount userAccount = userAccountMapper.selectById(id);
-        if(userAccount == null ){
+        if (userAccount == null) {
             return new ErrorVO("用户投诉不存在");
         }
         UserAccountVO userAccountVO = new UserAccountVO();
@@ -212,24 +222,24 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
     @Override
     public BaseVO getUserAccountList(SearchUserAccountDTO searchUserAccountDTO) {
         //合理性判断
-        if (!searchUserAccountDTO.isLegitimate()){
+        if (!searchUserAccountDTO.isLegitimate()) {
             return ParamErrorVO.getInstance();
         }
         EntityWrapper<UserAccount> entityWrapper = new EntityWrapper<>();
         //增加模糊查询
-        if (!StringUtils.isEmpty(searchUserAccountDTO.getQuestion())){
-             entityWrapper.like("question",searchUserAccountDTO.getQuestion());
+        if (!StringUtils.isEmpty(searchUserAccountDTO.getQuestion())) {
+            entityWrapper.like("question", searchUserAccountDTO.getQuestion());
         }
-        if(!StringUtils.isEmpty(searchUserAccountDTO.getUserName())){
-            entityWrapper.like("user_name",searchUserAccountDTO.getUserName());
+        if (!StringUtils.isEmpty(searchUserAccountDTO.getUserName())) {
+            entityWrapper.like("user_name", searchUserAccountDTO.getUserName());
         }
         int total = userAccountMapper.selectCount(entityWrapper);
-        if (0 != total){
-            Page page = new Page(searchUserAccountDTO.getPage(),searchUserAccountDTO.getRows());
+        if (0 != total) {
+            Page page = new Page(searchUserAccountDTO.getPage(), searchUserAccountDTO.getRows());
             List<UserAccount> userAccountList = userAccountMapper.selectPage(page, entityWrapper);
-            if (null != userAccountList && 0 != userAccountList.size()){
+            if (null != userAccountList && 0 != userAccountList.size()) {
                 //通过Java8 Stream流语法糖 将用户实体集合翻译为VO集合
-                List<SimpleUserAccountVO> simpleUserInfoVOList=userAccountList.stream().map(this::transferSimpleUserAccountVO).collect(Collectors.toList());
+                List<SimpleUserAccountVO> simpleUserInfoVOList = userAccountList.stream().map(this::transferSimpleUserAccountVO).collect(Collectors.toList());
                 return new ListVO<>(simpleUserInfoVOList);
             }
         }

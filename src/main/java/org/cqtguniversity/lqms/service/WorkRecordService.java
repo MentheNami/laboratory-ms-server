@@ -4,8 +4,10 @@ import org.cqtguniversity.lqms.entity.WorkRecord;
 import com.baomidou.mybatisplus.service.IService;
 import org.cqtguniversity.lqms.pojo.dto.workrecord.SaveWorkRecordDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
+import org.cqtguniversity.lqms.pojo.vo.workrecord.SimpleWorkRecordVO;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * <p>
@@ -21,4 +23,7 @@ public interface WorkRecordService extends IService<WorkRecord> {
     BaseVO addWorkRecord(HttpSession httpSession, SaveWorkRecordDTO saveWorkRecordDTO);
 
     BaseVO removeById(Long id);
+
+    // 获取实验室人员工作记录
+    List<SimpleWorkRecordVO> getSimpleWorkRecordVOList(Long userId);
 }

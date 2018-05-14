@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import org.cqtguniversity.lqms.construct.NumTypeConstruct;
 import org.cqtguniversity.lqms.entity.AttachedFile;
 import org.cqtguniversity.lqms.mapper.AttachedFileMapper;
+import org.cqtguniversity.lqms.pojo.dto.SessionDTO;
 import org.cqtguniversity.lqms.pojo.dto.file.SaveAttachedFileDTO;
 import org.cqtguniversity.lqms.pojo.dto.file.SearchAttachedFileDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
@@ -13,7 +14,6 @@ import org.cqtguniversity.lqms.pojo.vo.ListVO;
 import org.cqtguniversity.lqms.pojo.vo.file.SimpleAttachedFileVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ParamErrorVO;
-import org.cqtguniversity.lqms.pojo.vo.useraccount.SessionUserVO;
 import org.cqtguniversity.lqms.service.AttachedFileService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.cqtguniversity.lqms.service.NumberRuleService;
@@ -117,8 +117,8 @@ public class AttachedFileServiceImpl extends ServiceImpl<AttachedFileMapper, Att
 
     @Override
     public BaseVO uploadAttachedFile(MultipartFile multipartFile, SaveAttachedFileDTO saveAttachedFileDTO, HttpSession httpSession) {
-        SessionUserVO sessionUserVO = (SessionUserVO) httpSession.getAttribute("sessionUserVO");
-        if (null == sessionUserVO) {
+        SessionDTO sessionDTO = (SessionDTO) httpSession.getAttribute("sessionDTO");
+        if (null == sessionDTO) {
             return new ErrorVO("用户未登陆");
         }
         // 获取上传文件的名字（包括后缀名）
@@ -158,7 +158,7 @@ public class AttachedFileServiceImpl extends ServiceImpl<AttachedFileMapper, Att
             attachedFile.setGmtCreate(calendar.getTime());
             attachedFile.setGmtModified(calendar.getTime());
             attachedFile.setFileExtension(extension);
-            attachedFile.setUploadedBy(sessionUserVO.getUserInfoId());
+            attachedFile.setUploadedBy(sessionDTO.getUserInfoDTO().getId());
             attachedFile.setFileType(saveAttachedFileDTO.getFileType());
             attachedFile.setFileNo(numberRuleService.getNum(NumTypeConstruct.FILENO, ConfigOptionConstruct.getOptionById(saveAttachedFileDTO.getFileType()).getValue()));
             attachedFileMapper.insert(attachedFile);

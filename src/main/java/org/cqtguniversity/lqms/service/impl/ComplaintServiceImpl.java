@@ -3,11 +3,10 @@ package org.cqtguniversity.lqms.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.sun.org.apache.regexp.internal.RE;
 import org.cqtguniversity.lqms.construct.NumTypeConstruct;
-import org.cqtguniversity.lqms.entity.CommonContent;
 import org.cqtguniversity.lqms.entity.Complaint;
 import org.cqtguniversity.lqms.mapper.ComplaintMapper;
+import org.cqtguniversity.lqms.pojo.dto.SessionDTO;
 import org.cqtguniversity.lqms.pojo.dto.commoncontent.CommonContentDTO;
 import org.cqtguniversity.lqms.pojo.dto.complaint.ComplaintDTO;
 import org.cqtguniversity.lqms.pojo.dto.complaint.SaveComplaintDTO;
@@ -25,21 +24,19 @@ import org.cqtguniversity.lqms.service.CommonContentService;
 import org.cqtguniversity.lqms.service.ComplaintService;
 import org.cqtguniversity.lqms.service.NumberRuleService;
 import org.cqtguniversity.lqms.util.MyDateUtil;
-import org.cqtguniversity.lqms.util.email.WangYiEmail;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * <p>
  * 投诉表 服务实现类
- * </p>
  * @author Wang26211
  * @since 2018-05-02
  */
@@ -81,9 +78,6 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
         simpleComplaintVO.setComplaintNo(complaint.getComplaintNo());
         simpleComplaintVO.setAddress(complaint.getAddress());
         simpleComplaintVO.setComplaintTitle(complaint.getComplaintTitle());
-        simpleComplaintVO.setContactEmail(complaint.getContactEmail());
-        simpleComplaintVO.setContactName(complaint.getContactName());
-        simpleComplaintVO.setContactPhone(complaint.getContactPhone());
         simpleComplaintVO.setGmtCreate(MyDateUtil.simpleDateFormat(complaint.getGmtCreate(), MyDateUtil.YYYY_MM_DD_C));
         simpleComplaintVO.setComplainantStatus(complaint.getComplainantStatus() == 0? "未受理" : "已受理");
         return simpleComplaintVO;
@@ -114,14 +108,16 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
     }
 
     @Override
-    public BaseVO addComplaint(SaveComplaintDTO saveComplaintDTO) {
+    public BaseVO addComplaint(HttpSession httpSession, SaveComplaintDTO saveComplaintDTO) {
         //合理性判断
         if (null != saveComplaintDTO.getId() || StringUtils.isEmpty(saveComplaintDTO.getComplainantName())
                 || StringUtils.isEmpty(saveComplaintDTO.getAddress()) || StringUtils.isEmpty(saveComplaintDTO.getComplaintTitle())
-                || StringUtils.isEmpty(saveComplaintDTO.getContactEmail()) || StringUtils.isEmpty(saveComplaintDTO.getContactName())
-                || StringUtils.isEmpty(saveComplaintDTO.getComplaintDetail())
-                || StringUtils.isEmpty(saveComplaintDTO.getContactPhone())) {
+                || StringUtils.isEmpty(saveComplaintDTO.getComplaintDetail())) {
             return ParamErrorVO.getInstance();
+        }
+        SessionDTO sessionDTO = (SessionDTO) httpSession.getAttribute("sessionDTO");
+        if (null == sessionDTO) {
+            return new ErrorVO("用户未登陆");
         }
         //合理性通过
         Complaint complaint = new Complaint();
@@ -149,7 +145,7 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
         // 发送邮件给处理人员
         asyncTaskService.complaintEmail(saveComplaintDTO.getComplaintTitle(), saveComplaintDTO.getComplaintDetail());
         // 发送邮件给投诉人
-        asyncTaskService.complaintSendEmail(saveComplaintDTO.getContactEmail(), saveComplaintDTO.getComplainantName());
+        asyncTaskService.complaintSendEmail(sessionDTO.getUserInfoDTO().getEmail(), sessionDTO.getUserInfoDTO().getRealName());
         return SuccessVO.getInstance();
     }
 
@@ -179,8 +175,7 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
         //合理性判断
         if (null == saveComplaintDTO.getId() || StringUtils.isEmpty(saveComplaintDTO.getComplainantName())
                 || StringUtils.isEmpty(saveComplaintDTO.getAddress()) || StringUtils.isEmpty(saveComplaintDTO.getComplaintTitle())
-                || StringUtils.isEmpty(saveComplaintDTO.getContactEmail()) || StringUtils.isEmpty(saveComplaintDTO.getContactName())
-                || null == saveComplaintDTO.getComplaintDetail() || null == saveComplaintDTO.getContactPhone()) {
+                || null == saveComplaintDTO.getComplaintDetail()) {
             // 返回一个参数错误VO的实例
             return ParamErrorVO.getInstance();
         }
@@ -264,6 +259,25 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
             }
         }
         return new ListVO<>(0, page, new ArrayList<>());
+    }
+
+    @Override
+    public BaseVO getMyComplaintList(HttpSession httpSession) {
+        SessionDTO sessionDTO = (SessionDTO) httpSession.getAttribute("sessionDTO");
+        if (null == sessionDTO) {
+            return new ErrorVO("用户未登陆");
+        }
+        EntityWrapper<Complaint> entityWrapper = new EntityWrapper<>();
+        // 查询所有已存在
+        entityWrapper.where("is_deleted=0", 0);
+        entityWrapper.where("user_id", sessionDTO.getUserInfoDTO().getId());
+        List<Complaint> complaintsList = complaintMapper.selectList(entityWrapper);
+        if (null != complaintsList && 0 != complaintsList.size()) {
+            // 通过Java8 Stream流操作语法糖  将投诉实体集合翻译为VO集合
+            List<SimpleComplaintVO> simpleComplaintVOList = complaintsList.stream().map(this::transferSimpleComplaintVO).collect(Collectors.toList());
+            return new ListVO<>(simpleComplaintVOList);
+        }
+        return new ListVO<>(new ArrayList<>());
     }
 
 }

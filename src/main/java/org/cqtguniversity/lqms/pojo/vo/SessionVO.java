@@ -1,26 +1,16 @@
-package org.cqtguniversity.lqms.pojo.vo.useraccount;
-
-import org.cqtguniversity.lqms.pojo.vo.BaseVO;
+package org.cqtguniversity.lqms.pojo.vo;
 
 /**
  * @author Tangshengyu
- * @create 2018- 05- 07- 14:59
+ * @create 2018- 05- 14- 17:05
  */
 
-public class SessionUserVO extends BaseVO {
+public class SessionVO extends BaseVO {
 
     /**
      * 用户名
      */
     private String userName;
-    /**
-     * 用户信息Id
-     */
-    private Long userInfoId;
-    /**
-     * 真实姓名
-     */
-    private String realName;
     /**
      * 角色
      */
@@ -36,22 +26,6 @@ public class SessionUserVO extends BaseVO {
 
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public Long getUserInfoId() {
-        return userInfoId;
-    }
-
-    public void setUserInfoId(Long userInfoId) {
-        this.userInfoId = userInfoId;
-    }
-
-    public String getRealName() {
-        return realName;
-    }
-
-    public void setRealName(String realName) {
-        this.realName = realName;
     }
 
     public String getRole() {
@@ -72,10 +46,8 @@ public class SessionUserVO extends BaseVO {
 
     @Override
     public String toString() {
-        return super.toString() + "SessionUserVO{" +
+        return super.toString() + "SessionVO{" +
                 "userName='" + userName + '\'' +
-                ", userInfoId='" + userInfoId + '\'' +
-                ", realName='" + realName + '\'' +
                 ", role='" + role + '\'' +
                 ", level=" + level +
                 '}';

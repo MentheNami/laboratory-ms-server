@@ -16,11 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpSession;
+
 /**
- * <p>
  * 用户表 前端控制器
- * </p>
- *
  * @author Wang26211
  * @since 2018-05-01
  */
@@ -28,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/userInfo")
 public class UserInfoController {
+
 	//引用用户服务
     private final UserInfoService userInfoService;
 
@@ -40,20 +40,29 @@ public class UserInfoController {
     public BaseVO addUserInfo(SaveUserInfoDTO saveUserInfoDTO) {
         return userInfoService.addUserInfo(saveUserInfoDTO);
     }
+
     @ApiOperation(value = "删除用户")
     @PostMapping(value = "/removeByIds")
     public BaseVO removeByIds(Long[] ids) {
         return userInfoService.removeByIds(ids);
     }
+
     @ApiOperation(value = "修改用户")
     @PostMapping(value = "/updateUserInfo")
     public BaseVO updateUserInfo(SaveUserInfoDTO saveUserInfoDTO) {
         return userInfoService.updateUserInfo(saveUserInfoDTO);
     }
+
     @ApiOperation(value = "查询用户详情")
-    @PostMapping(value = "/selectById")
+    @GetMapping(value = "/selectById")
     public BaseVO selectById(Long id) {
         return userInfoService.selectById(id);
+    }
+
+    @ApiOperation(value = "获取个人账户基本信息")
+    @GetMapping(value = "/getSelfInfo")
+    public BaseVO getSelfInfo(HttpSession httpSession) {
+        return userInfoService.getSelfInfo(httpSession);
     }
 
     @ApiOperation(value = "查询用户列表")
