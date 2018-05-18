@@ -13,6 +13,10 @@ public class SimpleUserInfoVO extends BaseVO {
      */
     private Long id;
     /**
+     * 注册时间
+     */
+    private String gmtCreate;
+    /**
      * 真实姓名
      */
     private String realName;
@@ -31,6 +35,14 @@ public class SimpleUserInfoVO extends BaseVO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(String gmtCreate) {
+        this.gmtCreate = gmtCreate;
     }
 
     public String getRealName() {
@@ -59,8 +71,9 @@ public class SimpleUserInfoVO extends BaseVO {
 
     @Override
     public String toString() {
-        return super.toString()+"SimpleUserInfoVO{" +
+        return super.toString() + "SimpleUserInfoVO{" +
                 "id=" + id +
+                ", gmtCreate='" + gmtCreate + '\'' +
                 ", realName='" + realName + '\'' +
                 ", cellPhone='" + cellPhone + '\'' +
                 ", email='" + email + '\'' +

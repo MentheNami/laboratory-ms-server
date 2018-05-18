@@ -21,9 +21,9 @@ public class SearchLaboratoryScheduleDTO extends BaseDTO {
      */
     private String instruction;
     /**
-     * 某一天
+     * 时间偏移量
      */
-    private Date startTime;
+    private Integer offset;
 
     public Long getLaboratoryId() {
         return laboratoryId;
@@ -41,12 +41,12 @@ public class SearchLaboratoryScheduleDTO extends BaseDTO {
         this.instruction = instruction;
     }
 
-    public Date getStartTime() {
-        return startTime;
+    public Integer getOffset() {
+        return offset;
     }
 
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
+    public void setOffset(Integer offset) {
+        this.offset = offset;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class SearchLaboratoryScheduleDTO extends BaseDTO {
         return super.toString() + "SearchLaboratoryScheduleDTO{" +
                 "laboratoryId=" + laboratoryId +
                 ", instruction='" + instruction + '\'' +
-                ", startTime=" + startTime +
+                ", offset=" + offset +
                 '}';
     }
 }

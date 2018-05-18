@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.cqtguniversity.lqms.construct.NumTypeConstruct;
 import org.cqtguniversity.lqms.entity.DeviceProgram;
 import org.cqtguniversity.lqms.mapper.DeviceProgramMapper;
+import org.cqtguniversity.lqms.pojo.dto.SessionDTO;
 import org.cqtguniversity.lqms.pojo.dto.commoncontent.CommonContentDTO;
 import org.cqtguniversity.lqms.pojo.dto.deviceprogram.SaveDeviceProgramDTO;
 import org.cqtguniversity.lqms.pojo.dto.deviceprogram.SearchDeviceProgramDTO;
@@ -25,7 +26,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpSession;
 import java.util.Calendar;
+import java.util.Objects;
 
 /**
  * 设备方案申请 服务实现类
@@ -70,15 +73,34 @@ public class DeviceProgramServiceImpl extends ServiceImpl<DeviceProgramMapper, D
     }
 
     @Override
-    public BaseVO addDeviceProgram(SaveDeviceProgramDTO saveDeviceProgramDTO) {
-        if (null != saveDeviceProgramDTO.getId() || null == saveDeviceProgramDTO.getApplyUser()
+    public BaseVO addDeviceProgram(HttpSession httpSession, SaveDeviceProgramDTO saveDeviceProgramDTO) {
+        SessionDTO sessionDTO = (SessionDTO) httpSession.getAttribute("sessionDTO");
+        if (null == sessionDTO) {
+            return new ErrorVO("用户未登陆");
+        }
+        if (null != saveDeviceProgramDTO.getId()
                 || StringUtils.isEmpty(saveDeviceProgramDTO.getDescription()) || null == saveDeviceProgramDTO.getDeviceId()
                 || null == saveDeviceProgramDTO.getExecutionDate() || null == saveDeviceProgramDTO.getProgramType()) {
             return ParamErrorVO.getInstance();
         }
+        // 判断设备是否存在
+        DeviceDTO deviceDTO = deviceService.selectDeviceDTO(saveDeviceProgramDTO.getDeviceId());
+        if (null == deviceDTO) {
+            return new ErrorVO("设备不存在");
+        }
+        if (Objects.equals(deviceDTO.getDeviceStatus(), saveDeviceProgramDTO.getProgramType())) {
+            return new ErrorVO("方案类型不能与设备状态相同");
+        }
         DeviceProgram deviceProgram = new DeviceProgram();
-        BeanUtils.copyProperties(saveDeviceProgramDTO, deviceProgram, "id", "description");
         Calendar calendar = Calendar.getInstance();
+        // 获取一个申请编号
+        deviceProgram.setApplyNo(numberRuleService.getNum(NumTypeConstruct.APPLYNO));
+        // 设置执行时间
+        deviceProgram.setExecutionDate(saveDeviceProgramDTO.getExecutionDate());
+        // 设置设备id
+        deviceProgram.setDeviceId(saveDeviceProgramDTO.getDeviceId());
+        // 设置方案状态
+        deviceProgram.setProgramType(saveDeviceProgramDTO.getProgramType());
         deviceProgram.setGmtCreate(calendar.getTime());
         deviceProgram.setGmtModified(calendar.getTime());
         CommonContentDTO commonContentDTO = commonContentService.getByContent(saveDeviceProgramDTO.getDescription());
@@ -86,6 +108,8 @@ public class DeviceProgramServiceImpl extends ServiceImpl<DeviceProgramMapper, D
         deviceProgram.setDescription(commonContentDTO.getId());
         // 创建申请编号
         deviceProgram.setApplyNo(numberRuleService.getNum(NumTypeConstruct.APPLYNO));
+        deviceProgram.setApplyUser(sessionDTO.getUserInfoDTO().getId());
+        deviceProgram.setIsDeleted(0);
         deviceProgram.insert();
         return SuccessVO.getInstance();
     }
@@ -109,7 +133,7 @@ public class DeviceProgramServiceImpl extends ServiceImpl<DeviceProgramMapper, D
     public BaseVO updateDeviceProgram(SaveDeviceProgramDTO saveDeviceProgramDTO) {
         if (null == saveDeviceProgramDTO.getId() || null == saveDeviceProgramDTO.getProgramType()
                 || null == saveDeviceProgramDTO.getExecutionDate() || null == saveDeviceProgramDTO.getDeviceId()
-                || null == saveDeviceProgramDTO.getApplyUser() || StringUtils.isEmpty(saveDeviceProgramDTO.getProgramType())) {
+                || StringUtils.isEmpty(saveDeviceProgramDTO.getProgramType())) {
             return ParamErrorVO.getInstance();
         }
         DeviceProgram deviceProgram = getDeviceProgram(saveDeviceProgramDTO.getId());

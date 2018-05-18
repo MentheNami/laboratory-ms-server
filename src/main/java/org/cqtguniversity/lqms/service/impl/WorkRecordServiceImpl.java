@@ -83,7 +83,7 @@ public class WorkRecordServiceImpl extends ServiceImpl<WorkRecordMapper, WorkRec
     @Override
     public List<SimpleWorkRecordVO> getSimpleWorkRecordVOList(Long userId) {
         EntityWrapper<WorkRecord> entityWrapper = new EntityWrapper<>();
-        entityWrapper.where("user_id", userId);
+        entityWrapper.where("user_id={0}", userId);
         List<WorkRecord> workRecordList = workRecordMapper.selectList(entityWrapper);
         if (null == workRecordList || 0 == workRecordList.size()) {
             return null;

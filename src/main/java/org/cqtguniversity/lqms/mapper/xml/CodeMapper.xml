@@ -11,4 +11,8 @@
 		<result column="code" property="code" />
 	</resultMap>
 
+	<select id="useCode" resultMap="BaseResultMap">
+		select id, gmt_create, gmt_modified, cell_phone, code from code where cell_phone=#{cellPhone} and code=#{code}
+	</select>
+
 </mapper>

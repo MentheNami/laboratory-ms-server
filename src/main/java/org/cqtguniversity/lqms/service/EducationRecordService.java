@@ -19,6 +19,9 @@ public interface EducationRecordService extends IService<EducationRecord> {
 
     BaseVO addEducationRecord(SaveEducationRecordDTO saveEducationRecordDTO);
 
+    // 将基本用户变更为实验室人员
+    BaseVO addLaboratoryUser(SaveEducationRecordDTO saveEducationRecordDTO);
+
     BaseVO updateEducationRecord(SaveEducationRecordDTO saveEducationRecordDTO);
 
     BaseVO selectById(Long id);

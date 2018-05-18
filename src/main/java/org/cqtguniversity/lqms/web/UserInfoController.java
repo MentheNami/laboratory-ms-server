@@ -35,6 +35,7 @@ public class UserInfoController {
     public UserInfoController(UserInfoService userInfoService) {
         this.userInfoService = userInfoService;
     }
+
     @ApiOperation(value = "新增用户")
     @PostMapping(value = "/addUserInfo")
     public BaseVO addUserInfo(SaveUserInfoDTO saveUserInfoDTO) {

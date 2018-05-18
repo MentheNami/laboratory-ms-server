@@ -23,6 +23,14 @@ public class SaveUserAccountDTO extends BaseDTO {
      */
     private String cellPhone;
     /**
+     * 邮箱
+     */
+    private String email;
+    /**
+     * 验证码
+     */
+    private String code;
+    /**
      * 密码
      */
     private String userPassword;
@@ -51,6 +59,22 @@ public class SaveUserAccountDTO extends BaseDTO {
         this.cellPhone = cellPhone;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     public String getUserPassword() {
         return userPassword;
     }
@@ -61,10 +85,12 @@ public class SaveUserAccountDTO extends BaseDTO {
 
     @Override
     public String toString() {
-        return "SaveUserAccountDTO{" +
+        return super.toString() + "SaveUserAccountDTO{" +
                 "id=" + id +
                 ", userName='" + userName + '\'' +
                 ", cellPhone='" + cellPhone + '\'' +
+                ", email='" + email + '\'' +
+                ", code='" + code + '\'' +
                 ", userPassword='" + userPassword + '\'' +
                 '}';
     }

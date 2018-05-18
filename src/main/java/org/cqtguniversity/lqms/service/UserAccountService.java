@@ -2,6 +2,7 @@ package org.cqtguniversity.lqms.service;
 
 import org.cqtguniversity.lqms.entity.UserAccount;
 import com.baomidou.mybatisplus.service.IService;
+import org.cqtguniversity.lqms.pojo.dto.educationrecord.SaveEducationRecordDTO;
 import org.cqtguniversity.lqms.pojo.dto.useraccount.SaveUserAccountDTO;
 import org.cqtguniversity.lqms.pojo.dto.useraccount.SearchUserAccountDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
@@ -18,9 +19,14 @@ import javax.servlet.http.HttpSession;
  */
 public interface UserAccountService extends IService<UserAccount> {
 
+    // 登录
     BaseVO login(String userName, String password, HttpSession httpSession);
 
+    // 退出
     BaseVO quit(HttpSession httpSession);
+
+    // 管理员重置密码
+    BaseVO resetPassword(Long id);
 
 	//增加用户账户
     BaseVO addUserAccount(SaveUserAccountDTO saveUserAccountDTO);

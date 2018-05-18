@@ -24,11 +24,12 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author TangShengYu
@@ -50,13 +51,25 @@ public class LaboratoryScheduleServiceImpl extends ServiceImpl<LaboratorySchedul
             return new ErrorVO("用户未登陆");
         }
         if (null == saveLaboratoryScheduleDTO.getEndTime() || StringUtils.isEmpty(saveLaboratoryScheduleDTO.getInstruction())
-                || null == saveLaboratoryScheduleDTO.getLaboratoryId() || null == saveLaboratoryScheduleDTO.getStartTime()) {
+                || null == saveLaboratoryScheduleDTO.getLaboratoryId() || null == saveLaboratoryScheduleDTO.getStartTime()
+                || null == saveLaboratoryScheduleDTO.getOffset()) {
             return ParamErrorVO.getInstance();
-    }
-        if (saveLaboratoryScheduleDTO.getEndTime().before(saveLaboratoryScheduleDTO.getStartTime())) {
+        }
+        // 设置日期
+        Calendar tempCalendar = Calendar.getInstance();
+        // 设置日期偏移量
+        tempCalendar.add(Calendar.DATE, saveLaboratoryScheduleDTO.getOffset());
+        // 设置分钟
+        tempCalendar.set(Calendar.MINUTE, 59);
+        // 设置小时
+        tempCalendar.set(Calendar.HOUR_OF_DAY, 8 + saveLaboratoryScheduleDTO.getStartTime());
+        Date startTime = tempCalendar.getTime();
+        tempCalendar.set(Calendar.HOUR_OF_DAY, 9 + saveLaboratoryScheduleDTO.getEndTime());
+        Date endTime = tempCalendar.getTime();
+        if (endTime.before(startTime)) {
             return new ErrorVO("结束时间早于开始时间");
         }
-        if (!MyDateUtil.isEqual(saveLaboratoryScheduleDTO.getStartTime(), saveLaboratoryScheduleDTO.getEndTime())) {
+        if (!MyDateUtil.isEqual(startTime, endTime)) {
             return new ErrorVO("预定只能在当天时间段内");
         }
         // 获取实验室
@@ -75,10 +88,10 @@ public class LaboratoryScheduleServiceImpl extends ServiceImpl<LaboratorySchedul
         entityWrapper.in("schedule_status", statusList);
         List<LaboratorySchedule> laboratoryScheduleList = laboratoryScheduleMapper.selectList(entityWrapper);
         // 循环当前所有预定
-        for (LaboratorySchedule laboratorySchedule:laboratoryScheduleList
-             ) {
-            if ((laboratorySchedule.getStartTime().before(saveLaboratoryScheduleDTO.getStartTime())) && saveLaboratoryScheduleDTO.getStartTime().before(laboratorySchedule.getEndTime())
-                || (laboratorySchedule.getStartTime().before(saveLaboratoryScheduleDTO.getEndTime())) && saveLaboratoryScheduleDTO.getEndTime().before(laboratorySchedule.getEndTime())) {
+        for (LaboratorySchedule laboratorySchedule : laboratoryScheduleList
+                ) {
+            if ((laboratorySchedule.getStartTime().before(startTime)) && startTime.before(laboratorySchedule.getEndTime())
+                    || (laboratorySchedule.getStartTime().before(endTime)) && endTime.before(laboratorySchedule.getEndTime())) {
                 return new ErrorVO("与其它预定冲突");
             }
         }
@@ -93,8 +106,8 @@ public class LaboratoryScheduleServiceImpl extends ServiceImpl<LaboratorySchedul
         } else {
             laboratorySchedule.setScheduleStatus(0);
         }
-        laboratorySchedule.setEndTime(saveLaboratoryScheduleDTO.getEndTime());
-        laboratorySchedule.setStartTime(saveLaboratoryScheduleDTO.getStartTime());
+        laboratorySchedule.setEndTime(endTime);
+        laboratorySchedule.setStartTime(startTime);
         laboratorySchedule.setLaboratoryId(saveLaboratoryScheduleDTO.getLaboratoryId());
         laboratorySchedule.setInstruction(saveLaboratoryScheduleDTO.getInstruction());
         laboratorySchedule.setUserId(sessionDTO.getUserInfoDTO().getId());
@@ -134,28 +147,34 @@ public class LaboratoryScheduleServiceImpl extends ServiceImpl<LaboratorySchedul
 
     @Override
     public BaseVO getLaboratoryScheduleList(SearchLaboratoryScheduleDTO searchLaboratoryScheduleDTO) {
-        if (null == searchLaboratoryScheduleDTO.getLaboratoryId() || null == searchLaboratoryScheduleDTO.getStartTime()) {
+        if (null == searchLaboratoryScheduleDTO.getLaboratoryId() || null == searchLaboratoryScheduleDTO.getOffset()) {
             return ParamErrorVO.getInstance();
         }
+        // 通过偏移量设置时间
+        Calendar todayCalendar = Calendar.getInstance();
+        todayCalendar.add(Calendar.DATE, searchLaboratoryScheduleDTO.getOffset());
         EntityWrapper<LaboratorySchedule> entityWrapper = new EntityWrapper<>();
         List<Integer> statusList = new ArrayList<>();
+        // 未审批
+        statusList.add(0);
+        // 同意
         statusList.add(1);
-        statusList.add(2);
         entityWrapper.in("schedule_status", statusList);
         entityWrapper.where("laboratory_id={0}", searchLaboratoryScheduleDTO.getLaboratoryId());
-        entityWrapper.where("datediff(start_time, {0})", searchLaboratoryScheduleDTO.getStartTime());
+        entityWrapper.where("DATEDIFF(start_time, {0}) = 0", todayCalendar.getTime());
         List<LaboratorySchedule> laboratoryScheduleList = laboratoryScheduleMapper.selectList(entityWrapper);
+        // 不可预定时间表
         List<LaboratoryScheduleFontVO> laboratoryScheduleFontVOList = new ArrayList<>();
         if (null != laboratoryScheduleList && 0 != laboratoryScheduleList.size()) {
-            LaboratoryScheduleFontVO laboratoryScheduleFontVO = new LaboratoryScheduleFontVO();
-            for (LaboratorySchedule laboratorySchedule:laboratoryScheduleList
+            for (LaboratorySchedule laboratorySchedule : laboratoryScheduleList
                     ) {
-                for (Integer i = MyDateUtil.getPeriod(laboratorySchedule.getStartTime()); i < MyDateUtil.getPeriod(laboratorySchedule.getEndTime()); i++) {
+                for (Integer i = MyDateUtil.getPeriod(laboratorySchedule.getStartTime()) - 8 ; i < (MyDateUtil.getPeriod(laboratorySchedule.getEndTime()) - 8); i++) {
+                    LaboratoryScheduleFontVO laboratoryScheduleFontVO = new LaboratoryScheduleFontVO();
                     laboratoryScheduleFontVO.setId(laboratorySchedule.getId());
                     laboratoryScheduleFontVO.setStatus(laboratorySchedule.getScheduleStatus());
                     laboratoryScheduleFontVO.setPeriod(i);
+                    laboratoryScheduleFontVOList.add(laboratoryScheduleFontVO);
                 }
-                laboratoryScheduleFontVOList.add(laboratoryScheduleFontVO);
             }
             return new ListVO<>(laboratoryScheduleFontVOList);
         }

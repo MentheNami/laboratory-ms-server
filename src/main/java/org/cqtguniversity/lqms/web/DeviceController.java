@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 设备表 前端控制器
- *
  * @author TangShengYu
  * @since 2018-04-30
  */
@@ -51,7 +50,7 @@ public class DeviceController {
     }
 
     @ApiOperation(value = "选择一个设备（用于修改）")
-    @PostMapping(value = "/selectById")
+    @GetMapping(value = "/selectById")
     public BaseVO selectById(Long id) {
         return deviceService.selectById(id);
     }

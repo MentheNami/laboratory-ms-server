@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * 设备方案申请 前端控制器
  * @author TangShengYu
@@ -32,8 +34,8 @@ public class DeviceProgramController {
 
     @ApiOperation(value = "新增设备方案")
     @PostMapping(value = "/addDeviceProgram")
-    public BaseVO addDeviceProgram(SaveDeviceProgramDTO saveDeviceProgramDTO) {
-        return deviceProgramService.addDeviceProgram(saveDeviceProgramDTO);
+    public BaseVO addDeviceProgram(HttpSession httpSession, SaveDeviceProgramDTO saveDeviceProgramDTO) {
+        return deviceProgramService.addDeviceProgram(httpSession, saveDeviceProgramDTO);
     }
 
     @ApiOperation(value = "删除设备方案通过Id")

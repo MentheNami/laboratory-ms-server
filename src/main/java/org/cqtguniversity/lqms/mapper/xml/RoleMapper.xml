@@ -11,4 +11,8 @@
 		<result column="description" property="description" />
 	</resultMap>
 
+	<select id="selectByRoleName" resultMap="BaseResultMap">
+		select * from role where role_name=#{roleName}
+	</select>
+
 </mapper>

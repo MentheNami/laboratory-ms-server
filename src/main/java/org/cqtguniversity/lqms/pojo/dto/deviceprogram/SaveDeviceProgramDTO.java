@@ -16,10 +16,6 @@ public class SaveDeviceProgramDTO extends BaseDTO {
      */
     private Long id;
     /**
-     * 计划申请人
-     */
-    private Long applyUser;
-    /**
      * 设备id
      */
     private Long deviceId;
@@ -42,14 +38,6 @@ public class SaveDeviceProgramDTO extends BaseDTO {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getApplyUser() {
-        return applyUser;
-    }
-
-    public void setApplyUser(Long applyUser) {
-        this.applyUser = applyUser;
     }
 
     public Long getDeviceId() {
@@ -88,7 +76,6 @@ public class SaveDeviceProgramDTO extends BaseDTO {
     public String toString() {
         return super.toString() + "SaveDeviceProgramDTO{" +
                 "id=" + id +
-                ", applyUser=" + applyUser +
                 ", deviceId=" + deviceId +
                 ", programType=" + programType +
                 ", description=" + description +

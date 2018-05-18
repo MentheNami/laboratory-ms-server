@@ -8,6 +8,7 @@ import org.cqtguniversity.lqms.pojo.dto.usernode.SaveUserNodeDTO;
 import org.cqtguniversity.lqms.pojo.dto.usernode.UserNodeDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ParamErrorVO;
+import org.cqtguniversity.lqms.service.RoleService;
 import org.cqtguniversity.lqms.service.UserInfoService;
 import org.cqtguniversity.lqms.service.UserNodeService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -35,6 +36,9 @@ public class UserNodeServiceImpl extends ServiceImpl<UserNodeMapper, UserNode> i
     @Autowired
     private UserNodeMapper userNodeMapper;
 
+    @Autowired
+    private RoleService roleService;
+
     private UserNodeDTO transferUserNodeDTO(UserNode userNode) {
         UserNodeDTO userNodeDTO = new UserNodeDTO();
         BeanUtils.copyProperties(userNode, userNodeDTO);
@@ -42,14 +46,14 @@ public class UserNodeServiceImpl extends ServiceImpl<UserNodeMapper, UserNode> i
     }
 
     @Override
-    public void getUserNode(String cellPhone, Long userAccountId) {
+    public void getUserNode(String cellPhone, String email, Long userAccountId) {
         UserNode userNode = new UserNode();
         // 默认没有部门
         userNode.setDepartmentId(0L);
         Calendar calendar = Calendar.getInstance();
         userNode.setGmtCreate(calendar.getTime());
         userNode.setGmtModified(calendar.getTime());
-        userNode.setInfoId(userInfoService.getUserInfo(cellPhone));
+        userNode.setInfoId(userInfoService.getUserInfo(cellPhone, email));
         // 2代表基本用户（游客）
         userNode.setRoleId(2L);
         userNode.setUserId(userAccountId);
@@ -98,6 +102,13 @@ public class UserNodeServiceImpl extends ServiceImpl<UserNodeMapper, UserNode> i
         EntityWrapper<UserNode> entityWrapper = new EntityWrapper<>();
         entityWrapper.where("department_id={0}", departmentId);
         return 0 == userNodeMapper.selectCount(entityWrapper);
+    }
+
+    @Override
+    public void userChangeLaboratory(Long userInfoId) {
+        UserNode userNode = userNodeMapper.selectByInfoId(userInfoId);
+        userNode.setRoleId(roleService.selectRoleDTOByName(39L).getId());
+        userNode.updateById();
     }
 
     @Override

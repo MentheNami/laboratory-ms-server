@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.cqtguniversity.lqms.entity.UserInfo;
 import org.cqtguniversity.lqms.mapper.UserInfoMapper;
 import org.cqtguniversity.lqms.pojo.dto.SessionDTO;
+import org.cqtguniversity.lqms.pojo.dto.educationrecord.SaveEducationRecordDTO;
+import org.cqtguniversity.lqms.pojo.dto.role.RoleDTO;
 import org.cqtguniversity.lqms.pojo.dto.userinfo.SaveUserInfoDTO;
 import org.cqtguniversity.lqms.pojo.dto.userinfo.SearchUserInfoDTO;
 import org.cqtguniversity.lqms.pojo.dto.userinfo.UserInfoDTO;
@@ -18,8 +20,11 @@ import org.cqtguniversity.lqms.pojo.vo.result.ParamErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.SuccessVO;
 import org.cqtguniversity.lqms.pojo.vo.userinfo.SimpleUserInfoVO;
 import org.cqtguniversity.lqms.pojo.vo.userinfo.UserInfoVO;
+import org.cqtguniversity.lqms.service.EducationRecordService;
+import org.cqtguniversity.lqms.service.RoleService;
 import org.cqtguniversity.lqms.service.UserInfoService;
 import org.cqtguniversity.lqms.service.UserNodeService;
+import org.cqtguniversity.lqms.util.MyDateUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +51,12 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     private UserNodeService userNodeService;
 
     @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private EducationRecordService educationRecordService;
+
+    @Autowired
     public UserInfoServiceImpl(UserInfoMapper userInfoMapper) {
         this.userInfoMapper = userInfoMapper;
     }
@@ -59,6 +70,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         SimpleUserInfoVO simpleUserInfoVO= new SimpleUserInfoVO();
         // 封装属性
         simpleUserInfoVO.setId(userInfo.getId());
+        simpleUserInfoVO.setGmtCreate(MyDateUtil.simpleDateFormat(userInfo.getGmtCreate(), MyDateUtil.YYYY_MM_DD_C));
         simpleUserInfoVO.setCellPhone(userInfo.getCellPhone());
         simpleUserInfoVO.setEmail(userInfo.getEmail());
         simpleUserInfoVO.setRealName(userInfo.getRealName() );
@@ -66,7 +78,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     }
 
     @Override
-    public Long getUserInfo(String cellPhone) {
+    public Long getUserInfo(String cellPhone, String email) {
         // 断言传入的cellPhone必须不为空
         Assert.notNull(cellPhone, "cellPhone must is not null");
         UserInfo userInfo = new UserInfo();
@@ -74,9 +86,17 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         Calendar calendar = Calendar.getInstance();
         userInfo.setGmtCreate(calendar.getTime());
         userInfo.setGmtModified(calendar.getTime());
+        userInfo.setEmail(email);
         userInfo.setIsDeleted(0);
         userInfoMapper.insert(userInfo);
         return userInfo.getId();
+    }
+
+    @Override
+    public boolean isUnique(String cellPhone) {
+        EntityWrapper<UserInfo> entityWrapper = new EntityWrapper<>();
+        entityWrapper.where("cell_phone={0}", cellPhone);
+        return 0 == userInfoMapper.selectCount(entityWrapper);
     }
 
     @Override
@@ -219,8 +239,13 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         }
         EntityWrapper<UserInfo> entityWrapper = new EntityWrapper<>();
         // 携带用户角色查询
-        if (null != searchUserInfoDTO.getRoleId()) {
-            List<UserNodeDTO> userNodeDTOList = userNodeService.getUserNodeDTOListByRoleId(searchUserInfoDTO.getRoleId());
+        if (null != searchUserInfoDTO.getRoleName()) {
+            RoleDTO roleDTO = roleService.selectRoleDTOByName(searchUserInfoDTO.getRoleName());
+            if (null == roleDTO) {
+                // 该角色下不存在用户
+                return new ListVO<>(new ArrayList<>());
+            }
+            List<UserNodeDTO> userNodeDTOList = userNodeService.getUserNodeDTOListByRoleId(roleDTO.getId());
             if (null != userNodeDTOList && 0 != userNodeDTOList.size()) {
                 // 该角色下存在用户
                 List<Long> userInfoIdList = userNodeDTOList.stream().map(UserNodeDTO::getInfoId).collect(Collectors.toList());

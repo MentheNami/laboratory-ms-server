@@ -1,6 +1,8 @@
 package org.cqtguniversity.lqms.util;
 
 import java.security.MessageDigest;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Java MD5 加密
@@ -37,7 +39,17 @@ public class MD5Util {
         }
     }
     public static void main(String[] args) {
-
+        Calendar startCalendar = Calendar.getInstance();
+        Calendar endCalendar = Calendar.getInstance();
+        startCalendar.add(Calendar.DATE, 1);
+        endCalendar.add(Calendar.DATE, 1);
+        startCalendar.set(Calendar.MINUTE, 59);
+        endCalendar.set(Calendar.MINUTE, 59);
+        startCalendar.set(Calendar.HOUR_OF_DAY, 8 + 1);
+        endCalendar.set(Calendar.HOUR_OF_DAY, 9 + 3);
+        Date startTime = startCalendar.getTime();
+        Date endTime = endCalendar.getTime();
+        System.out.println(startTime.toString() + "   :   " + endTime.toString());
     }
 
 }

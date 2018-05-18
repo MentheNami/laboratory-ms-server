@@ -20,10 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpSession;
 
 /**
- * <p>
  * 用户账户表 前端控制器
- * </p>
- *
  * @author Wang26211
  * @since 2018-05-01
  */
@@ -60,16 +57,24 @@ public class UserAccountController {
         return userAccountService.quit(httpSession);
     }
 
-    @ApiOperation(value = "新增用户账户")
+    @ApiOperation(value = "注册")
     @PostMapping(value = "/addUserAccount")
     public BaseVO addUserAccount(SaveUserAccountDTO saveUserAccountDTO) {
         return userAccountService.addUserAccount(saveUserAccountDTO);
     }
+
+    @ApiOperation(value = "重置密码")
+    @PostMapping(value = "/resetPassword")
+    public BaseVO resetPassword(Long id) {
+        return userAccountService.resetPassword(id);
+    }
+
     @ApiOperation(value = "删除投诉通过IDS")
     @PostMapping(value = "/removeByIds")
     public BaseVO removeByIds(Long[] ids) {
         return userAccountService.removeByIds(ids);
     }
+
     @ApiOperation(value = "修改用户账户")
     @PostMapping(value = "/updateUserAccount")
     public BaseVO updateUserAccount(SaveUserAccountDTO saveUserAccountDTO ) {

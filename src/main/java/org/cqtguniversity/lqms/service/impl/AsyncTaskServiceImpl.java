@@ -26,6 +26,7 @@ public class AsyncTaskServiceImpl implements AsyncTaskService {
 
     private void sendEmail(SimpleMailMessage simpleMailMessage) {
         try {
+
             javaMailSender.send(simpleMailMessage);
         } catch (Exception e) {
             e.printStackTrace();
@@ -39,7 +40,7 @@ public class AsyncTaskServiceImpl implements AsyncTaskService {
         // 发送账号
         simpleMailMessage.setFrom(Sender);
         // 接受账号
-        simpleMailMessage.setTo(accepter);
+        simpleMailMessage.setTo("ysfm960216@163.com");
         simpleMailMessage.setSubject("投诉建议:" + subject);
         simpleMailMessage.setText(Text);
         sendEmail(simpleMailMessage);
@@ -59,6 +60,7 @@ public class AsyncTaskServiceImpl implements AsyncTaskService {
     }
 
     @Override
+    @Async
     public void acceptComplaintEmail(String email, String subject, String text) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         // 发送账号

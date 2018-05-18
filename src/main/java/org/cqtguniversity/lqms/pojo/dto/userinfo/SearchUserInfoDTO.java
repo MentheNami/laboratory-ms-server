@@ -11,7 +11,7 @@ public class SearchUserInfoDTO extends SearchDTO{
     /**
      * 用户角色
      */
-    private Long roleId;
+    private Long roleName;
     /**
      * 真实姓名
      */
@@ -25,12 +25,12 @@ public class SearchUserInfoDTO extends SearchDTO{
      */
     private String email;
 
-    public Long getRoleId() {
-        return roleId;
+    public Long getRoleName() {
+        return roleName;
     }
 
-    public void setRoleId(Long roleId) {
-        this.roleId = roleId;
+    public void setRoleName(Long roleName) {
+        this.roleName = roleName;
     }
 
     public String getRealName() {
@@ -60,7 +60,7 @@ public class SearchUserInfoDTO extends SearchDTO{
     @Override
     public String toString() {
         return super.toString() + "SearchUserInfoDTO{" +
-                "roleId=" + roleId +
+                "roleName=" + roleName +
                 ", realName='" + realName + '\'' +
                 ", cellPhone='" + cellPhone + '\'' +
                 ", email='" + email + '\'' +

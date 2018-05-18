@@ -11,9 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 /**
- * <p>
  * 用户角色表 服务实现类
- * </p>
  *
  * @author TangShengYu
  * @since 2018-04-30
@@ -31,9 +29,20 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     @Override
     public RoleDTO selectRoleDTO(Long id) {
         Assert.notNull(id, "role id must not is null");
-        Role role =  selectRole(id);
+        Role role = selectRole(id);
         if (null == role) {
             System.out.println("存在错误的用户角色id: " + id + ", 请检查用户角色表");
+            return null;
+        }
+        RoleDTO roleDTO = new RoleDTO();
+        BeanUtils.copyProperties(role, roleDTO);
+        return roleDTO;
+    }
+
+    @Override
+    public RoleDTO selectRoleDTOByName(Long roleName) {
+        Role role = roleMapper.selectByRoleName(roleName);
+        if (null == role) {
             return null;
         }
         RoleDTO roleDTO = new RoleDTO();

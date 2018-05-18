@@ -20,13 +20,17 @@ public class SaveLaboratoryScheduleDTO extends BaseDTO {
      */
     private String instruction;
     /**
+     * 日期偏移
+     */
+    private Integer offset;
+    /**
      * 开始时间
      */
-    private Date startTime;
+    private Integer startTime;
     /**
      * 结束时间
      */
-    private Date endTime;
+    private Integer endTime;
 
     public Long getLaboratoryId() {
         return laboratoryId;
@@ -44,19 +48,27 @@ public class SaveLaboratoryScheduleDTO extends BaseDTO {
         this.instruction = instruction;
     }
 
-    public Date getStartTime() {
+    public Integer getOffset() {
+        return offset;
+    }
+
+    public void setOffset(Integer offset) {
+        this.offset = offset;
+    }
+
+    public Integer getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(Integer startTime) {
         this.startTime = startTime;
     }
 
-    public Date getEndTime() {
+    public Integer getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Date endTime) {
+    public void setEndTime(Integer endTime) {
         this.endTime = endTime;
     }
 
@@ -65,6 +77,7 @@ public class SaveLaboratoryScheduleDTO extends BaseDTO {
         return super.toString() + "SaveLaboratoryScheduleDTO{" +
                 "laboratoryId=" + laboratoryId +
                 ", instruction='" + instruction + '\'' +
+                ", offset=" + offset +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
                 '}';

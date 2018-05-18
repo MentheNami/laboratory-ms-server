@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.cqtguniversity.lqms.entity.UserAccount;
 import org.cqtguniversity.lqms.mapper.UserAccountMapper;
 import org.cqtguniversity.lqms.pojo.dto.SessionDTO;
+import org.cqtguniversity.lqms.pojo.dto.educationrecord.SaveEducationRecordDTO;
 import org.cqtguniversity.lqms.pojo.dto.role.RoleDTO;
 import org.cqtguniversity.lqms.pojo.dto.useraccount.SaveUserAccountDTO;
 import org.cqtguniversity.lqms.pojo.dto.useraccount.SearchUserAccountDTO;
@@ -21,10 +22,7 @@ import org.cqtguniversity.lqms.pojo.vo.result.ParamErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.SuccessVO;
 import org.cqtguniversity.lqms.pojo.vo.useraccount.SimpleUserAccountVO;
 import org.cqtguniversity.lqms.pojo.vo.useraccount.UserAccountVO;
-import org.cqtguniversity.lqms.service.RoleService;
-import org.cqtguniversity.lqms.service.UserAccountService;
-import org.cqtguniversity.lqms.service.UserInfoService;
-import org.cqtguniversity.lqms.service.UserNodeService;
+import org.cqtguniversity.lqms.service.*;
 import org.cqtguniversity.lqms.util.ConfigOptionConstruct;
 import org.cqtguniversity.lqms.util.MD5Util;
 import org.springframework.beans.BeanUtils;
@@ -41,7 +39,6 @@ import java.util.stream.Collectors;
 
 /**
  * 用户账户表 服务实现类
- *
  * @author Wang26211
  * @since 2018-05-01
  */
@@ -63,6 +60,9 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
     // 注入用户节点服务
     @Autowired
     private UserNodeService userNodeService;
+
+    @Autowired
+    private CodeService codeService;
 
     /**
      * 将用户实体翻译成为对应的VO
@@ -142,30 +142,54 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
     }
 
     @Override
+    public BaseVO resetPassword(Long id) {
+        // 创建实体
+        UserAccount userAccount = new UserAccount();
+        // 设置id
+        userAccount.setId(id);
+        // 设置修改时间
+        userAccount.setGmtModified(Calendar.getInstance().getTime());
+        // 设置默认密码
+        userAccount.setUserPassword(MD5Util.MD5("123456"));
+        // 通过刚设置的id，找到记录并更新
+        userAccount.updateById();
+        return SuccessVO.getInstance();
+    }
+
+    @Override
     public BaseVO addUserAccount(SaveUserAccountDTO saveUserAccountDTO) {
         //合理性判断
         if (null != saveUserAccountDTO.getId() || StringUtils.isEmpty(saveUserAccountDTO.getUserName())
-                || StringUtils.isEmpty(saveUserAccountDTO.getUserPassword()) || StringUtils.isEmpty(saveUserAccountDTO.getCellPhone())) {
+                || StringUtils.isEmpty(saveUserAccountDTO.getUserPassword()) || StringUtils.isEmpty(saveUserAccountDTO.getEmail())
+                || StringUtils.isEmpty(saveUserAccountDTO.getCellPhone()) || StringUtils.isEmpty(saveUserAccountDTO.getCode())) {
             return ParamErrorVO.getInstance();
         }
-
         // 检验用户名是否唯一
         if (!isUnique(saveUserAccountDTO.getUserName())) {
             return new ErrorVO("用户名已存在");
         }
-
-        // 获取一个用户节点记录
-
+        // 核查手机号是否唯一
+        if (!userInfoService.isUnique(saveUserAccountDTO.getCellPhone())) {
+            return new ErrorVO("手机已注册");
+        }
+        // 使用验证码
+        if (!codeService.useCode(saveUserAccountDTO.getCellPhone(), saveUserAccountDTO.getCode())) {
+            return new ErrorVO("验证码错误");
+        }
         //合理性通过
         UserAccount userAccount = new UserAccount();
-        //复制基本信息，忽略id
-        BeanUtils.copyProperties(saveUserAccountDTO, userAccount, "id");
+        // 设置用户名
+        userAccount.setUserName(saveUserAccountDTO.getUserName());
+        // 设置密码
+        userAccount.setUserPassword(MD5Util.MD5(saveUserAccountDTO.getUserPassword()));
         //设置生成时间
         userAccount.setGmtCreate(Calendar.getInstance().getTime());
         //设置修改时间
         userAccount.setGmtModified(Calendar.getInstance().getTime());
         //插入数据
         userAccountMapper.insert(userAccount);
+        // 获取一个用户节点记录
+        userNodeService.getUserNode(saveUserAccountDTO.getCellPhone(), saveUserAccountDTO.getEmail(), userAccount.getId());
         return SuccessVO.getInstance();
     }
 

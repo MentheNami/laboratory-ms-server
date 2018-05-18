@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface UserNodeService extends IService<UserNode> {
 
-    void getUserNode(String cellPhone, Long userAccountId);
+    void getUserNode(String cellPhone, String email, Long userAccountId);
 
     List<UserNodeDTO> getUserNodeDTOListByRoleId(Long roleId);
 
@@ -28,6 +28,8 @@ public interface UserNodeService extends IService<UserNode> {
 
     // 是否可以删除部门
     boolean isDeletedByDepartmentId(Long departmentId);
+
+    void userChangeLaboratory(Long userInfoId);
 
     // 更改用户节点
     BaseVO updateUserNode(SaveUserNodeDTO saveUserNodeDTO);

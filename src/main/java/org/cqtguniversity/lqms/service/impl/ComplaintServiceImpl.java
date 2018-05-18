@@ -72,11 +72,9 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
         SimpleComplaintVO simpleComplaintVO = new SimpleComplaintVO();
         // 复制基本信息
         simpleComplaintVO.setId(complaint.getId());
-        simpleComplaintVO.setAddress(complaint.getAddress());
         simpleComplaintVO.setComplainantName(complaint.getComplainantName());
         simpleComplaintVO.setComplaintDetail(commonContentService.selectCommonContentDTO(complaint.getComplaintDetail()).getContent());
         simpleComplaintVO.setComplaintNo(complaint.getComplaintNo());
-        simpleComplaintVO.setAddress(complaint.getAddress());
         simpleComplaintVO.setComplaintTitle(complaint.getComplaintTitle());
         simpleComplaintVO.setGmtCreate(MyDateUtil.simpleDateFormat(complaint.getGmtCreate(), MyDateUtil.YYYY_MM_DD_C));
         simpleComplaintVO.setComplainantStatus(complaint.getComplainantStatus() == 0? "未受理" : "已受理");
@@ -119,6 +117,15 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
         if (null == sessionDTO) {
             return new ErrorVO("用户未登陆");
         }
+        EntityWrapper<Complaint> entityWrapper = new EntityWrapper<>();
+        entityWrapper.where("complainant_status={0}", 0);
+        entityWrapper.where("is_deleted={0}", 0);
+        entityWrapper.where("user_id={0}", sessionDTO.getUserInfoDTO().getId());
+        // 查询是否已经存在投诉
+        int count = complaintMapper.selectCount(entityWrapper);
+        if (0 != count) {
+            return new ErrorVO("存在未处理投诉，请等待投诉处理");
+        }
         //合理性通过
         Complaint complaint = new Complaint();
         //复制投诉基本信息，忽略id
@@ -140,6 +147,8 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
         complaint.setComplainantStatus(0);
         //逻辑删除
         complaint.setIsDeleted(0);
+        // 设置用户Id
+        complaint.setUserId(sessionDTO.getUserInfoDTO().getId());
         //插入数据
         complaintMapper.insert(complaint);
         // 发送邮件给处理人员
@@ -251,6 +260,7 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
         // 设置分页
         Page page = new Page(searchComplaintDTO.getPage(), searchComplaintDTO.getRows());
         if (0 != total) {
+            entityWrapper.orderBy("complainantStatus");
             List<Complaint> complaintsList = complaintMapper.selectPage(page, entityWrapper);
             if (null != complaintsList && 0 != complaintsList.size()) {
                 // 通过Java8 Stream流操作语法糖  将投诉实体集合翻译为VO集合
@@ -270,7 +280,7 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
         EntityWrapper<Complaint> entityWrapper = new EntityWrapper<>();
         // 查询所有已存在
         entityWrapper.where("is_deleted=0", 0);
-        entityWrapper.where("user_id", sessionDTO.getUserInfoDTO().getId());
+        entityWrapper.where("user_id={0}", sessionDTO.getUserInfoDTO().getId());
         List<Complaint> complaintsList = complaintMapper.selectList(entityWrapper);
         if (null != complaintsList && 0 != complaintsList.size()) {
             // 通过Java8 Stream流操作语法糖  将投诉实体集合翻译为VO集合

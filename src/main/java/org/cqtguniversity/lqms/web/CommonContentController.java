@@ -17,10 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * <p>
  * 长文本表 前端控制器
- * </p>
- *
  * @author Wang26211
  * @since 2018-04-30
  */

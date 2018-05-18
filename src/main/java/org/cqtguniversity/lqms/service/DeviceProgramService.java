@@ -6,6 +6,8 @@ import org.cqtguniversity.lqms.pojo.dto.deviceprogram.SaveDeviceProgramDTO;
 import org.cqtguniversity.lqms.pojo.dto.deviceprogram.SearchDeviceProgramDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * <p>
  * 设备方案申请 服务类
@@ -17,7 +19,7 @@ import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 public interface DeviceProgramService extends IService<DeviceProgram> {
 
     //新增设备方案
-    BaseVO addDeviceProgram(SaveDeviceProgramDTO saveDeviceProgramDTO);
+    BaseVO addDeviceProgram(HttpSession httpSession, SaveDeviceProgramDTO saveDeviceProgramDTO);
 
     //删除设备通过Id
     BaseVO removeById(Long id);

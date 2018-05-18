@@ -27,10 +27,6 @@ public class SimpleComplaintVO extends BaseVO {
      */
     private String complaintNo;
     /**
-     * 地址
-     */
-    private String address;
-    /**
      * 投诉标题
      */
     private String complaintTitle;
@@ -75,14 +71,6 @@ public class SimpleComplaintVO extends BaseVO {
         this.complaintNo = complaintNo;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getComplaintTitle() {
         return complaintTitle;
     }
@@ -114,7 +102,6 @@ public class SimpleComplaintVO extends BaseVO {
                 ", gmtCreate=" + gmtCreate +
                 ", complainantName='" + complainantName + '\'' +
                 ", complaintNo='" + complaintNo + '\'' +
-                ", address='" + address + '\'' +
                 ", complaintTitle='" + complaintTitle + '\'' +
                 ", complaintDetail='" + complaintDetail + '\'' +
                 ", complainantStatus='" + complainantStatus + '\'' +

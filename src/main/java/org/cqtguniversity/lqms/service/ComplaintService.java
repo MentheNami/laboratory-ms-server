@@ -22,6 +22,7 @@ public interface ComplaintService extends IService<Complaint> {
 
     //增加投诉
     BaseVO addComplaint(HttpSession httpSession, SaveComplaintDTO saveComplaintDTO);
+
     //删除投诉通过ID
     BaseVO removeById(Long id);
     //更新投诉

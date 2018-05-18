@@ -15,11 +15,8 @@ import org.cqtguniversity.lqms.pojo.vo.result.SuccessVO;
 import org.cqtguniversity.lqms.pojo.dto.SessionDTO;
 import org.cqtguniversity.lqms.pojo.vo.userinfo.SimpleUserInfoVO;
 import org.cqtguniversity.lqms.pojo.vo.workrecord.SimpleWorkRecordVO;
-import org.cqtguniversity.lqms.service.EducationRecordService;
+import org.cqtguniversity.lqms.service.*;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import org.cqtguniversity.lqms.service.UniversityService;
-import org.cqtguniversity.lqms.service.UserInfoService;
-import org.cqtguniversity.lqms.service.WorkRecordService;
 import org.cqtguniversity.lqms.util.ConfigOptionConstruct;
 import org.cqtguniversity.lqms.util.MyDateUtil;
 import org.springframework.beans.BeanUtils;
@@ -49,6 +46,12 @@ public class EducationRecordServiceImpl extends ServiceImpl<EducationRecordMappe
 
     @Autowired
     private UniversityService universityService;
+
+    @Autowired
+    private EducationRecordService educationRecordService;
+
+    @Autowired
+    private UserNodeService userNodeService;
 
     public EducationRecordServiceImpl(EducationRecordMapper educationRecordMapper) {
         this.educationRecordMapper = educationRecordMapper;
@@ -81,6 +84,15 @@ public class EducationRecordServiceImpl extends ServiceImpl<EducationRecordMappe
         educationRecord.setUserId(saveEducationRecordDTO.getUserId());
         educationRecord.setIsDeleted(0);
         educationRecord.insert();
+        return SuccessVO.getInstance();
+    }
+
+    @Override
+    public BaseVO addLaboratoryUser(SaveEducationRecordDTO saveEducationRecordDTO) {
+        // 给实验室人员增加档案信息
+        educationRecordService.addEducationRecord(saveEducationRecordDTO);
+        // 基本用户变更实验室用户
+        userNodeService.userChangeLaboratory(saveEducationRecordDTO.getUserId());
         return SuccessVO.getInstance();
     }
 

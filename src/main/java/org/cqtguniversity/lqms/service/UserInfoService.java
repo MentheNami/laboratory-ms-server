@@ -4,6 +4,7 @@ import com.sun.prism.impl.BaseMeshView;
 import org.cqtguniversity.lqms.entity.UserInfo;
 import com.baomidou.mybatisplus.service.IService;
 import org.cqtguniversity.lqms.pojo.dto.SearchDTO;
+import org.cqtguniversity.lqms.pojo.dto.educationrecord.SaveEducationRecordDTO;
 import org.cqtguniversity.lqms.pojo.dto.userinfo.SaveUserInfoDTO;
 import org.cqtguniversity.lqms.pojo.dto.userinfo.SearchUserInfoDTO;
 import org.cqtguniversity.lqms.pojo.dto.userinfo.UserInfoDTO;
@@ -22,7 +23,10 @@ import java.util.List;
 public interface UserInfoService extends IService<UserInfo> {
 
     // 通过手机号注册一个用户
-    Long getUserInfo(String cellPhone);
+    Long getUserInfo(String cellPhone, String email);
+
+
+    boolean isUnique(String cellPhone);
 
     // 获取一个用户的信息
     UserInfoDTO selectUserInfoDTO(Long id);
