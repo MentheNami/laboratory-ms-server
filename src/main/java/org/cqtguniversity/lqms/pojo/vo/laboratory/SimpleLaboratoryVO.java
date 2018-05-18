@@ -4,10 +4,10 @@ import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 
 /**
  * @author Tangshengyu
- * @create 2018- 05- 01- 23:19
+ * @create 2018- 05- 19- 0:54
  */
 
-public class LaboratoryVO extends BaseVO {
+public class SimpleLaboratoryVO extends BaseVO {
 
     /**
      * 序号自增
@@ -16,7 +16,7 @@ public class LaboratoryVO extends BaseVO {
     /**
      * 所属楼层
      */
-    private Long floor;
+    private String floor;
     /**
      * 实验室名称
      */
@@ -24,11 +24,11 @@ public class LaboratoryVO extends BaseVO {
     /**
      * 实验室容量
      */
-    private Integer capacity;
+    private String capacity;
     /**
      * 是否自主预定
      */
-    private Integer isAutonomy;
+    private String isAutonomy;
 
     public Long getId() {
         return id;
@@ -38,11 +38,11 @@ public class LaboratoryVO extends BaseVO {
         this.id = id;
     }
 
-    public Long getFloor() {
+    public String getFloor() {
         return floor;
     }
 
-    public void setFloor(Long floor) {
+    public void setFloor(String floor) {
         this.floor = floor;
     }
 
@@ -54,30 +54,30 @@ public class LaboratoryVO extends BaseVO {
         this.laboratoryName = laboratoryName;
     }
 
-    public Integer getCapacity() {
+    public String getCapacity() {
         return capacity;
     }
 
-    public void setCapacity(Integer capacity) {
+    public void setCapacity(String capacity) {
         this.capacity = capacity;
     }
 
-    public Integer getIsAutonomy() {
+    public String getIsAutonomy() {
         return isAutonomy;
     }
 
-    public void setIsAutonomy(Integer isAutonomy) {
+    public void setIsAutonomy(String isAutonomy) {
         this.isAutonomy = isAutonomy;
     }
 
     @Override
     public String toString() {
-        return super.toString() + "LaboratoryVO{" +
+        return super.toString() + "SimpleLaboratoryVO{" +
                 "id=" + id +
                 ", floor=" + floor +
                 ", laboratoryName='" + laboratoryName + '\'' +
                 ", capacity=" + capacity +
-                ", isAutonomy=" + isAutonomy +
+                ", isAutonomy='" + isAutonomy + '\'' +
                 '}';
     }
 }

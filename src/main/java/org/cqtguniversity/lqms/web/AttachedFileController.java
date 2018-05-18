@@ -53,5 +53,11 @@ public class AttachedFileController {
     public BaseVO getAttachedFileList(SearchAttachedFileDTO searchAttachedFileDTO) {
         return attachedFileService.getAttachedFileList(searchAttachedFileDTO);
     }
+
+    @ApiOperation(value = "删除文件")
+    @PostMapping(value = "/removeById")
+    public BaseVO removeById(Long id) {
+        return attachedFileService.removeById(id);
+    }
 	
 }

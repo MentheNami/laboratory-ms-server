@@ -89,6 +89,8 @@ public class EducationRecordServiceImpl extends ServiceImpl<EducationRecordMappe
 
     @Override
     public BaseVO addLaboratoryUser(SaveEducationRecordDTO saveEducationRecordDTO) {
+        // 设置真实姓名
+        userInfoService.setRealName(saveEducationRecordDTO.getUserId(), saveEducationRecordDTO.getRealName());
         // 给实验室人员增加档案信息
         educationRecordService.addEducationRecord(saveEducationRecordDTO);
         // 基本用户变更实验室用户

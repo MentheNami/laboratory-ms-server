@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface UserNodeService extends IService<UserNode> {
 
-    void getUserNode(String cellPhone, String email, Long userAccountId);
+    void getUserNode(String cellPhone, String email, Long userAccountId, String userName);
 
     List<UserNodeDTO> getUserNodeDTOListByRoleId(Long roleId);
 

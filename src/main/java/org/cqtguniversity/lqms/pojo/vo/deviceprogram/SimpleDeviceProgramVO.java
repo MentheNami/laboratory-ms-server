@@ -26,7 +26,7 @@ public class SimpleDeviceProgramVO extends BaseVO {
      */
     private String applyNo;
     /**
-     * 设备id
+     * 设备名称
      */
     private String deviceName;
     /**

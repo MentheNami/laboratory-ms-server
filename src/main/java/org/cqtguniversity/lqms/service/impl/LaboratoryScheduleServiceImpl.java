@@ -1,21 +1,25 @@
 package org.cqtguniversity.lqms.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import org.cqtguniversity.lqms.entity.LaboratorySchedule;
 import org.cqtguniversity.lqms.mapper.LaboratoryScheduleMapper;
 import org.cqtguniversity.lqms.pojo.dto.SessionDTO;
 import org.cqtguniversity.lqms.pojo.dto.laboratory.LaboratoryDTO;
 import org.cqtguniversity.lqms.pojo.dto.laboratoryschedule.SaveLaboratoryScheduleDTO;
 import org.cqtguniversity.lqms.pojo.dto.laboratoryschedule.SearchLaboratoryScheduleDTO;
+import org.cqtguniversity.lqms.pojo.dto.laboratoryschedule.SimpleSearchLaboratoryDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 import org.cqtguniversity.lqms.pojo.vo.ListVO;
 import org.cqtguniversity.lqms.pojo.vo.laboratoryschedule.LaboratoryScheduleFontVO;
+import org.cqtguniversity.lqms.pojo.vo.laboratoryschedule.SimpleLaboratoryScheduleVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ParamErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.SuccessVO;
 import org.cqtguniversity.lqms.service.LaboratoryScheduleService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.cqtguniversity.lqms.service.LaboratoryService;
+import org.cqtguniversity.lqms.service.UserInfoService;
 import org.cqtguniversity.lqms.util.MyDateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -43,6 +48,38 @@ public class LaboratoryScheduleServiceImpl extends ServiceImpl<LaboratorySchedul
 
     @Autowired
     private LaboratoryService laboratoryService;
+
+    @Autowired
+    private UserInfoService userInfoService;
+
+    private SimpleLaboratoryScheduleVO transferSimpleLaboratoryScheduleVO(LaboratorySchedule laboratorySchedule) {
+        SimpleLaboratoryScheduleVO simpleLaboratoryScheduleVO = new SimpleLaboratoryScheduleVO();
+        simpleLaboratoryScheduleVO.setId(laboratorySchedule.getId());
+        if (null == laboratorySchedule.getCheckUser()) {
+            simpleLaboratoryScheduleVO.setCheckUser("");
+        } else {
+            simpleLaboratoryScheduleVO.setCheckUser(laboratorySchedule.getCheckUser() == 0? "自主预定" : userInfoService.selectUserInfoDTO(laboratorySchedule.getCheckUser()).getRealName());
+        }
+        simpleLaboratoryScheduleVO.setEndTime(MyDateUtil.simpleDateFormat(laboratorySchedule.getEndTime(), MyDateUtil.YYYY_MM_DD_HH_MM_E));
+        simpleLaboratoryScheduleVO.setGmtCreate(MyDateUtil.simpleDateFormat(laboratorySchedule.getStartTime(), MyDateUtil.YYYY_MM_DD_HH_MM_E));
+        simpleLaboratoryScheduleVO.setInstruction(laboratorySchedule.getInstruction());
+        simpleLaboratoryScheduleVO.setLaboratoryName(laboratoryService.selectLaboratoryDTO(laboratorySchedule.getLaboratoryId()).getLaboratoryName());
+        if (0 == laboratorySchedule.getScheduleStatus()) {
+            simpleLaboratoryScheduleVO.setScheduleStatus("未审批");
+        }
+        if (1 == laboratorySchedule.getScheduleStatus()) {
+            simpleLaboratoryScheduleVO.setScheduleStatus("同意");
+        }
+        if (2 == laboratorySchedule.getScheduleStatus()) {
+            simpleLaboratoryScheduleVO.setScheduleStatus("驳回");
+        }
+        if (3 == laboratorySchedule.getScheduleStatus()) {
+            simpleLaboratoryScheduleVO.setScheduleStatus("已过期");
+        }
+        simpleLaboratoryScheduleVO.setStartTime(MyDateUtil.simpleDateFormat(laboratorySchedule.getStartTime(), MyDateUtil.YYYY_MM_DD_HH_MM_E));
+        simpleLaboratoryScheduleVO.setUserName(userInfoService.selectUserInfoDTO(laboratorySchedule.getUserId()).getRealName());
+        return simpleLaboratoryScheduleVO;
+    }
 
     @Override
     public BaseVO addLaboratorySchedule(HttpSession httpSession, SaveLaboratoryScheduleDTO saveLaboratoryScheduleDTO) {
@@ -119,7 +156,7 @@ public class LaboratoryScheduleServiceImpl extends ServiceImpl<LaboratorySchedul
     }
 
     @Override
-    public BaseVO acceptById(HttpSession httpSession, Long id, Integer scheduleStatus) {
+    public BaseVO acceptById(HttpSession httpSession, Long id, Boolean isAccept) {
         SessionDTO sessionDTO = (SessionDTO) httpSession.getAttribute("sessionDTO");
         if (null == sessionDTO) {
             return new ErrorVO("用户未登陆");
@@ -139,7 +176,7 @@ public class LaboratoryScheduleServiceImpl extends ServiceImpl<LaboratorySchedul
             return new ErrorVO("状态错误，该预定记录已审批");
         }
         laboratorySchedule.setGmtModified(calendar.getTime());
-        laboratorySchedule.setScheduleStatus(scheduleStatus);
+        laboratorySchedule.setScheduleStatus(isAccept ? 1 : 2);
         laboratorySchedule.setCheckUser(sessionDTO.getUserInfoDTO().getId());
         laboratorySchedule.updateById();
         return SuccessVO.getInstance();
@@ -179,6 +216,33 @@ public class LaboratoryScheduleServiceImpl extends ServiceImpl<LaboratorySchedul
             return new ListVO<>(laboratoryScheduleFontVOList);
         }
         return new ListVO<>(new ArrayList<>());
+    }
+
+    @Override
+    public BaseVO getList(SimpleSearchLaboratoryDTO simpleSearchLaboratoryDTO) {
+        if (!simpleSearchLaboratoryDTO.isLegitimate()) {
+            return ParamErrorVO.getInstance();
+        }
+        EntityWrapper<LaboratorySchedule> entityWrapper = new EntityWrapper<>();
+        if (null != simpleSearchLaboratoryDTO.getLaboratoryId()) {
+            entityWrapper.where("laboratory_id={0}", simpleSearchLaboratoryDTO.getLaboratoryId());
+        }
+        if (!StringUtils.isEmpty(simpleSearchLaboratoryDTO.getUserName())) {
+            List<Long> userIds = userInfoService.selectIdsByRealName(simpleSearchLaboratoryDTO.getUserName());
+            entityWrapper.in("user_id", userIds);
+        }
+        int total = laboratoryScheduleMapper.selectCount(entityWrapper);
+        Page page = new Page(simpleSearchLaboratoryDTO.getPage(), simpleSearchLaboratoryDTO.getRows());
+        if (0 != total) {
+            entityWrapper.orderBy("schedule_status");
+            entityWrapper.orderBy("gmt_modified", false);
+            List<LaboratorySchedule> laboratoryScheduleList = laboratoryScheduleMapper.selectPage(page, entityWrapper);
+            if (null != laboratoryScheduleList && 0 != laboratoryScheduleList.size()) {
+                List<SimpleLaboratoryScheduleVO> simpleLaboratoryScheduleVOList = laboratoryScheduleList.stream().map(this::transferSimpleLaboratoryScheduleVO).collect(Collectors.toList());
+                return new ListVO<>(total, page, simpleLaboratoryScheduleVOList);
+            }
+        }
+        return new ListVO<>(0, page, new ArrayList<>());
     }
 
 }

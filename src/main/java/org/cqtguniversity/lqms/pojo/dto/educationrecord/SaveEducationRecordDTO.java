@@ -20,6 +20,10 @@ public class SaveEducationRecordDTO extends BaseDTO {
      */
     private Long userId;
     /**
+     * 真实姓名
+     */
+    private String realName;
+    /**
      * 毕业日期
      */
     private Date graduationDate;
@@ -58,6 +62,14 @@ public class SaveEducationRecordDTO extends BaseDTO {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
     }
 
     public Date getGraduationDate() {
@@ -113,6 +125,7 @@ public class SaveEducationRecordDTO extends BaseDTO {
         return super.toString() + "SaveEducationRecordDTO{" +
                 "id=" + id +
                 ", userId=" + userId +
+                ", realName='" + realName + '\'' +
                 ", graduationDate=" + graduationDate +
                 ", school=" + school +
                 ", academicQualifications=" + academicQualifications +

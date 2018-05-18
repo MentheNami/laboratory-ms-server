@@ -23,8 +23,10 @@ import java.util.List;
 public interface UserInfoService extends IService<UserInfo> {
 
     // 通过手机号注册一个用户
-    Long getUserInfo(String cellPhone, String email);
+    Long getUserInfo(String cellPhone, String email, String userName);
 
+    // 设置真实姓名
+    void setRealName(Long id, String realName);
 
     boolean isUnique(String cellPhone);
 

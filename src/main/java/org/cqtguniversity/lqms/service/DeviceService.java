@@ -20,8 +20,13 @@ public interface DeviceService extends IService<Device> {
     // 通过Ids进行批量删除设备
     BaseVO removeByIds(Long[] ids);
 
+    // 查询实验室下是否存在设备
+    boolean isDeletedByLaboratoryId(Long laboratoryId);
+
     // 更新设备信息
     BaseVO updateDevice(SaveDeviceDTO saveDeviceDTO);
+
+    void updateDeviceStatus(Long id, Long deviceStatus);
 
     // 查询设备信息详情
     BaseVO selectById(Long id);

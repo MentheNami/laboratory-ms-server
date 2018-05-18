@@ -1,16 +1,20 @@
 package org.cqtguniversity.lqms.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.sun.org.apache.regexp.internal.RE;
 import org.cqtguniversity.lqms.construct.NumTypeConstruct;
 import org.cqtguniversity.lqms.entity.DeviceProgram;
 import org.cqtguniversity.lqms.mapper.DeviceProgramMapper;
 import org.cqtguniversity.lqms.pojo.dto.SessionDTO;
 import org.cqtguniversity.lqms.pojo.dto.commoncontent.CommonContentDTO;
+import org.cqtguniversity.lqms.pojo.dto.deviceprogram.AcceptDeviceProgramDTO;
 import org.cqtguniversity.lqms.pojo.dto.deviceprogram.SaveDeviceProgramDTO;
 import org.cqtguniversity.lqms.pojo.dto.deviceprogram.SearchDeviceProgramDTO;
 import org.cqtguniversity.lqms.pojo.dto.divece.DeviceDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 import org.cqtguniversity.lqms.pojo.vo.DetailResultVO;
+import org.cqtguniversity.lqms.pojo.vo.ListVO;
 import org.cqtguniversity.lqms.pojo.vo.deviceprogram.DeviceProgramVO;
 import org.cqtguniversity.lqms.pojo.vo.deviceprogram.SimpleDeviceProgramVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ErrorVO;
@@ -27,8 +31,11 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 设备方案申请 服务实现类
@@ -115,6 +122,36 @@ public class DeviceProgramServiceImpl extends ServiceImpl<DeviceProgramMapper, D
     }
 
     @Override
+    public BaseVO acceptDeviceProgram(HttpSession httpSession, AcceptDeviceProgramDTO acceptDeviceProgramDTO) {
+        SessionDTO sessionDTO = (SessionDTO) httpSession.getAttribute("sessionDTO");
+        if (null == sessionDTO) {
+            return new ErrorVO("用户未登陆");
+        }
+        if (StringUtils.isEmpty(acceptDeviceProgramDTO.getApprovalDescription())
+                || StringUtils.isEmpty(acceptDeviceProgramDTO.getApprovalOpinion())
+                || null == acceptDeviceProgramDTO.getId()) {
+            return ParamErrorVO.getInstance();
+        }
+        DeviceProgram deviceProgram = deviceProgramMapper.selectById(acceptDeviceProgramDTO.getId());
+        if (null == deviceProgram || 1 == deviceProgram.getIsDeleted()) {
+            return new ErrorVO("设备方案不存在");
+        }
+        if (null != deviceProgram.getApprovalUser()) {
+            return new ErrorVO("方案已审批");
+        }
+        if (1 == acceptDeviceProgramDTO.getApprovalOpinion()) {
+            // 更新设备状态
+            deviceService.updateDeviceStatus(deviceProgram.getDeviceId(), deviceProgram.getProgramType());
+        }
+        deviceProgram.setApprovalUser(sessionDTO.getUserInfoDTO().getId());
+        deviceProgram.setApprovalDescription(commonContentService.getByContent(acceptDeviceProgramDTO.getApprovalDescription()).getId());
+        deviceProgram.setApprovalOpinion(acceptDeviceProgramDTO.getApprovalOpinion());
+        deviceProgram.setApprovalTime(Calendar.getInstance().getTime());
+        deviceProgram.updateById();
+        return SuccessVO.getInstance();
+    }
+
+    @Override
     public BaseVO removeById(Long id) {
         if (null == id) {
             return ParamErrorVO.getInstance();
@@ -162,8 +199,14 @@ public class DeviceProgramServiceImpl extends ServiceImpl<DeviceProgramMapper, D
             return new ErrorVO("设备方案不存在");
         }
         DeviceProgramVO deviceProgramVO = new DeviceProgramVO();
-        BeanUtils.copyProperties(deviceProgram, deviceProgramVO, "description", "approvalDescription");
+        deviceProgramVO.setApplyNo(deviceProgram.getApplyNo());
+        deviceProgramVO.setDeviceName(deviceService.selectDeviceDTO(deviceProgram.getDeviceId()).getDeviceName());
+        // 设置申请人
+        deviceProgramVO.setApplyUser(userInfoService.selectUserInfoDTO(deviceProgram.getApplyUser()).getRealName());
+        // 设置方案类型
+        deviceProgramVO.setProgramType(ConfigOptionConstruct.getOptionById(deviceProgram.getProgramType()).getKey());
         deviceProgramVO.setDescription(commonContentService.selectCommonContentDTO(deviceProgram.getDescription()).getContent());
+        deviceProgramVO.setExecutionDate(MyDateUtil.simpleDateFormat(deviceProgram.getGmtCreate(), MyDateUtil.YYYY_MM_DD_C));
         if (null != deviceProgram.getApprovalDescription()) {
             deviceProgramVO.setApprovalDescription(commonContentService.selectCommonContentDTO(deviceProgram.getApprovalDescription()).getContent());
         }
@@ -175,15 +218,28 @@ public class DeviceProgramServiceImpl extends ServiceImpl<DeviceProgramMapper, D
         if (!searchDeviceProgramDTO.isLegitimate()) {
             return ParamErrorVO.getInstance();
         }
-        EntityWrapper entityWrapper = new EntityWrapper();
+        EntityWrapper<DeviceProgram> entityWrapper = new EntityWrapper<>();
         entityWrapper.where("is_deleted={0}", 0);
         if (null != searchDeviceProgramDTO.getProgramType()) {
             entityWrapper.where("program_type={0}",searchDeviceProgramDTO.getProgramType().toString());
         }
-        if (!StringUtils.isEmpty(searchDeviceProgramDTO.getApplyUser())) {
-
+        if (!StringUtils.isEmpty(searchDeviceProgramDTO.getApplyNo())) {
+            entityWrapper.where("apply_no={0}", searchDeviceProgramDTO.getApplyNo());
         }
-        //if ()
-        return null;
+        if (!StringUtils.isEmpty(searchDeviceProgramDTO.getApplyUser())) {
+            List<Long> userIds = userInfoService.selectIdsByRealName(searchDeviceProgramDTO.getApplyUser());
+            entityWrapper.in("apply_user", userIds);
+        }
+        int total = deviceProgramMapper.selectCount(entityWrapper);
+        Page page = new Page(searchDeviceProgramDTO.getPage(), searchDeviceProgramDTO.getRows());
+        if (0 != total) {
+            entityWrapper.orderBy("approval_time");
+            List<DeviceProgram> deviceProgramList = deviceProgramMapper.selectPage(page, entityWrapper);
+            if (null != deviceProgramList && 0 != deviceProgramList.size()) {
+                List<SimpleDeviceProgramVO> simpleDeviceProgramVOList = deviceProgramList.stream().map(this::transferSimpleDeviceProgramVO).collect(Collectors.toList());
+                return new ListVO<>(total, page, simpleDeviceProgramVOList);
+            }
+        }
+        return new ListVO<>(0, page, new ArrayList<>());
     }
 }

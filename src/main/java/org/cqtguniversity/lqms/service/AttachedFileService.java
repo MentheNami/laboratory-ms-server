@@ -28,4 +28,6 @@ public interface AttachedFileService extends IService<AttachedFile> {
 
     ResponseEntity<InputStreamResource> downloadFile(Long id) throws IOException;
 
+    BaseVO removeById(Long id);
+
 }

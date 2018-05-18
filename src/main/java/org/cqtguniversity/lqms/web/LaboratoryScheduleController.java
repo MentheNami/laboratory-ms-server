@@ -7,6 +7,7 @@ import org.cqtguniversity.lqms.entity.LaboratorySchedule;
 import org.cqtguniversity.lqms.pojo.dto.laboratory.SearchLaboratoryDTO;
 import org.cqtguniversity.lqms.pojo.dto.laboratoryschedule.SaveLaboratoryScheduleDTO;
 import org.cqtguniversity.lqms.pojo.dto.laboratoryschedule.SearchLaboratoryScheduleDTO;
+import org.cqtguniversity.lqms.pojo.dto.laboratoryschedule.SimpleSearchLaboratoryDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 import org.cqtguniversity.lqms.service.LaboratoryScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,13 +45,19 @@ public class LaboratoryScheduleController {
 
     @ApiOperation(value = "审批实验室申请")
     @PostMapping(value = "/acceptById")
-    public BaseVO acceptById(HttpSession httpSession, Long id, Integer scheduleStatus) {
-        return laboratoryScheduleService.acceptById(httpSession, id, scheduleStatus);
+    public BaseVO acceptById(HttpSession httpSession, Long id, Boolean isAccept) {
+        return laboratoryScheduleService.acceptById(httpSession, id, isAccept);
     }
 
     @ApiOperation(value = "查询实验室时间表列表")
     @GetMapping(value = "/getLaboratoryScheduleList")
     public BaseVO getLaboratoryScheduleList(SearchLaboratoryScheduleDTO searchLaboratoryScheduleDTO) {
         return laboratoryScheduleService.getLaboratoryScheduleList(searchLaboratoryScheduleDTO);
+    }
+
+    @ApiOperation(value = "获取审批之后的列表")
+    @GetMapping(value = "/getList")
+    public BaseVO getList(SimpleSearchLaboratoryDTO simpleSearchLaboratoryDTO) {
+        return laboratoryScheduleService.getList(simpleSearchLaboratoryDTO);
     }
 }

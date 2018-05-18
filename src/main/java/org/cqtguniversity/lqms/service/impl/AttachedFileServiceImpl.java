@@ -14,6 +14,7 @@ import org.cqtguniversity.lqms.pojo.vo.ListVO;
 import org.cqtguniversity.lqms.pojo.vo.file.SimpleAttachedFileVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ParamErrorVO;
+import org.cqtguniversity.lqms.pojo.vo.result.SuccessVO;
 import org.cqtguniversity.lqms.service.AttachedFileService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.cqtguniversity.lqms.service.NumberRuleService;
@@ -135,7 +136,7 @@ public class AttachedFileServiceImpl extends ServiceImpl<AttachedFileMapper, Att
         attachedFile.setFileName(name);
         // 设置系统中文件夹路径， 根据日期分文件夹
         Calendar calendar = Calendar.getInstance();
-        String directory = calendar.get(Calendar.YEAR) + "\\" + calendar.get(Calendar.MONTH) + "\\" + calendar.get(Calendar.DAY_OF_MONTH) + "\\";
+        String directory = calendar.get(Calendar.YEAR) + "\\" + (calendar.get(Calendar.MONTH) + 1) + "\\" + calendar.get(Calendar.DAY_OF_MONTH) + "\\";
         // 生成一个UUID作为系统文件名称
         UUID uuid = UUID.randomUUID();
         // 设置数据库文件路径
@@ -190,5 +191,14 @@ public class AttachedFileServiceImpl extends ServiceImpl<AttachedFileMapper, Att
                 .contentLength(file.contentLength())
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
                 .body(new InputStreamResource(file.getInputStream()));
+    }
+
+    @Override
+    public BaseVO removeById(Long id) {
+        if (null == id) {
+            return ParamErrorVO.getInstance();
+        }
+        attachedFileMapper.deleteById(id);
+        return SuccessVO.getInstance();
     }
 }

@@ -40,10 +40,10 @@ public class LaboratoryController {
         return laboratoryService.addLaboratory(saveLaboratoryDTO);
     }
 
-    @ApiOperation(value = "删除实验室通过IDS")
-    @PostMapping(value = "/removeByIds")
-    public BaseVO removeByIds(Long[] ids) {
-        return laboratoryService.removeByIds(ids);
+    @ApiOperation(value = "删除实验室通过id")
+    @PostMapping(value = "/removeById")
+    public BaseVO removeById(Long id) {
+        return laboratoryService.removeById(id);
     }
 
     @ApiOperation(value = "更新实验室")

@@ -3,6 +3,7 @@ package org.cqtguniversity.lqms.web;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.cqtguniversity.lqms.pojo.dto.deviceprogram.AcceptDeviceProgramDTO;
 import org.cqtguniversity.lqms.pojo.dto.deviceprogram.SaveDeviceProgramDTO;
 import org.cqtguniversity.lqms.pojo.dto.deviceprogram.SearchDeviceProgramDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
@@ -36,6 +37,12 @@ public class DeviceProgramController {
     @PostMapping(value = "/addDeviceProgram")
     public BaseVO addDeviceProgram(HttpSession httpSession, SaveDeviceProgramDTO saveDeviceProgramDTO) {
         return deviceProgramService.addDeviceProgram(httpSession, saveDeviceProgramDTO);
+    }
+
+    @ApiOperation(value = "审批设备方案")
+    @PostMapping(value = "/acceptDeviceProgram")
+    public BaseVO acceptDeviceProgram(HttpSession httpSession, AcceptDeviceProgramDTO acceptDeviceProgramDTO) {
+        return deviceProgramService.acceptDeviceProgram(httpSession, acceptDeviceProgramDTO);
     }
 
     @ApiOperation(value = "删除设备方案通过Id")

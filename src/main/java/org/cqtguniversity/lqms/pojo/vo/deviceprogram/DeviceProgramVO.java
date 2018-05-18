@@ -18,7 +18,7 @@ public class DeviceProgramVO extends BaseVO {
     /**
      * 计划申请人
      */
-    private Long applyUser;
+    private String applyUser;
     /**
      * 申请编号
      */
@@ -26,11 +26,11 @@ public class DeviceProgramVO extends BaseVO {
     /**
      * 设备id
      */
-    private Long deviceId;
+    private String deviceName;
     /**
      * 方案类型：维修，保养，核查
      */
-    private Long programType;
+    private String programType;
     /**
      * 方案描述
      */
@@ -38,7 +38,7 @@ public class DeviceProgramVO extends BaseVO {
     /**
      * 执行日期
      */
-    private Date executionDate;
+    private String executionDate;
     /**
      * 批准人
      */
@@ -64,11 +64,11 @@ public class DeviceProgramVO extends BaseVO {
         this.id = id;
     }
 
-    public Long getApplyUser() {
+    public String getApplyUser() {
         return applyUser;
     }
 
-    public void setApplyUser(Long applyUser) {
+    public void setApplyUser(String applyUser) {
         this.applyUser = applyUser;
     }
 
@@ -80,19 +80,19 @@ public class DeviceProgramVO extends BaseVO {
         this.applyNo = applyNo;
     }
 
-    public Long getDeviceId() {
-        return deviceId;
+    public String getDeviceName() {
+        return deviceName;
     }
 
-    public void setDeviceId(Long deviceId) {
-        this.deviceId = deviceId;
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
     }
 
-    public Long getProgramType() {
+    public String getProgramType() {
         return programType;
     }
 
-    public void setProgramType(Long programType) {
+    public void setProgramType(String programType) {
         this.programType = programType;
     }
 
@@ -104,11 +104,11 @@ public class DeviceProgramVO extends BaseVO {
         this.description = description;
     }
 
-    public Date getExecutionDate() {
+    public String getExecutionDate() {
         return executionDate;
     }
 
-    public void setExecutionDate(Date executionDate) {
+    public void setExecutionDate(String executionDate) {
         this.executionDate = executionDate;
     }
 
@@ -150,10 +150,10 @@ public class DeviceProgramVO extends BaseVO {
                 "id=" + id +
                 ", applyUser=" + applyUser +
                 ", applyNo='" + applyNo + '\'' +
-                ", deviceId=" + deviceId +
-                ", programType=" + programType +
+                ", deviceName='" + deviceName + '\'' +
+                ", programType='" + programType + '\'' +
                 ", description='" + description + '\'' +
-                ", executionDate=" + executionDate +
+                ", executionDate='" + executionDate + '\'' +
                 ", approvalUser=" + approvalUser +
                 ", approvalOpinion=" + approvalOpinion +
                 ", approvalDescription='" + approvalDescription + '\'' +

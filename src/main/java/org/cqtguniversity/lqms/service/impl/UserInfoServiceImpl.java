@@ -78,7 +78,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     }
 
     @Override
-    public Long getUserInfo(String cellPhone, String email) {
+    public Long getUserInfo(String cellPhone, String email, String userName) {
         // 断言传入的cellPhone必须不为空
         Assert.notNull(cellPhone, "cellPhone must is not null");
         UserInfo userInfo = new UserInfo();
@@ -86,10 +86,19 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         Calendar calendar = Calendar.getInstance();
         userInfo.setGmtCreate(calendar.getTime());
         userInfo.setGmtModified(calendar.getTime());
+        userInfo.setRealName(userName);
         userInfo.setEmail(email);
         userInfo.setIsDeleted(0);
         userInfoMapper.insert(userInfo);
         return userInfo.getId();
+    }
+
+    @Override
+    public void setRealName(Long id, String realName) {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setId(id);
+        userInfo.setRealName(realName);
+        userInfo.updateById();
     }
 
     @Override

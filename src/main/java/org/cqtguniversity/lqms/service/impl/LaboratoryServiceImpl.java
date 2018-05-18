@@ -11,10 +11,12 @@ import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 import org.cqtguniversity.lqms.pojo.vo.DetailResultVO;
 import org.cqtguniversity.lqms.pojo.vo.ListVO;
 import org.cqtguniversity.lqms.pojo.vo.laboratory.LaboratoryVO;
+import org.cqtguniversity.lqms.pojo.vo.laboratory.SimpleLaboratoryVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.ParamErrorVO;
 import org.cqtguniversity.lqms.pojo.vo.result.SuccessVO;
 import org.cqtguniversity.lqms.service.ConfigOptionDetailService;
+import org.cqtguniversity.lqms.service.DeviceService;
 import org.cqtguniversity.lqms.service.LaboratoryService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.cqtguniversity.lqms.util.ConfigOptionConstruct;
@@ -46,6 +48,9 @@ public class LaboratoryServiceImpl extends ServiceImpl<LaboratoryMapper, Laborat
     private final ConfigOptionDetailService configOptionDetailService;
 
     @Autowired
+    private DeviceService deviceService;
+
+    @Autowired
     public LaboratoryServiceImpl(LaboratoryMapper laboratoryMapper, ConfigOptionDetailService configOptionDetailService) {
         this.laboratoryMapper = laboratoryMapper;
         this.configOptionDetailService =configOptionDetailService;
@@ -56,16 +61,16 @@ public class LaboratoryServiceImpl extends ServiceImpl<LaboratoryMapper, Laborat
      * @param laboratory
      * @return
      */
-    private LaboratoryVO transferLaboratoryVO(Laboratory laboratory) {
+    private SimpleLaboratoryVO transferSimpleLaboratoryVO(Laboratory laboratory) {
         // 创建实验室VO
-        LaboratoryVO laboratoryVO = new LaboratoryVO();
+        SimpleLaboratoryVO simpleLaboratoryVO = new SimpleLaboratoryVO();
         // 封装属性
-        laboratoryVO.setId(laboratory.getId());
-        laboratoryVO.setCapacity(laboratory.getCapacity());
-        laboratoryVO.setLaboratoryName(laboratory.getLaboratoryName());
-        laboratoryVO.setIsAutonomy(laboratory.getIsAutonomy() == 0 ? "否" : "是");
-        laboratoryVO.setFloor(ConfigOptionConstruct.getOptionById(laboratory.getFloor()).getKey());
-        return laboratoryVO;
+        simpleLaboratoryVO.setId(laboratory.getId());
+        simpleLaboratoryVO.setCapacity(laboratory.getCapacity().toString() + "人");
+        simpleLaboratoryVO.setLaboratoryName(laboratory.getLaboratoryName());
+        simpleLaboratoryVO.setIsAutonomy(laboratory.getIsAutonomy() == 0 ? "否" : "是");
+        simpleLaboratoryVO.setFloor(ConfigOptionConstruct.getOptionById(laboratory.getFloor()).getKey());
+        return simpleLaboratoryVO;
     }
 
     private Laboratory selectLaboratory(Long id) {
@@ -100,15 +105,17 @@ public class LaboratoryServiceImpl extends ServiceImpl<LaboratoryMapper, Laborat
     }
 
     @Override
-    public BaseVO removeByIds(Long[] ids) {
+    public BaseVO removeById(Long id) {
         // 合理性判断
-        if (null == ids || 0 == ids.length) {
+        if (null == id) {
             return ParamErrorVO.getInstance();
         }
-        // TODO: 2018/5/2 请先完成设备模块
-
+        // 查询是否存在设备
+        if (!deviceService.isDeletedByLaboratoryId(id)) {
+            return new ErrorVO("实验室中存在设备，请先移动设备");
+        }
         // 因为是逻辑删除，所以需要查询是否存在
-        Laboratory laboratory = laboratoryMapper.selectById(1);
+        Laboratory laboratory = laboratoryMapper.selectById(id);
         if (laboratory == null || 1 == laboratory.getIsDeleted()) {
             return new ErrorVO("实验室不存在");
         }
@@ -193,7 +200,7 @@ public class LaboratoryServiceImpl extends ServiceImpl<LaboratoryMapper, Laborat
             List<Laboratory> laboratoryList = laboratoryMapper.selectPage(page, entityWrapper);
             if (null != laboratoryList && 0 != laboratoryList.size()) {
                 // Java8 Stream流   将集合过滤操作封装为语法糖
-                List<LaboratoryVO> laboratoryVOList = laboratoryList.stream().map(this::transferLaboratoryVO).collect(Collectors.toList());
+                List<SimpleLaboratoryVO> laboratoryVOList = laboratoryList.stream().map(this::transferSimpleLaboratoryVO).collect(Collectors.toList());
                 return new ListVO<>(laboratoryVOList);
             }
         }

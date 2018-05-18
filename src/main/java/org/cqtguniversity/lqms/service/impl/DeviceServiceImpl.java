@@ -148,6 +148,13 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     }
 
     @Override
+    public boolean isDeletedByLaboratoryId(Long laboratoryId) {
+        EntityWrapper<Device> entityWrapper = new EntityWrapper<>();
+        entityWrapper.where("laboratory={0}", laboratoryId);
+        return 0 == deviceMapper.selectCount(entityWrapper);
+    }
+
+    @Override
     public BaseVO updateDevice(SaveDeviceDTO saveDeviceDTO) {
         // 合理性判断
         if (null == saveDeviceDTO.getId() || null == saveDeviceDTO.getDeviceType()
@@ -170,6 +177,13 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         device.setGmtModified(Calendar.getInstance().getTime());
         device.updateById();
         return SuccessVO.getInstance();
+    }
+
+    @Override
+    public void updateDeviceStatus(Long id, Long deviceStatus) {
+        Device device = deviceMapper.selectById(id);
+        device.setDeviceStatus(deviceStatus);
+        device.updateById();
     }
 
     @Override
@@ -233,7 +247,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         int total = deviceMapper.selectCount(entityWrapper);
         Page page = new Page(searchDeviceDTO.getPage(), searchDeviceDTO.getRows());
         if (0 != total) {
-            entityWrapper.groupBy("is_online").orderBy("gmt_modified");
+            entityWrapper.orderBy("is_online");
             List<Device> deviceList = deviceMapper.selectPage(page, entityWrapper);
             if (null != deviceList && 0 != deviceList.size()) {
                 List<SimpleDeviceVO> simpleDeviceVOList = deviceList.stream().map(this::transferSimpleDeviceVO).collect(Collectors.toList());

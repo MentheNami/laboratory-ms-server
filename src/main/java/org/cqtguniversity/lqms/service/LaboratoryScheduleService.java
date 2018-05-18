@@ -4,6 +4,7 @@ import org.cqtguniversity.lqms.entity.LaboratorySchedule;
 import com.baomidou.mybatisplus.service.IService;
 import org.cqtguniversity.lqms.pojo.dto.laboratoryschedule.SaveLaboratoryScheduleDTO;
 import org.cqtguniversity.lqms.pojo.dto.laboratoryschedule.SearchLaboratoryScheduleDTO;
+import org.cqtguniversity.lqms.pojo.dto.laboratoryschedule.SimpleSearchLaboratoryDTO;
 import org.cqtguniversity.lqms.pojo.vo.BaseVO;
 
 import javax.servlet.http.HttpSession;
@@ -19,9 +20,11 @@ public interface LaboratoryScheduleService extends IService<LaboratorySchedule> 
     BaseVO addLaboratorySchedule(HttpSession httpSession, SaveLaboratoryScheduleDTO saveLaboratoryScheduleDTO);
 
     // 审批预定
-    BaseVO acceptById(HttpSession httpSession, Long id, Integer scheduleStatus);
+    BaseVO acceptById(HttpSession httpSession, Long id, Boolean isAccept);
 
     // 查询所有预定
     BaseVO getLaboratoryScheduleList(SearchLaboratoryScheduleDTO searchLaboratoryScheduleDTO);
+
+    BaseVO getList(SimpleSearchLaboratoryDTO simpleSearchLaboratoryDTO);
 
 }

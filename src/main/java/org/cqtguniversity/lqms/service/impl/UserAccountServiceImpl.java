@@ -189,7 +189,7 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
         //插入数据
         userAccountMapper.insert(userAccount);
         // 获取一个用户节点记录
-        userNodeService.getUserNode(saveUserAccountDTO.getCellPhone(), saveUserAccountDTO.getEmail(), userAccount.getId());
+        userNodeService.getUserNode(saveUserAccountDTO.getCellPhone(), saveUserAccountDTO.getEmail(), userAccount.getId(), saveUserAccountDTO.getUserName());
         return SuccessVO.getInstance();
     }
 
