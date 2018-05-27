@@ -10,11 +10,12 @@
 
 * 开发任务：原型设计-王铖权
 
+# 快速运行-条件
 
-开发要点：
-pojo-> vo(view object) dto(data transfer object) 
+MySQL、Java1.8 、 Maven
 
+# 快速运行- 启动方式
+MySQL 创建数据库：cqtguniversity_lqms（或是自行创建，sql文件在resources->db目录下）
 
-# 目录介绍（重要）：
+运行： localhost:8080/swagger.html  即可使用接口。
 
-* pojo ： SaveXXXXXXDTO: 对象添加或更新，即保存信息时使用的DTO。
